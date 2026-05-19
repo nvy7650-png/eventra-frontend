@@ -9,7 +9,7 @@ export default function Footer() {
         <div>
 
           <h2 className="text-2xl font-bold text-sky-400 mb-3 tracking-widest">
-            EVENTRA
+            HOMIETICKET
           </h2>
 
           <p className="text-sm leading-6">
@@ -113,7 +113,7 @@ export default function Footer() {
       {/* BOTTOM */}
       <div className="border-t border-gray-800 py-4 text-center text-sm text-gray-500">
 
-        © {new Date().getFullYear()} EVENTRA. All rights reserved.
+        © {new Date().getFullYear()} HOMIETICKET. All rights reserved.
 
       </div>
 

@@ -10,7 +10,7 @@ export default function HeroSection() {
         </h2>
 
         <p className="mt-3 text-gray-100">
-          Mua vé nhanh, check-in dễ dàng với EVENTRA
+         Mua vé nhanh, check-in dễ dàng cùng HOMIETICKET
         </p>
 
         <button className="mt-6 px-6 py-3 bg-white text-black font-semibold rounded-xl">
