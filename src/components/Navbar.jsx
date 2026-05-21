@@ -4,17 +4,24 @@ export default function Navbar() {
 
   const navigate = useNavigate();
 
-  const user = null;
+  // GET USER
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
 
+  // LOGOUT
   const handleLogout = () => {
 
     localStorage.removeItem("user");
+
+    navigate("/");
 
     window.location.reload();
 
   };
 
   return (
+
     <header className="border-b border-gray-700 bg-gray-900">
 
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
@@ -24,6 +31,7 @@ export default function Navbar() {
           onClick={() => navigate("/")}
           className="cursor-pointer"
         >
+
           <h1 className="text-2xl font-bold text-sky-300 tracking-widest">
             HOMIETICKET
           </h1>
@@ -31,6 +39,7 @@ export default function Navbar() {
           <p className="text-xs text-gray-400">
             Event & Ticket Marketplace
           </p>
+
         </div>
 
         {/* SEARCH */}
@@ -57,6 +66,7 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
 
           {!user ? (
+
             <>
 
               {/* LOGIN */}
@@ -67,13 +77,14 @@ export default function Navbar() {
                   text-sm
                   rounded-lg
                   border border-gray-600
+                  text-white
                   hover:bg-gray-800
                 "
               >
                 Đăng nhập
               </button>
 
-              {/* USER REGISTER */}
+              {/* REGISTER */}
               <button
                 onClick={() => navigate("/register")}
                 className="
@@ -89,7 +100,7 @@ export default function Navbar() {
                 Đăng ký
               </button>
 
-              {/* ORGANIZER REGISTER */}
+              {/* ORGANIZER */}
               <button
                 onClick={() => navigate("/organizerregister")}
                 className="
@@ -106,9 +117,12 @@ export default function Navbar() {
               </button>
 
             </>
+
           ) : (
+
             <div className="flex items-center gap-4">
 
+              {/* USER INFO */}
               <div className="text-right">
 
                 <p className="text-sm font-semibold text-white">
@@ -121,6 +135,27 @@ export default function Navbar() {
 
               </div>
 
+              {/* DASHBOARD */}
+              {user.role === "ORGANIZER" && (
+
+                <button
+                  onClick={() => navigate("/organizer/dashboard")}
+                  className="
+                    px-4 py-2
+                    text-sm
+                    rounded-lg
+                    bg-sky-500
+                    hover:bg-sky-400
+                    text-white
+                    font-semibold
+                  "
+                >
+                  Dashboard
+                </button>
+
+              )}
+
+              {/* LOGOUT */}
               <button
                 onClick={handleLogout}
                 className="
@@ -137,6 +172,7 @@ export default function Navbar() {
               </button>
 
             </div>
+
           )}
 
         </div>
@@ -144,5 +180,7 @@ export default function Navbar() {
       </div>
 
     </header>
+
   );
+
 }
