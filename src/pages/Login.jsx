@@ -44,6 +44,9 @@ export default function Login() {
 
       const data = await res.json();
 
+console.log("STATUS:", res.status);
+console.log("DATA:", data);
+
       console.log(data);
 
       // LOGIN FAIL
