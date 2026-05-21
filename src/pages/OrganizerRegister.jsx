@@ -10,8 +10,11 @@ export default function OrganizerRegister() {
     email: "",
     phone: "",
     password: "",
-    description: "",
   });
+
+  const [error, setError] = useState("");
+
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
 
@@ -22,44 +25,71 @@ export default function OrganizerRegister() {
 
   };
 
-const handleSubmit = async (e) => {
+  const handleSubmit = async (e) => {
 
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
+    setError("");
 
-    const res = await fetch(
-      "https://homieticket-backend.onrender.com/api/auth/organizer/register",
-      {
-        method: "POST",
+    setLoading(true);
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+    try {
 
-        body: JSON.stringify(formData),
+      const res = await fetch(
+        "https://homieticket-backend.onrender.com/api/auth/organizer/register",
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await res.json();
+
+      console.log(data);
+
+      // FAIL
+      if (!res.ok) {
+
+        setError(data.message);
+
+        setLoading(false);
+
+        return;
+
       }
-    );
 
-    const data = await res.json();
+      // AUTO LOGIN
+      localStorage.setItem(
+        "user",
+        JSON.stringify({
+          name: formData.organization_name,
+          email: formData.email,
+          role: "ORGANIZER",
+        })
+      );
 
-    console.log(data);
+      // SUCCESS
+      navigate("/organizer/dashboard");
 
-    alert("Đăng ký organizer thành công!");
+    } catch (err) {
 
-    navigate("/organizer/dashboard");
+      console.log(err);
 
-  } catch (err) {
+      setError("Không thể kết nối server");
 
-    console.log(err);
+    }
 
-    alert("Có lỗi xảy ra");
+    setLoading(false);
 
-  }
-
-};
+  };
 
   return (
+
     <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-10">
 
       <div className="w-full max-w-lg">
@@ -164,6 +194,7 @@ const handleSubmit = async (e) => {
                 focus:outline-none
                 focus:border-sky-400
               "
+              required
             />
 
             {/* PASSWORD */}
@@ -187,10 +218,17 @@ const handleSubmit = async (e) => {
               required
             />
 
+            {/* ERROR */}
+            {error && (
+              <p className="text-red-500 text-sm font-medium">
+                {error}
+              </p>
+            )}
 
             {/* BUTTON */}
             <button
               type="submit"
+              disabled={loading}
               className="
                 w-full
                 py-3
@@ -200,9 +238,12 @@ const handleSubmit = async (e) => {
                 font-bold
                 hover:bg-sky-400
                 transition
+                disabled:opacity-50
               "
             >
-              Đăng ký Organizer
+              {loading
+                ? "Đang xử lý..."
+                : "Đăng ký Organizer"}
             </button>
 
           </form>
@@ -226,7 +267,11 @@ const handleSubmit = async (e) => {
           </p>
 
         </div>
+
       </div>
+
     </div>
+
   );
+
 }
