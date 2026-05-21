@@ -36,7 +36,6 @@ export default function OrganizerDashboard() {
 
         {/* LOGO */}
         <div
-          onClick={() => navigate("/")}
           className="cursor-pointer mb-10"
         >
 
