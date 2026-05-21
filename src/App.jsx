@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Register from "./pages/Register";
+import SeatMap from "./pages/SeatMap";
 
 function App() {
   return (
@@ -8,7 +9,12 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
+<Route
+  path="/events/:id/seats"
+  element={<SeatMap />}
+/>
       </Routes>
+      
     </BrowserRouter>
   );
 }

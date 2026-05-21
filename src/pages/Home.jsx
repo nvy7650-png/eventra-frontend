@@ -14,7 +14,7 @@ export default function Home() {
 
   useEffect(() => {
 
-   fetch(`${import.meta.env.VITE_API_URL}/api/events`)
+ fetch("https://homieticket-backend.onrender.com/api/events")
       .then((res) => res.json())
       .then((data) => {
 
