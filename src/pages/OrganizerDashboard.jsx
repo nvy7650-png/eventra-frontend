@@ -1,3 +1,14 @@
+import {
+  LayoutDashboard,
+  CalendarDays,
+  Ticket,
+  Wallet,
+  Settings,
+  LogOut,
+  Plus,
+  ChevronRight,
+} from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 
 export default function OrganizerDashboard() {
@@ -20,128 +31,172 @@ export default function OrganizerDashboard() {
 
   return (
 
-    <div className="min-h-screen bg-gray-950 text-white flex">
+    <div className="min-h-screen bg-[#050816] text-white flex">
 
       {/* SIDEBAR */}
       <aside
         className="
-          w-72
-          bg-black
+          w-64
+          bg-[#0B1120]
           border-r
-          border-gray-800
-          min-h-screen
-          p-6
+          border-white/10
+          flex
+          flex-col
+          justify-between
+          p-5
         "
       >
 
-        {/* LOGO */}
         <div>
 
-          <h1 className="text-3xl font-bold text-sky-400">
-            HOMIETICKET
-          </h1>
+          {/* LOGO */}
+          <div className="mb-10">
 
-          <p className="text-sm text-gray-500">
-            Organizer Center
-          </p>
+            <h1 className="text-3xl font-black text-sky-400 tracking-wide">
+              HOMIETICKET
+            </h1>
 
-        </div>
+            <p className="text-sm text-gray-400 mt-1">
+              Organizer Center
+            </p>
 
-        {/* USER */}
-        <div
-          className="
-            bg-gray-900
-            border
-            border-gray-800
-            rounded-2xl
-            p-4
-            mb-8
-          "
-        >
+          </div>
 
-          <p className="text-lg font-bold text-white">
-            {user?.name}
-          </p>
-
-        </div>
-
-        {/* MENU */}
-        <div className="space-y-3">
-
-          <button
+          {/* USER */}
+          <div
             className="
-              w-full
-              text-left
-              px-4
-              py-3
-              rounded-xl
-              bg-sky-500
-              text-black
-              font-semibold
+              flex
+              items-center
+              gap-3
+              bg-white/5
+              border
+              border-white/10
+              rounded-2xl
+              p-4
+              mb-8
             "
           >
-            Dashboard
-          </button>
 
-          <button
-            className="
-              w-full
-              text-left
-              px-4
-              py-3
-              rounded-xl
-              bg-gray-900
-              hover:bg-gray-800
-              transition
-            "
-          >
-            Sự kiện của tôi
-          </button>
+            <div
+              className="
+                w-12
+                h-12
+                rounded-full
+                bg-sky-500
+                flex
+                items-center
+                justify-center
+                font-bold
+                text-lg
+              "
+            >
+              {user?.name?.charAt(0)}
+            </div>
 
-          <button
-            className="
-              w-full
-              text-left
-              px-4
-              py-3
-              rounded-xl
-              bg-gray-900
-              hover:bg-gray-800
-              transition
-            "
-          >
-            Quản lý vé
-          </button>
+            <div>
 
-          <button
-            className="
-              w-full
-              text-left
-              px-4
-              py-3
-              rounded-xl
-              bg-gray-900
-              hover:bg-gray-800
-              transition
-            "
-          >
-            Doanh thu
-          </button>
+              <p className="font-semibold">
+                {user?.name}
+              </p>
 
-          <button
-            className="
-              w-full
-              text-left
-              px-4
-              py-3
-              rounded-xl
-              bg-gray-900
-              hover:bg-gray-800
-              transition
-            "
-          >
-            Cài đặt
-          </button>
+              <p className="text-xs text-gray-400">
+                Organizer
+              </p>
+
+            </div>
+
+          </div>
+
+          {/* MENU */}
+          <div className="space-y-2">
+
+            <button
+              className="
+                w-full
+                flex
+                items-center
+                gap-3
+                px-4
+                py-3
+                rounded-2xl
+                bg-sky-500
+                text-black
+                font-semibold
+              "
+            >
+              <LayoutDashboard size={20} />
+              Dashboard
+            </button>
+
+            <button
+              className="
+                w-full
+                flex
+                items-center
+                gap-3
+                px-4
+                py-3
+                rounded-2xl
+                hover:bg-white/5
+                transition
+              "
+            >
+              <CalendarDays size={20} />
+              Sự kiện của tôi
+            </button>
+
+            <button
+              className="
+                w-full
+                flex
+                items-center
+                gap-3
+                px-4
+                py-3
+                rounded-2xl
+                hover:bg-white/5
+                transition
+              "
+            >
+              <Ticket size={20} />
+              Quản lý vé
+            </button>
+
+            <button
+              className="
+                w-full
+                flex
+                items-center
+                gap-3
+                px-4
+                py-3
+                rounded-2xl
+                hover:bg-white/5
+                transition
+              "
+            >
+              <Wallet size={20} />
+              Doanh thu
+            </button>
+
+            <button
+              className="
+                w-full
+                flex
+                items-center
+                gap-3
+                px-4
+                py-3
+                rounded-2xl
+                hover:bg-white/5
+                transition
+              "
+            >
+              <Settings size={20} />
+              Cài đặt
+            </button>
+
+          </div>
 
         </div>
 
@@ -149,17 +204,20 @@ export default function OrganizerDashboard() {
         <button
           onClick={handleLogout}
           className="
-            mt-10
             w-full
+            flex
+            items-center
+            justify-center
+            gap-2
             py-3
-            rounded-xl
+            rounded-2xl
             bg-red-500
             hover:bg-red-400
-            text-white
-            font-bold
+            font-semibold
             transition
           "
         >
+          <LogOut size={18} />
           Đăng xuất
         </button>
 
@@ -171,25 +229,25 @@ export default function OrganizerDashboard() {
         {/* TOPBAR */}
         <div
           className="
-            border-b
-            border-gray-800
-            bg-black
-            px-10
-            py-6
             flex
             items-center
             justify-between
+            px-10
+            py-6
+            border-b
+            border-white/10
+            bg-[#081120]
           "
         >
 
           <div>
 
-            <h1 className="text-3xl font-bold text-sky-400">
+            <h1 className="text-3xl font-bold">
               Organizer Dashboard
             </h1>
 
             <p className="text-gray-400 mt-1">
-              Quản lý sự kiện và vé
+              Quản lý sự kiện và vé của bạn
             </p>
 
           </div>
@@ -197,17 +255,21 @@ export default function OrganizerDashboard() {
           <button
             onClick={() => navigate("/")}
             className="
+              flex
+              items-center
+              gap-2
               px-5
               py-3
-              rounded-xl
-              bg-gray-900
-              hover:bg-gray-800
+              rounded-2xl
+              bg-white/5
+              hover:bg-white/10
               border
-              border-gray-700
+              border-white/10
               transition
             "
           >
-            Về trang chủ
+            Trang chủ
+            <ChevronRight size={18} />
           </button>
 
         </div>
@@ -216,15 +278,16 @@ export default function OrganizerDashboard() {
         <div className="p-10">
 
           {/* STATS */}
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid lg:grid-cols-3 gap-6">
 
+            {/* CARD */}
             <div
               className="
-                bg-gray-900
+                bg-[#0B1120]
                 border
-                border-gray-800
+                border-white/10
                 rounded-3xl
-                p-8
+                p-7
               "
             >
 
@@ -232,19 +295,20 @@ export default function OrganizerDashboard() {
                 Tổng sự kiện
               </p>
 
-              <h2 className="text-5xl font-bold text-sky-400">
+              <h2 className="text-5xl font-black text-sky-400">
                 0
               </h2>
 
             </div>
 
+            {/* CARD */}
             <div
               className="
-                bg-gray-900
+                bg-[#0B1120]
                 border
-                border-gray-800
+                border-white/10
                 rounded-3xl
-                p-8
+                p-7
               "
             >
 
@@ -252,19 +316,20 @@ export default function OrganizerDashboard() {
                 Vé đã bán
               </p>
 
-              <h2 className="text-5xl font-bold text-green-400">
+              <h2 className="text-5xl font-black text-green-400">
                 0
               </h2>
 
             </div>
 
+            {/* CARD */}
             <div
               className="
-                bg-gray-900
+                bg-[#0B1120]
                 border
-                border-gray-800
+                border-white/10
                 rounded-3xl
-                p-8
+                p-7
               "
             >
 
@@ -272,7 +337,7 @@ export default function OrganizerDashboard() {
                 Doanh thu
               </p>
 
-              <h2 className="text-5xl font-bold text-pink-400">
+              <h2 className="text-5xl font-black text-pink-400">
                 0đ
               </h2>
 
@@ -281,11 +346,14 @@ export default function OrganizerDashboard() {
           </div>
 
           {/* ACTION */}
-          <div className="mt-10">
+          <div className="mt-8">
 
             <button
               className="
-                px-8
+                flex
+                items-center
+                gap-2
+                px-7
                 py-4
                 rounded-2xl
                 bg-sky-500
@@ -296,7 +364,8 @@ export default function OrganizerDashboard() {
                 transition
               "
             >
-              + Tạo sự kiện mới
+              <Plus size={22} />
+              Tạo sự kiện mới
             </button>
 
           </div>
