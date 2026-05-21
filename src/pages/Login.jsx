@@ -19,48 +19,68 @@ export default function Login() {
 
   };
 
-  const handleSubmit = async (e) => {
+ const [error, setError] = useState("");
 
-    e.preventDefault();
+const handleSubmit = async (e) => {
 
-    try {
+  e.preventDefault();
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        {
-          method: "POST",
+  setError("");
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+  try {
 
-          body: JSON.stringify(formData),
-        }
-      );
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/auth/login`,
+      {
+        method: "POST",
 
-      const data = await res.json();
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-      console.log(data);
-
-      if (data.user.role === "ORGANIZER") {
-
-        navigate("/organizer/dashboard");
-
-      } else {
-
-        navigate("/");
-
+        body: JSON.stringify(formData),
       }
+    );
 
-    } catch (err) {
+    const data = await res.json();
 
-      console.log(err);
+    console.log(data);
 
-      alert("Đăng nhập thất bại");
+    // LOGIN FAIL
+    if (!res.ok) {
+
+      setError(data.message || "Sai email hoặc mật khẩu");
+
+      return;
 
     }
 
-  };
+    // SAVE USER
+    localStorage.setItem(
+      "user",
+      JSON.stringify(data.user)
+    );
+
+    // ORGANIZER
+    if (data.user.role === "ORGANIZER") {
+
+      navigate("/organizer/dashboard");
+
+    } else {
+
+      navigate("/");
+
+    }
+
+  } catch (err) {
+
+    console.log(err);
+
+    setError("Có lỗi xảy ra");
+
+  }
+
+};
 
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
@@ -119,6 +139,11 @@ export default function Login() {
             "
             required
           />
+          {error && (
+  <p className="text-red-500 text-sm">
+    {error}
+  </p>
+)}
 
           {/* BUTTON */}
           <button
