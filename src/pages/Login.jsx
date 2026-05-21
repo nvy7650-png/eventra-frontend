@@ -190,21 +190,6 @@ export default function Login() {
               required
             />
 
-            {/* FORGOT PASSWORD */}
-            <div className="flex justify-end">
-
-              <button
-                type="button"
-                className="
-                  text-sm
-                  text-sky-400
-                  hover:underline
-                "
-              >
-                Quên mật khẩu?
-              </button>
-
-            </div>
 
             {/* ERROR */}
             {error && (
@@ -247,6 +232,22 @@ export default function Login() {
             </button>
 
           </form>
+          
+            {/* FORGOT PASSWORD */}
+            <div className="flex justify-end">
+
+              <button
+                type="button"
+                className="
+                  text-sm
+                  text-sky-400
+                  hover:underline
+                "
+              >
+                Quên mật khẩu?
+              </button>
+
+            </div>
 
           {/* REGISTER */}
           <p className="text-center text-sm text-gray-400 mt-6">
