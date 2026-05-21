@@ -59,7 +59,9 @@ export default function Navbar() {
           {!user ? (
             <>
 
+              {/* LOGIN */}
               <button
+                onClick={() => navigate("/login")}
                 className="
                   px-4 py-2
                   text-sm
@@ -71,6 +73,7 @@ export default function Navbar() {
                 Đăng nhập
               </button>
 
+              {/* USER REGISTER */}
               <button
                 onClick={() => navigate("/register")}
                 className="
@@ -86,7 +89,9 @@ export default function Navbar() {
                 Đăng ký
               </button>
 
+              {/* ORGANIZER REGISTER */}
               <button
+                onClick={() => navigate("/organizerregister")}
                 className="
                   px-4 py-2
                   text-sm

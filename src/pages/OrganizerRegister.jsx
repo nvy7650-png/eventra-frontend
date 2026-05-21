@@ -1,15 +1,16 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-export default function Register() {
+export default function OrganizerRegister() {
 
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
-    name: "",
+    organization_name: "",
     email: "",
-    password: "",
     phone: "",
+    password: "",
+    description: "",
   });
 
   const handleChange = (e) => {
@@ -21,21 +22,47 @@ export default function Register() {
 
   };
 
-  const handleSubmit = (e) => {
+const handleSubmit = async (e) => {
 
-    e.preventDefault();
+  e.preventDefault();
 
-    console.log(formData);
+  try {
 
-    // TODO:
-    // gọi API register user ở đây
+    const res = await fetch(
+      "https://homieticket-backend.onrender.com/api/auth/organizer/register",
+      {
+        method: "POST",
 
-  };
+        headers: {
+          "Content-Type": "application/json",
+        },
+
+        body: JSON.stringify(formData),
+      }
+    );
+
+    const data = await res.json();
+
+    console.log(data);
+
+    alert("Đăng ký organizer thành công!");
+
+    navigate("/organizer/dashboard");
+
+  } catch (err) {
+
+    console.log(err);
+
+    alert("Có lỗi xảy ra");
+
+  }
+
+};
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-10">
 
-      <div className="w-full max-w-md">
+      <div className="w-full max-w-lg">
 
         {/* BACK */}
         <button
@@ -54,7 +81,6 @@ export default function Register() {
             text-gray-300
             hover:border-sky-400
             hover:text-sky-400
-            hover:bg-gray-800
             transition
           "
         >
@@ -62,14 +88,14 @@ export default function Register() {
         </button>
 
         {/* CARD */}
-        <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl">
+        <div className="bg-gray-950 border border-gray-800 rounded-2xl p-8 shadow-2xl">
 
-          <h1 className="text-2xl font-bold text-center text-sky-400 mb-2">
-            Đăng ký tài khoản
+          <h1 className="text-3xl font-bold text-center text-sky-400 mb-2">
+            Đăng ký nhà tổ chức
           </h1>
 
           <p className="text-gray-400 text-center mb-8">
-            Tạo tài khoản để mua vé sự kiện
+            Tạo tài khoản Organizer để đăng và quản lý sự kiện
           </p>
 
           {/* FORM */}
@@ -78,19 +104,19 @@ export default function Register() {
             className="space-y-4"
           >
 
-            {/* NAME */}
+            {/* ORGANIZATION NAME */}
             <input
               type="text"
-              name="name"
-              placeholder="Họ và tên"
-              value={formData.name}
+              name="organization_name"
+              placeholder="Tên tổ chức / công ty"
+              value={formData.organization_name}
               onChange={handleChange}
               className="
                 w-full
                 px-4
                 py-3
                 rounded-xl
-                bg-gray-800
+                bg-gray-900
                 border
                 border-gray-700
                 focus:outline-none
@@ -111,7 +137,7 @@ export default function Register() {
                 px-4
                 py-3
                 rounded-xl
-                bg-gray-800
+                bg-gray-900
                 border
                 border-gray-700
                 focus:outline-none
@@ -132,7 +158,7 @@ export default function Register() {
                 px-4
                 py-3
                 rounded-xl
-                bg-gray-800
+                bg-gray-900
                 border
                 border-gray-700
                 focus:outline-none
@@ -152,7 +178,7 @@ export default function Register() {
                 px-4
                 py-3
                 rounded-xl
-                bg-gray-800
+                bg-gray-900
                 border
                 border-gray-700
                 focus:outline-none
@@ -161,7 +187,8 @@ export default function Register() {
               required
             />
 
-            {/* REGISTER BUTTON */}
+
+            {/* BUTTON */}
             <button
               type="submit"
               className="
@@ -175,7 +202,7 @@ export default function Register() {
                 transition
               "
             >
-              Đăng ký
+              Đăng ký Organizer
             </button>
 
           </form>
@@ -189,8 +216,8 @@ export default function Register() {
               onClick={() => navigate("/login")}
               className="
                 text-sky-400
-                cursor-pointer
                 hover:underline
+                cursor-pointer
               "
             >
               Đăng nhập
