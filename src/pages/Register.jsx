@@ -40,53 +40,116 @@ export default function Register() {
         {/* CARD */}
         <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl">
 
-          <h1 className="text-2xl font-bold text-center text-sky-400 mb-6">
+          <h1 className="text-2xl font-bold text-center text-sky-400 mb-2">
             Đăng ký tài khoản
           </h1>
 
           <p className="text-gray-400 text-center mb-8">
-            Chọn loại tài khoản bạn muốn tạo
+            Tạo tài khoản để mua vé và theo dõi sự kiện
           </p>
 
+          {/* FORM */}
           <div className="space-y-4">
 
-            {/* USER */}
+            {/* NAME */}
+            <input
+              type="text"
+              placeholder="Họ và tên"
+              className="
+                w-full
+                px-4
+                py-3
+                rounded-xl
+                bg-gray-800
+                border
+                border-gray-700
+                focus:outline-none
+                focus:border-sky-400
+              "
+            />
+
+            {/* EMAIL */}
+            <input
+              type="email"
+              placeholder="Email"
+              className="
+                w-full
+                px-4
+                py-3
+                rounded-xl
+                bg-gray-800
+                border
+                border-gray-700
+                focus:outline-none
+                focus:border-sky-400
+              "
+            />
+
+            {/* PHONE */}
+            <input
+              type="text"
+              placeholder="Số điện thoại"
+              className="
+                w-full
+                px-4
+                py-3
+                rounded-xl
+                bg-gray-800
+                border
+                border-gray-700
+                focus:outline-none
+                focus:border-sky-400
+              "
+            />
+
+            {/* PASSWORD */}
+            <input
+              type="password"
+              placeholder="Mật khẩu"
+              className="
+                w-full
+                px-4
+                py-3
+                rounded-xl
+                bg-gray-800
+                border
+                border-gray-700
+                focus:outline-none
+                focus:border-sky-400
+              "
+            />
+
+            {/* REGISTER BUTTON */}
             <button
-              onClick={() => navigate("/register/user")}
               className="
                 w-full
                 py-3
                 rounded-xl
                 bg-sky-500
                 text-black
-                font-semibold
+                font-bold
                 hover:bg-sky-400
                 transition
               "
             >
-              Đăng ký User
-            </button>
-
-            {/* ORGANIZER */}
-            <button
-              onClick={() => navigate("/register/organizer")}
-              className="
-                w-full
-                py-3
-                rounded-xl
-                border
-                border-sky-500
-                text-sky-400
-                font-semibold
-                hover:bg-sky-500
-                hover:text-black
-                transition
-              "
-            >
-              Đăng ký Organizer
+              Đăng ký
             </button>
 
           </div>
+
+          {/* LOGIN */}
+          <p className="text-center text-sm text-gray-400 mt-6">
+
+            Đã có tài khoản?{" "}
+
+            <span
+              onClick={() => navigate("/login")}
+              className="text-sky-400 cursor-pointer hover:underline"
+            >
+              Đăng nhập
+            </span>
+
+          </p>
 
         </div>
       </div>

@@ -28,10 +28,10 @@ export default function Footer() {
   <div className="space-y-3 text-sm">
 
     <a
-      href="tel:19001234"
+      href="tel:0903841056"
       className="block hover:text-sky-400 transition"
     >
-      📞 1900 1234
+      📞 0903841056
     </a>
 
     <a
