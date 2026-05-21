@@ -190,16 +190,14 @@ export default function Login() {
               required
             />
 
-           {/* PASSWORD ACTIONS */}
-<div className="flex items-center justify-between mt-1">
-
-  <div></div>
+          {/* FORGOT PASSWORD */}
+<div className="flex justify-end -mt-1">
 
   <button
     type="button"
     className="
-      text-xs
-      text-gray-400
+      text-sm
+      text-gray-500
       hover:text-sky-400
       transition
     "
