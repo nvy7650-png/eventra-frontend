@@ -58,11 +58,11 @@ export default function Login() {
       // SAVE USER
       localStorage.setItem(
         "user",
-        JSON.stringify(data.users)
+        JSON.stringify(data.user)
       );
 
       // ORGANIZER
-      if (data.users.role === "ORGANIZER") {
+      if (data.user.role === "ORGANIZER") {
 
         navigate("/organizer/dashboard");
 
