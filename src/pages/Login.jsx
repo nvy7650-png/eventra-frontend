@@ -14,6 +14,9 @@ export default function Login() {
 
   const [loading, setLoading] = useState(false);
 
+  // =========================
+  // HANDLE INPUT
+  // =========================
   const handleChange = (e) => {
 
     setFormData({
@@ -23,6 +26,9 @@ export default function Login() {
 
   };
 
+  // =========================
+  // HANDLE LOGIN
+  // =========================
   const handleSubmit = async (e) => {
 
     e.preventDefault();
@@ -49,13 +55,12 @@ export default function Login() {
       const data = await res.json();
 
       console.log("STATUS:", res.status);
-
       console.log("DATA:", data);
 
       // LOGIN FAIL
       if (!res.ok) {
 
-        setError(data.message);
+        setError(data.message || "Đăng nhập thất bại");
 
         setLoading(false);
 
@@ -69,7 +74,7 @@ export default function Login() {
         JSON.stringify(data.user)
       );
 
-      // ORGANIZER
+      // REDIRECT
       if (data.user.role === "ORGANIZER") {
 
         navigate("/organizer/dashboard");
@@ -98,7 +103,7 @@ export default function Login() {
 
       <div className="w-full max-w-md">
 
-        {/* BACK */}
+        {/* BACK BUTTON */}
         <button
           onClick={() => navigate("/")}
           className="
@@ -155,6 +160,7 @@ export default function Login() {
                 border
                 border-gray-700
                 text-white
+                placeholder-gray-500
                 focus:outline-none
                 focus:border-sky-400
               "
@@ -177,6 +183,7 @@ export default function Login() {
                 border
                 border-gray-700
                 text-white
+                placeholder-gray-500
                 focus:outline-none
                 focus:border-sky-400
               "
@@ -201,9 +208,20 @@ export default function Login() {
 
             {/* ERROR */}
             {error && (
-              <p className="text-red-500 text-sm font-medium">
+              <div
+                className="
+                  bg-red-500/10
+                  border
+                  border-red-500/30
+                  text-red-400
+                  text-sm
+                  rounded-xl
+                  px-4
+                  py-3
+                "
+              >
                 {error}
-              </p>
+              </div>
             )}
 
             {/* BUTTON */}
@@ -220,6 +238,7 @@ export default function Login() {
                 font-bold
                 transition
                 disabled:opacity-50
+                disabled:cursor-not-allowed
               "
             >
               {loading
