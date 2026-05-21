@@ -10,6 +10,8 @@ export default function Login() {
     password: "",
   });
 
+  const [error, setError] = useState("");
+
   const handleChange = (e) => {
 
     setFormData({
@@ -19,74 +21,74 @@ export default function Login() {
 
   };
 
- const [error, setError] = useState("");
+  const handleSubmit = async (e) => {
 
-const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  e.preventDefault();
+    setError("");
 
-  setError("");
+    try {
 
-  try {
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
 
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/auth/login`,
-      {
-        method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+          body: JSON.stringify(formData),
+        }
+      );
 
-        body: JSON.stringify(formData),
+      const data = await res.json();
+
+      console.log(data);
+
+      // LOGIN FAIL
+      if (!res.ok) {
+
+        setError(data.message);
+
+        return;
+
       }
-    );
 
-    const data = await res.json();
+      // SAVE USER
+      localStorage.setItem(
+        "user",
+        JSON.stringify(data.users)
+      );
 
-    console.log(data);
+      // ORGANIZER
+      if (data.users.role === "ORGANIZER") {
 
-    // LOGIN FAIL
-    if (!res.ok) {
+        navigate("/organizer/dashboard");
 
-      setError(data.message || "Sai email hoặc mật khẩu");
+      } else {
 
-      return;
+        navigate("/");
 
-    }
+      }
 
-    // SAVE USER
-    localStorage.setItem(
-      "user",
-      JSON.stringify(data.user)
-    );
+    } catch (err) {
 
-    // ORGANIZER
-    if (data.user.role === "ORGANIZER") {
+      console.log(err);
 
-      navigate("/organizer/dashboard");
-
-    } else {
-
-      navigate("/");
+      setError("Không thể kết nối server");
 
     }
 
-  } catch (err) {
-
-    console.log(err);
-
-    setError("Có lỗi xảy ra");
-
-  }
-
-};
+  };
 
   return (
+
     <div className="min-h-screen bg-gray-100 flex items-center justify-center px-4">
 
       <div className="w-full max-w-md bg-white border border-gray-300 rounded-2xl p-8 shadow-xl">
 
+        {/* TITLE */}
         <h1 className="text-3xl font-bold text-center text-sky-500 mb-2">
           Đăng nhập
         </h1>
@@ -95,6 +97,7 @@ const handleSubmit = async (e) => {
           Chào mừng quay trở lại
         </p>
 
+        {/* FORM */}
         <form
           onSubmit={handleSubmit}
           className="space-y-4"
@@ -139,11 +142,13 @@ const handleSubmit = async (e) => {
             "
             required
           />
+
+          {/* ERROR */}
           {error && (
-  <p className="text-red-500 text-sm">
-    {error}
-  </p>
-)}
+            <p className="text-red-500 text-sm font-medium">
+              {error}
+            </p>
+          )}
 
           {/* BUTTON */}
           <button
@@ -185,5 +190,7 @@ const handleSubmit = async (e) => {
       </div>
 
     </div>
+
   );
+
 }
