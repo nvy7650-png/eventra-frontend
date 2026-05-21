@@ -35,9 +35,7 @@ export default function OrganizerDashboard() {
       >
 
         {/* LOGO */}
-        <div
-          className="cursor-pointer mb-10"
-        >
+        <div>
 
           <h1 className="text-3xl font-bold text-sky-400">
             HOMIETICKET
