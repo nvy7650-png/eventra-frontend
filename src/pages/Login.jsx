@@ -232,22 +232,6 @@ export default function Login() {
             </button>
 
           </form>
-          
-            {/* FORGOT PASSWORD */}
-            <div className="flex justify-end">
-
-              <button
-                type="button"
-                className="
-                  text-sm
-                  text-sky-400
-                  hover:underline
-                "
-              >
-                Quên mật khẩu?
-              </button>
-
-            </div>
 
           {/* REGISTER */}
           <p className="text-center text-sm text-gray-400 mt-6">
@@ -266,6 +250,22 @@ export default function Login() {
             </span>
 
           </p>
+          
+            {/* FORGOT PASSWORD */}
+            <div className="flex justify-end">
+
+              <button
+                type="button"
+                className="
+                  text-sm
+                  text-sky-400
+                  hover:underline
+                "
+              >
+                Quên mật khẩu?
+              </button>
+
+            </div>
 
         </div>
 
