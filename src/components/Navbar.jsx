@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
 
   const navigate = useNavigate();
+
+  const [showMenu, setShowMenu] = useState(false);
 
   // GET USER
   const user = JSON.parse(
@@ -120,52 +123,113 @@ export default function Navbar() {
 
           ) : (
 
-            <div className="flex items-center gap-4">
+            <div className="relative">
 
-              {/* USER INFO */}
-              <div className="text-right">
-
-                <p className="text-sm font-semibold text-white">
-                  {user.name}
-                </p>
-
-              </div>
-
-              {/* DASHBOARD */}
-              {user.role === "ORGANIZER" && (
-
-                <button
-                  onClick={() => navigate("/organizer/dashboard")}
-                  className="
-                    px-4 py-2
-                    text-sm
-                    rounded-lg
-                    bg-sky-500
-                    hover:bg-sky-400
-                    text-white
-                    font-semibold
-                  "
-                >
-                  Dashboard
-                </button>
-
-              )}
-
-              {/* LOGOUT */}
+              {/* ACCOUNT BUTTON */}
               <button
-                onClick={handleLogout}
+                onClick={() => setShowMenu(!showMenu)}
                 className="
-                  px-4 py-2
-                  text-sm
-                  rounded-lg
-                  bg-red-500
-                  hover:bg-red-400
-                  text-white
-                  font-semibold
+                  flex
+                  items-center
+                  gap-3
+                  px-4
+                  py-2
+                  rounded-xl
+                  bg-gray-800
+                  hover:bg-gray-700
+                  transition
                 "
               >
-                Đăng xuất
+
+                <div className="text-left">
+
+                  <p className="text-sm font-semibold text-white">
+                    {user.name}
+                  </p>
+
+                </div>
+
+                <span className="text-gray-400">
+                  ▼
+                </span>
+
               </button>
+
+              {/* DROPDOWN */}
+              {showMenu && (
+
+                <div
+                  className="
+                    absolute
+                    right-0
+                    mt-3
+                    w-56
+                    bg-gray-900
+                    border
+                    border-gray-700
+                    rounded-2xl
+                    shadow-2xl
+                    overflow-hidden
+                    z-50
+                  "
+                >
+
+                  {/* ACCOUNT */}
+                  <button
+                    onClick={() => navigate("/profile")}
+                    className="
+                      w-full
+                      text-left
+                      px-5
+                      py-4
+                      hover:bg-gray-800
+                      text-white
+                      transition
+                    "
+                  >
+                    Tài khoản của tôi
+                  </button>
+
+                  {/* DASHBOARD */}
+                  {user.role === "ORGANIZER" && (
+
+                    <button
+                      onClick={() => navigate("/organizer/dashboard")}
+                      className="
+                        w-full
+                        text-left
+                        px-5
+                        py-4
+                        hover:bg-gray-800
+                        text-white
+                        transition
+                      "
+                    >
+                      Organizer Dashboard
+                    </button>
+
+                  )}
+
+                  {/* LOGOUT */}
+                  <button
+                    onClick={handleLogout}
+                    className="
+                      w-full
+                      text-left
+                      px-5
+                      py-4
+                      hover:bg-red-500
+                      text-red-400
+                      hover:text-white
+                      transition
+                    "
+                  >
+                    Đăng xuất
+                  </button>
+
+                </div>
+
+              )}
 
             </div>
 
