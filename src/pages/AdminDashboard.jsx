@@ -34,155 +34,150 @@ export default function AdminDashboard() {
     <div className="flex min-h-screen bg-[#050816] text-white">
 
       {/* SIDEBAR */}
-      <aside
+<aside
+  className="
+    w-64
+    bg-[#0B1120]
+    border-r
+    border-white/10
+    flex
+    flex-col
+    justify-between
+    p-5
+  "
+>
+
+  <div>
+
+    {/* LOGO */}
+    <div className="mb-10">
+
+      <h1 className="text-3xl font-black text-sky-400 tracking-wide">
+        HOMIETICKET
+      </h1>
+
+      <p className="text-sm text-gray-400 mt-1">
+        Admin Center
+      </p>
+
+    </div>
+
+    {/* USER */}
+    <div
+      className="
+        flex
+        items-center
+        gap-3
+        bg-white/5
+        border
+        border-white/10
+        rounded-2xl
+        p-4
+        mb-8
+      "
+    >
+
+      <div
         className="
-          w-[280px]
-          bg-[#040B18]
-          border-r
-          border-gray-800
+          w-12
+          h-12
+          rounded-full
+          bg-sky-500
           flex
-          flex-col
-          justify-between
-          p-5
+          items-center
+          justify-center
+          font-bold
+          text-lg
+          text-black
         "
       >
+        A
+      </div>
 
-        <div>
+      <div>
 
-          {/* LOGO */}
-          <div className="mb-10">
+        <p className="font-semibold">
+          {user?.name}
+        </p>
 
-            <h1
-              className="
-                text-4xl
-                font-black
-                text-red-500
-                tracking-wide
-              "
-            >
-              HOMIETICKET
-            </h1>
+        <p className="text-xs text-gray-400">
+          System Admin
+        </p>
 
-            <p className="text-gray-500 mt-1">
-              Admin Center
-            </p>
+      </div>
 
-          </div>
+    </div>
 
-          {/* USER */}
-          <div
-            className="
-              bg-[#111827]
-              border
-              border-gray-800
-              rounded-3xl
-              p-5
-              mb-8
-            "
-          >
+    {/* MENU */}
+    <div className="space-y-2">
 
-            <div className="flex items-center gap-4">
+      {menuItems.map((item, index) => (
 
-              <div
-                className="
-                  w-14
-                  h-14
-                  rounded-full
-                  bg-red-500
-                  flex
-                  items-center
-                  justify-center
-                  text-xl
-                  font-black
-                "
-              >
-                A
-              </div>
-
-              <div>
-
-                <h3 className="font-bold text-xl">
-                  {user?.name}
-                </h3>
-
-                <p className="text-gray-400 text-sm">
-                  System Admin
-                </p>
-
-              </div>
-
-            </div>
-
-          </div>
-
-          {/* MENU */}
-          <div className="space-y-3">
-
-            {menuItems.map((item, index) => (
-
-              <button
-                key={item}
-                className={`
-                  w-full
-                  flex
-                  items-center
-                  gap-3
-                  px-5
-                  py-4
-                  rounded-2xl
-                  transition
-                  font-medium
-                  ${
-                    index === 0
-                      ? `
-                        bg-red-500
-                        text-white
-                      `
-                      : `
-                        bg-[#111827]
-                        hover:bg-[#1F2937]
-                        text-white
-                      `
-                  }
-                `}
-              >
-
-                {index === 0 && "📊"}
-                {index === 1 && "👤"}
-                {index === 2 && "🎫"}
-                {index === 3 && "🧾"}
-                {index === 4 && "📂"}
-                {index === 5 && "💰"}
-                {index === 6 && "⚙️"}
-
-                {item}
-
-              </button>
-
-            ))}
-
-          </div>
-
-        </div>
-
-        {/* LOGOUT */}
         <button
-          onClick={handleLogout}
-          className="
+          key={item}
+          className={`
             w-full
-            py-4
+            flex
+            items-center
+            gap-3
+            px-4
+            py-3
             rounded-2xl
-            bg-red-500
-            hover:bg-red-400
-            text-white
-            font-bold
             transition
-          "
+            ${
+              index === 0
+                ? `
+                  bg-sky-500
+                  text-black
+                  font-semibold
+                `
+                : `
+                  hover:bg-white/5
+                `
+            }
+          `}
         >
-          Đăng xuất
+
+          {index === 0 && "📊"}
+          {index === 1 && "👤"}
+          {index === 2 && "🎫"}
+          {index === 3 && "🧾"}
+          {index === 4 && "📂"}
+          {index === 5 && "💰"}
+          {index === 6 && "⚙️"}
+
+          {item}
+
         </button>
 
-      </aside>
+      ))}
+
+    </div>
+
+  </div>
+
+  {/* LOGOUT */}
+  <button
+    onClick={handleLogout}
+    className="
+      w-full
+      flex
+      items-center
+      justify-center
+      gap-2
+      py-3
+      rounded-2xl
+      bg-red-500
+      hover:bg-red-400
+      font-semibold
+      transition
+      mt-6
+    "
+  >
+    Đăng xuất
+  </button>
+
+</aside>
 
       {/* MAIN */}
       <main className="flex-1">
