@@ -1,14 +1,50 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import Home from "./pages/Home";
-import Register from "./pages/Register";
-import OrganizerRegister from "./pages/OrganizerRegister";
-import OrganizerDashboard from "./pages/OrganizerDashboard";
 import Login from "./pages/Login";
+import Register from "./pages/Register";
+
+import OrganizerRegister from "./pages/OrganizerRegister";
+
 import UserDashboard from "./pages/UserDashboard";
+import OrganizerDashboard from "./pages/OrganizerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
+
+  // GET USER
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
+
+  // PROTECTED ROUTE
+  const ProtectedRoute = ({
+    children,
+    role,
+  }) => {
+
+    // NOT LOGIN
+    if (!user) {
+
+      return <Navigate to="/login" />;
+
+    }
+
+    // WRONG ROLE
+    if (role && user.role !== role) {
+
+      return <Navigate to="/" />;
+
+    }
+
+    return children;
+
+  };
 
   return (
 
@@ -16,34 +52,65 @@ function App() {
 
       <Routes>
 
-        <Route path="/" element={<Home />} />
-
-        <Route path="/register" element={<Register />} />
-
+        {/* HOME */}
         <Route
-          path="/organizerregister"
-          element={<OrganizerRegister />}
+          path="/"
+          element={<Home />}
         />
 
-        <Route
-          path="/organizer/dashboard"
-          element={<OrganizerDashboard />}
-        />
-
+        {/* LOGIN */}
         <Route
           path="/login"
           element={<Login />}
         />
 
+        {/* REGISTER */}
         <Route
-  path="/user/dashboard"
-  element={<UserDashboard />}
-/>
+          path="/register"
+          element={<Register />}
+        />
 
-<Route
-  path="/admin/dashboard"
-  element={<AdminDashboard />}
-/>
+        {/* ORGANIZER REGISTER */}
+        <Route
+          path="/organizerregister"
+          element={<OrganizerRegister />}
+        />
+
+        {/* USER DASHBOARD */}
+        <Route
+          path="/user/dashboard"
+          element={
+            <ProtectedRoute role="USER">
+
+              <UserDashboard />
+
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ORGANIZER DASHBOARD */}
+        <Route
+          path="/organizer/dashboard"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+
+              <OrganizerDashboard />
+
+            </ProtectedRoute>
+          }
+        />
+
+        {/* ADMIN DASHBOARD */}
+        <Route
+          path="/admin/dashboard"
+          element={
+            <ProtectedRoute role="ADMIN">
+
+              <AdminDashboard />
+
+            </ProtectedRoute>
+          }
+        />
 
       </Routes>
 

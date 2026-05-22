@@ -12,11 +12,7 @@ export default function Login() {
 
   const [error, setError] = useState("");
 
-  const [loading, setLoading] = useState(false);
-
-  // =========================
   // HANDLE INPUT
-  // =========================
   const handleChange = (e) => {
 
     setFormData({
@@ -26,16 +22,12 @@ export default function Login() {
 
   };
 
-  // =========================
   // HANDLE LOGIN
-  // =========================
   const handleSubmit = async (e) => {
 
     e.preventDefault();
 
     setError("");
-
-    setLoading(true);
 
     try {
 
@@ -60,9 +52,10 @@ export default function Login() {
       // LOGIN FAIL
       if (!res.ok) {
 
-        setError(data.message || "Đăng nhập thất bại");
-
-        setLoading(false);
+        setError(
+          data.message ||
+          "Sai email hoặc mật khẩu"
+        );
 
         return;
 
@@ -74,23 +67,24 @@ export default function Login() {
         JSON.stringify(data.user)
       );
 
-      // REDIRECT
-      // ROLE NAVIGATION
-if (data.user.role === "ADMIN") {
+      // ADMIN
+      if (data.user.role === "ADMIN") {
 
-  navigate("/admin/dashboard");
+        navigate("/admin/dashboard");
 
-} else if (
-  data.user.role === "ORGANIZER"
-) {
+      // ORGANIZER
+      } else if (
+        data.user.role === "ORGANIZER"
+      ) {
 
-  navigate("/organizer/dashboard");
+        navigate("/organizer/dashboard");
 
-} else {
+      // USER
+      } else {
 
-  navigate("/user/dashboard");
+        navigate("/user/dashboard");
 
-}
+      }
 
     } catch (err) {
 
@@ -100,179 +94,222 @@ if (data.user.role === "ADMIN") {
 
     }
 
-    setLoading(false);
-
   };
 
   return (
 
-    <div className="min-h-screen bg-black text-white flex items-center justify-center px-4 py-10">
+    <div
+      className="
+        min-h-screen
+        flex
+        items-center
+        justify-center
+        bg-[#050816]
+        px-4
+      "
+    >
 
-      <div className="w-full max-w-md">
+      <div
+        className="
+          w-full
+          max-w-md
+          bg-[#0B1220]
+          border
+          border-gray-800
+          rounded-3xl
+          p-8
+          shadow-2xl
+        "
+      >
 
-        {/* BACK BUTTON */}
-        <button
-          onClick={() => navigate("/")}
-          className="
-            mb-4
-            flex
-            items-center
-            gap-2
-            px-4
-            py-2
-            rounded-xl
-            bg-gray-900
-            border
-            border-gray-800
-            text-gray-300
-            hover:border-sky-400
-            hover:text-sky-400
-            transition
-          "
-        >
-          ← Quay về trang chủ
-        </button>
+        {/* LOGO */}
+        <div className="text-center mb-8">
 
-        {/* CARD */}
-        <div className="bg-gray-950 border border-gray-800 rounded-2xl p-8 shadow-2xl">
-
-          {/* TITLE */}
-          <h1 className="text-3xl font-bold text-center text-sky-400 mb-2">
-            Đăng nhập
+          <h1
+            className="
+              text-4xl
+              font-black
+              text-sky-400
+              tracking-wide
+            "
+          >
+            HOMIETICKET
           </h1>
 
-          <p className="text-center text-gray-400 mb-8">
-            Chào mừng quay trở lại HomieTicket
+          <p className="text-gray-400 mt-2">
+            Chào mừng quay trở lại
           </p>
 
-          {/* FORM */}
-          <form
-            onSubmit={handleSubmit}
-            className="space-y-4"
-          >
+        </div>
 
-            {/* EMAIL */}
+        {/* FORM */}
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-5"
+        >
+
+          {/* EMAIL */}
+          <div>
+
+            <label
+              className="
+                text-sm
+                text-gray-400
+                mb-2
+                block
+              "
+            >
+              Email
+            </label>
+
             <input
               type="email"
               name="email"
-              placeholder="Email"
+              placeholder="Nhập email"
               value={formData.email}
               onChange={handleChange}
               className="
                 w-full
                 px-4
                 py-3
-                rounded-xl
-                bg-gray-900
+                rounded-2xl
+                bg-[#111827]
                 border
                 border-gray-700
                 text-white
                 placeholder-gray-500
                 focus:outline-none
                 focus:border-sky-400
+                transition
               "
               required
             />
 
-            {/* PASSWORD */}
+          </div>
+
+          {/* PASSWORD */}
+          <div>
+
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                mb-2
+              "
+            >
+
+              <label
+                className="
+                  text-sm
+                  text-gray-400
+                "
+              >
+                Mật khẩu
+              </label>
+
+              <button
+                type="button"
+                className="
+                  text-sm
+                  text-sky-400
+                  hover:text-sky-300
+                  transition
+                "
+              >
+                Quên mật khẩu?
+              </button>
+
+            </div>
+
             <input
               type="password"
               name="password"
-              placeholder="Mật khẩu"
+              placeholder="Nhập mật khẩu"
               value={formData.password}
               onChange={handleChange}
               className="
                 w-full
                 px-4
                 py-3
-                rounded-xl
-                bg-gray-900
+                rounded-2xl
+                bg-[#111827]
                 border
                 border-gray-700
                 text-white
                 placeholder-gray-500
                 focus:outline-none
                 focus:border-sky-400
+                transition
               "
               required
             />
 
-          {/* FORGOT PASSWORD */}
-<div className="flex justify-end -mt-1">
+          </div>
 
-  <button
-    type="button"
-    className="
-      text-sm
-      text-gray-500
-      hover:text-sky-400
-      transition
-    "
-  >
-    Quên mật khẩu?
-  </button>
+          {/* ERROR */}
+          {error && (
 
-</div>
-
-            {/* ERROR */}
-            {error && (
-              <div
-                className="
-                  bg-red-500/10
-                  border
-                  border-red-500/30
-                  text-red-400
-                  text-sm
-                  rounded-xl
-                  px-4
-                  py-3
-                "
-              >
-                {error}
-              </div>
-            )}
-
-            {/* BUTTON */}
-            <button
-              type="submit"
-              disabled={loading}
+            <div
               className="
-                w-full
+                bg-red-500/10
+                border
+                border-red-500/30
+                text-red-400
+                text-sm
+                rounded-2xl
+                px-4
                 py-3
-                rounded-xl
-                bg-sky-500
-                hover:bg-sky-400
-                text-black
-                font-bold
-                transition
-                disabled:opacity-50
-                disabled:cursor-not-allowed
               "
             >
-              {loading
-                ? "Đang đăng nhập..."
-                : "Đăng nhập"}
-            </button>
+              {error}
+            </div>
 
-          </form>
+          )}
 
-          {/* REGISTER */}
-          <p className="text-center text-sm text-gray-400 mt-6">
+          {/* BUTTON */}
+          <button
+            type="submit"
+            className="
+              w-full
+              py-3
+              rounded-2xl
+              bg-sky-500
+              hover:bg-sky-400
+              text-black
+              font-bold
+              text-lg
+              transition
+            "
+          >
+            Đăng nhập
+          </button>
 
-            Chưa có tài khoản?{" "}
+        </form>
 
-            <span
-              onClick={() => navigate("/register")}
-              className="
-                text-sky-400
-                hover:underline
-                cursor-pointer
-              "
-            >
-              Đăng ký
-            </span>
+        {/* REGISTER */}
+        <div
+          className="
+            text-center
+            text-sm
+            text-gray-500
+            mt-8
+          "
+        >
 
-          </p>
+          Chưa có tài khoản?{" "}
+
+          <span
+            onClick={() => navigate("/register")}
+            className="
+              text-sky-400
+              hover:text-sky-300
+              cursor-pointer
+              font-semibold
+            "
+          >
+            Đăng ký ngay
+          </span>
 
         </div>
 
