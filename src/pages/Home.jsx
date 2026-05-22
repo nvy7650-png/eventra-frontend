@@ -6,6 +6,8 @@ import HeroSection from "../components/HeroSection";
 import EventCard from "../components/EventCard";
 import Footer from "../components/Footer";
 
+import eventsData from "../mock/events";
+
 export default function Home() {
 
   const [events, setEvents] = useState([]);
@@ -17,50 +19,44 @@ export default function Home() {
 
   useEffect(() => {
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/events`)
-      .then((res) => res.json())
-      .then((data) => {
+    // MOCK API
+    const data = eventsData;
 
-        // ALL EVENTS
-        setEvents(data);
+    // ALL EVENTS
+    setEvents(data);
 
-        // NEWEST EVENTS
-        const newest = [...data]
-          .sort(
-            (a, b) =>
-              new Date(b.created_at) -
-              new Date(a.created_at)
-          )
-          .slice(0, 4);
+    // NEWEST EVENTS
+    const newest = [...data]
+      .sort(
+        (a, b) =>
+          new Date(b.created_at) -
+          new Date(a.created_at)
+      )
+      .slice(0, 4);
 
-        setLatestEvents(newest);
+    setLatestEvents(newest);
 
-        // UPCOMING EVENTS
-        const upcoming = [...data]
-          .filter(
-            (event) =>
-              new Date(event.start_date) >= new Date()
-          )
-          .sort(
-            (a, b) =>
-              new Date(a.start_date) -
-              new Date(b.start_date)
-          )
-          .slice(0, 4);
+    // UPCOMING EVENTS
+    const upcoming = [...data]
+      .filter(
+        (event) =>
+          new Date(event.start_date) >= new Date()
+      )
+      .sort(
+        (a, b) =>
+          new Date(a.start_date) -
+          new Date(b.start_date)
+      )
+      .slice(0, 4);
 
-        setUpcomingEvents(upcoming);
+    setUpcomingEvents(upcoming);
 
-      })
-      .catch((err) => {
+    // FAKE LOADING
+    setTimeout(() => {
 
-        console.log(err);
+      setLoading(false);
 
-      })
-      .finally(() => {
-
-        setLoading(false);
-
-      });
+    }, 600);
 
   }, []);
 
@@ -140,42 +136,19 @@ export default function Home() {
           Sự kiện mới nhất
         </h3>
 
-        {latestEvents.length > 0 ? (
+        <div className="grid md:grid-cols-4 gap-5">
 
-          <div className="grid md:grid-cols-4 gap-5">
+          {latestEvents.map((event) => (
 
-            {latestEvents.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              small
+            />
 
-              <EventCard
-                key={event.id}
-                event={event}
-                small
-              />
+          ))}
 
-            ))}
-
-          </div>
-
-        ) : (
-
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-10
-              text-center
-            "
-          >
-
-            <p className="text-gray-400">
-              Chưa có sự kiện mới
-            </p>
-
-          </div>
-
-        )}
+        </div>
 
       </section>
 
@@ -193,42 +166,19 @@ export default function Home() {
           Sự kiện sắp diễn ra
         </h3>
 
-        {upcomingEvents.length > 0 ? (
+        <div className="grid md:grid-cols-4 gap-5">
 
-          <div className="grid md:grid-cols-4 gap-5">
+          {upcomingEvents.map((event) => (
 
-            {upcomingEvents.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              small
+            />
 
-              <EventCard
-                key={event.id}
-                event={event}
-                small
-              />
+          ))}
 
-            ))}
-
-          </div>
-
-        ) : (
-
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-10
-              text-center
-            "
-          >
-
-            <p className="text-gray-400">
-              Chưa có sự kiện sắp diễn ra
-            </p>
-
-          </div>
-
-        )}
+        </div>
 
       </section>
 
@@ -253,46 +203,19 @@ export default function Home() {
 
         </div>
 
-        {events.length > 0 ? (
+        <div className="grid md:grid-cols-4 gap-5">
 
-          <div className="grid md:grid-cols-4 gap-5">
+          {events.map((event) => (
 
-            {events.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              small
+            />
 
-              <EventCard
-                key={event.id}
-                event={event}
-                small
-              />
+          ))}
 
-            ))}
-
-          </div>
-
-        ) : (
-
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-14
-              text-center
-            "
-          >
-
-            <h3 className="text-2xl font-bold mb-3">
-              Chưa có sự kiện nào
-            </h3>
-
-            <p className="text-gray-400">
-              Organizer có thể tạo sự kiện mới từ dashboard
-            </p>
-
-          </div>
-
-        )}
+        </div>
 
       </section>
 
