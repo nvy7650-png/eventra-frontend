@@ -68,23 +68,26 @@ export default function Login() {
       );
 
       // ADMIN
-      if (data.user.role === "ADMIN") {
+if (data.user.role === "ADMIN") {
 
-        navigate("/admin/dashboard");
+  window.location.href =
+    "/admin/dashboard";
 
-      // ORGANIZER
-      } else if (
-        data.user.role === "ORGANIZER"
-      ) {
+// ORGANIZER
+} else if (
+  data.user.role === "ORGANIZER"
+) {
 
-        navigate("/organizer/dashboard");
+  window.location.href =
+    "/organizer/dashboard";
 
-      // USER
-      } else {
+// USER
+} else {
 
-        navigate("/user/dashboard");
+  window.location.href =
+    "/user/dashboard";
 
-      }
+}
 
     } catch (err) {
 
