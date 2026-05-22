@@ -41,8 +41,8 @@ export default function Home() {
         const upcoming = [...data]
           .sort(
             (a, b) =>
-              new Date(a.event_date) -
-              new Date(b.event_date)
+              new Date(a.start_date) -
+              new Date(b.start_date)
           )
           .slice(0, 4);
 
