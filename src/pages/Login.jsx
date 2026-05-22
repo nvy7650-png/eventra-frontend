@@ -75,15 +75,22 @@ export default function Login() {
       );
 
       // REDIRECT
-      if (data.user.role === "ORGANIZER") {
+      // ROLE NAVIGATION
+if (data.user.role === "ADMIN") {
 
-        navigate("/organizer/dashboard");
+  navigate("/admin/dashboard");
 
-      } else {
+} else if (
+  data.user.role === "ORGANIZER"
+) {
 
-        navigate("/");
+  navigate("/organizer/dashboard");
 
-      }
+} else {
+
+  navigate("/user/dashboard");
+
+}
 
     } catch (err) {
 

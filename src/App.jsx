@@ -5,6 +5,8 @@ import Register from "./pages/Register";
 import OrganizerRegister from "./pages/OrganizerRegister";
 import OrganizerDashboard from "./pages/OrganizerDashboard";
 import Login from "./pages/Login";
+import UserDashboard from "./pages/UserDashboard";
+import AdminDashboard from "./pages/AdminDashboard";
 
 function App() {
 
@@ -32,6 +34,16 @@ function App() {
           path="/login"
           element={<Login />}
         />
+
+        <Route
+  path="/user/dashboard"
+  element={<UserDashboard />}
+/>
+
+<Route
+  path="/admin/dashboard"
+  element={<AdminDashboard />}
+/>
 
       </Routes>
 
