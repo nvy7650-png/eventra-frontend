@@ -11,7 +11,6 @@ import Register from "./pages/Register";
 
 import OrganizerRegister from "./pages/OrganizerRegister";
 
-import UserDashboard from "./pages/UserDashboard";
 import OrganizerDashboard from "./pages/OrganizerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 
