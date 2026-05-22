@@ -36,14 +36,14 @@ export default function AdminDashboard() {
       {/* SIDEBAR */}
       <aside
         className="
-          w-[300px]
-          bg-black
+          w-[280px]
+          bg-[#040B18]
           border-r
           border-gray-800
           flex
           flex-col
           justify-between
-          p-6
+          p-5
         "
       >
 
@@ -69,10 +69,10 @@ export default function AdminDashboard() {
 
           </div>
 
-          {/* ADMIN INFO */}
+          {/* USER */}
           <div
             className="
-              bg-[#0B1220]
+              bg-[#111827]
               border
               border-gray-800
               rounded-3xl
@@ -81,36 +81,36 @@ export default function AdminDashboard() {
             "
           >
 
-            <p className="text-sm text-gray-400">
-              Administrator
-            </p>
+            <div className="flex items-center gap-4">
 
-            <h2
-              className="
-                text-xl
-                font-bold
-                mt-1
-              "
-            >
-              {user?.name}
-            </h2>
+              <div
+                className="
+                  w-14
+                  h-14
+                  rounded-full
+                  bg-red-500
+                  flex
+                  items-center
+                  justify-center
+                  text-xl
+                  font-black
+                "
+              >
+                A
+              </div>
 
-            <div
-              className="
-                mt-4
-                inline-flex
-                items-center
-                gap-2
-                px-3
-                py-1
-                rounded-full
-                bg-red-500/20
-                text-red-400
-                text-sm
-                font-medium
-              "
-            >
-              ● System Admin
+              <div>
+
+                <h3 className="font-bold text-xl">
+                  {user?.name}
+                </h3>
+
+                <p className="text-gray-400 text-sm">
+                  System Admin
+                </p>
+
+              </div>
+
             </div>
 
           </div>
@@ -124,7 +124,9 @@ export default function AdminDashboard() {
                 key={item}
                 className={`
                   w-full
-                  text-left
+                  flex
+                  items-center
+                  gap-3
                   px-5
                   py-4
                   rounded-2xl
@@ -135,19 +137,26 @@ export default function AdminDashboard() {
                       ? `
                         bg-red-500
                         text-white
-                        shadow-lg
-                        shadow-red-500/20
                       `
                       : `
-                        bg-[#0B1220]
-                        border
-                        border-gray-800
-                        hover:bg-[#111827]
+                        bg-[#111827]
+                        hover:bg-[#1F2937]
+                        text-white
                       `
                   }
                 `}
               >
+
+                {index === 0 && "📊"}
+                {index === 1 && "👤"}
+                {index === 2 && "🎫"}
+                {index === 3 && "🧾"}
+                {index === 4 && "📂"}
+                {index === 5 && "💰"}
+                {index === 6 && "⚙️"}
+
                 {item}
+
               </button>
 
             ))}
@@ -176,15 +185,18 @@ export default function AdminDashboard() {
       </aside>
 
       {/* MAIN */}
-      <main className="flex-1 p-10">
+      <main className="flex-1">
 
-        {/* TOPBAR */}
+        {/* HEADER */}
         <div
           className="
+            border-b
+            border-gray-800
+            px-10
+            py-8
             flex
             items-center
             justify-between
-            mb-10
           "
         >
 
@@ -194,14 +206,13 @@ export default function AdminDashboard() {
               className="
                 text-5xl
                 font-black
-                leading-tight
               "
             >
               Admin Dashboard
             </h1>
 
-            <p className="text-gray-400 mt-3 text-lg">
-              Quản trị toàn bộ hệ thống HOMIETICKET
+            <p className="text-gray-400 mt-2 text-lg">
+              Quản trị hệ thống HOMIETICKET
             </p>
 
           </div>
@@ -212,291 +223,161 @@ export default function AdminDashboard() {
               px-6
               py-3
               rounded-2xl
-              bg-[#0B1220]
+              bg-[#111827]
               border
               border-gray-700
-              hover:bg-[#111827]
+              hover:bg-[#1F2937]
               transition
             "
           >
-            Về trang chủ
+            Trang chủ
           </button>
 
         </div>
 
-        {/* STATS */}
-        <div className="grid md:grid-cols-4 gap-6 mb-10">
+        {/* CONTENT */}
+        <div className="p-10">
 
-          {/* USERS */}
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-7
-            "
-          >
+          {/* STATS */}
+          <div className="grid md:grid-cols-4 gap-6">
 
-            <p className="text-gray-400 mb-3">
-              Tổng Users
-            </p>
-
-            <h2
-              className="
-                text-5xl
-                font-black
-                text-sky-400
-              "
-            >
-              0
-            </h2>
-
-          </div>
-
-          {/* EVENTS */}
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-7
-            "
-          >
-
-            <p className="text-gray-400 mb-3">
-              Tổng Sự kiện
-            </p>
-
-            <h2
-              className="
-                text-5xl
-                font-black
-                text-pink-400
-              "
-            >
-              0
-            </h2>
-
-          </div>
-
-          {/* ORDERS */}
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-7
-            "
-          >
-
-            <p className="text-gray-400 mb-3">
-              Tổng Đơn hàng
-            </p>
-
-            <h2
-              className="
-                text-5xl
-                font-black
-                text-green-400
-              "
-            >
-              0
-            </h2>
-
-          </div>
-
-          {/* REVENUE */}
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-7
-            "
-          >
-
-            <p className="text-gray-400 mb-3">
-              Doanh thu
-            </p>
-
-            <h2
-              className="
-                text-5xl
-                font-black
-                text-red-400
-              "
-            >
-              0đ
-            </h2>
-
-          </div>
-
-        </div>
-
-        {/* RECENT SECTION */}
-        <div className="grid md:grid-cols-2 gap-6">
-
-          {/* NEW USERS */}
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-7
-            "
-          >
-
+            {/* USERS */}
             <div
               className="
-                flex
-                items-center
-                justify-between
-                mb-6
+                bg-[#0B1220]
+                border
+                border-gray-800
+                rounded-3xl
+                p-8
               "
             >
 
-              <h3 className="text-2xl font-bold">
-                User mới
-              </h3>
+              <p className="text-gray-400 mb-3">
+                Tổng Users
+              </p>
 
-              <button className="text-red-400 text-sm">
-                Xem tất cả
-              </button>
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-sky-400
+                "
+              >
+                0
+              </h2>
 
             </div>
 
-            <div className="space-y-4">
+            {/* EVENTS */}
+            <div
+              className="
+                bg-[#0B1220]
+                border
+                border-gray-800
+                rounded-3xl
+                p-8
+              "
+            >
 
-              {[1, 2, 3].map((item) => (
+              <p className="text-gray-400 mb-3">
+                Tổng Sự kiện
+              </p>
 
-                <div
-                  key={item}
-                  className="
-                    flex
-                    items-center
-                    justify-between
-                    bg-[#111827]
-                    rounded-2xl
-                    px-4
-                    py-4
-                  "
-                >
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-pink-400
+                "
+              >
+                0
+              </h2>
 
-                  <div>
+            </div>
 
-                    <p className="font-semibold">
-                      User {item}
-                    </p>
+            {/* ORDERS */}
+            <div
+              className="
+                bg-[#0B1220]
+                border
+                border-gray-800
+                rounded-3xl
+                p-8
+              "
+            >
 
-                    <p className="text-sm text-gray-400">
-                      user{item}@gmail.com
-                    </p>
+              <p className="text-gray-400 mb-3">
+                Tổng Đơn hàng
+              </p>
 
-                  </div>
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-green-400
+                "
+              >
+                0
+              </h2>
 
-                  <span
-                    className="
-                      px-3
-                      py-1
-                      rounded-full
-                      bg-green-500/20
-                      text-green-400
-                      text-sm
-                    "
-                  >
-                    ACTIVE
-                  </span>
+            </div>
 
-                </div>
+            {/* REVENUE */}
+            <div
+              className="
+                bg-[#0B1220]
+                border
+                border-gray-800
+                rounded-3xl
+                p-8
+              "
+            >
 
-              ))}
+              <p className="text-gray-400 mb-3">
+                Doanh thu
+              </p>
+
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-red-400
+                "
+              >
+                0đ
+              </h2>
 
             </div>
 
           </div>
 
-          {/* NEW EVENTS */}
+          {/* EMPTY STATE */}
           <div
             className="
+              mt-10
               bg-[#0B1220]
               border
               border-gray-800
               rounded-3xl
-              p-7
+              p-16
+              text-center
             "
           >
 
-            <div
+            <h2
               className="
-                flex
-                items-center
-                justify-between
-                mb-6
+                text-4xl
+                font-black
+                mb-4
               "
             >
+              HOMIETICKET ADMIN
+            </h2>
 
-              <h3 className="text-2xl font-bold">
-                Event mới
-              </h3>
-
-              <button className="text-red-400 text-sm">
-                Xem tất cả
-              </button>
-
-            </div>
-
-            <div className="space-y-4">
-
-              {[1, 2, 3].map((item) => (
-
-                <div
-                  key={item}
-                  className="
-                    flex
-                    items-center
-                    justify-between
-                    bg-[#111827]
-                    rounded-2xl
-                    px-4
-                    py-4
-                  "
-                >
-
-                  <div>
-
-                    <p className="font-semibold">
-                      Event {item}
-                    </p>
-
-                    <p className="text-sm text-gray-400">
-                      Organizer {item}
-                    </p>
-
-                  </div>
-
-                  <span
-                    className="
-                      px-3
-                      py-1
-                      rounded-full
-                      bg-yellow-500/20
-                      text-yellow-400
-                      text-sm
-                    "
-                  >
-                    PENDING
-                  </span>
-
-                </div>
-
-              ))}
-
-            </div>
+            <p className="text-gray-400 text-lg">
+              Quản lý toàn bộ hệ thống sự kiện,
+              organizer, user và doanh thu.
+            </p>
 
           </div>
 
