@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router-dom";
 
-export default function HeroSection() {
+export default function HeroSection({ event }) {
 
   const navigate = useNavigate();
+
+  // NO EVENT
+  if (!event) return null;
 
   return (
 
@@ -20,8 +23,11 @@ export default function HeroSection() {
 
         {/* IMAGE */}
         <img
-          src="https://images.unsplash.com/photo-1501386761578-eac5c94b800a"
-          alt="event"
+          src={
+            event.image_url ||
+            "https://images.unsplash.com/photo-1501386761578-eac5c94b800a"
+          }
+          alt={event.title}
           className="
             w-full
             h-full
@@ -54,10 +60,12 @@ export default function HeroSection() {
           "
         >
 
+          {/* LABEL */}
           <p className="text-sky-400 font-semibold mb-3">
             SỰ KIỆN NỔI BẬT
           </p>
 
+          {/* TITLE */}
           <h1
             className="
               text-5xl
@@ -66,25 +74,30 @@ export default function HeroSection() {
               leading-tight
             "
           >
-            SKY WAVE MUSIC FESTIVAL 2026
+            {event.title}
           </h1>
 
+          {/* DESCRIPTION */}
           <p
             className="
               mt-4
               text-gray-300
               max-w-xl
               text-lg
+              line-clamp-3
             "
           >
-            Đại nhạc hội với những nghệ sĩ hàng đầu,
-            trải nghiệm âm nhạc và ánh sáng bùng nổ.
+            {event.description}
           </p>
 
+          {/* BUTTONS */}
           <div className="flex items-center gap-4 mt-8">
 
+            {/* DETAIL */}
             <button
-              onClick={() => navigate("/events/1")}
+              onClick={() =>
+                navigate(`/events/${event.id}`)
+              }
               className="
                 px-7
                 py-3
@@ -99,8 +112,11 @@ export default function HeroSection() {
               Xem chi tiết
             </button>
 
+            {/* BOOK */}
             <button
-              onClick={() => navigate("/events/1/seats")}
+              onClick={() =>
+                navigate(`/events/${event.id}/seats`)
+              }
               className="
                 px-7
                 py-3

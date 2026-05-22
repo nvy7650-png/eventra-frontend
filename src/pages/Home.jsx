@@ -9,7 +9,7 @@ import Footer from "../components/Footer";
 export default function Home() {
 
   const [events, setEvents] = useState([]);
-  const [featuredEvents, setFeaturedEvents] = useState([]);
+
   const [latestEvents, setLatestEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
 
@@ -22,9 +22,6 @@ export default function Home() {
       .then((data) => {
 
         setEvents(data);
-
-        // FEATURED
-        setFeaturedEvents(data.slice(0, 3));
 
         // NEWEST EVENTS
         const newest = [...data]
@@ -39,6 +36,10 @@ export default function Home() {
 
         // UPCOMING EVENTS
         const upcoming = [...data]
+          .filter(
+            (event) =>
+              new Date(event.start_date) >= new Date()
+          )
           .sort(
             (a, b) =>
               new Date(a.start_date) -
@@ -57,9 +58,20 @@ export default function Home() {
   if (loading) {
 
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
+
+      <div
+        className="
+          min-h-screen
+          flex
+          items-center
+          justify-center
+          bg-gray-900
+          text-white
+        "
+      >
         Loading...
       </div>
+
     );
 
   }
@@ -72,43 +84,35 @@ export default function Home() {
 
       <CategoryBar />
 
-      <HeroSection />
-
-      {/* FEATURED EVENTS */}
-      <section className="max-w-6xl mx-auto px-6 pb-10">
-
-        <h3 className="text-xl font-bold text-sky-300 mb-4">
-          Sự kiện nổi bật
-        </h3>
-
-        <div className="grid md:grid-cols-3 gap-6">
-
-          {featuredEvents.map((event) => (
-            <EventCard
-              key={event.id}
-              event={event}
-            />
-          ))}
-
-        </div>
-
-      </section>
+      {/* HERO */}
+      <HeroSection
+        event={upcomingEvents[0]}
+      />
 
       {/* NEWEST EVENTS */}
       <section className="max-w-6xl mx-auto px-6 pb-10">
 
-        <h3 className="text-xl font-bold text-sky-300 mb-4">
+        <h3
+          className="
+            text-2xl
+            font-bold
+            text-white
+            mb-5
+          "
+        >
           Sự kiện mới nhất
         </h3>
 
         <div className="grid md:grid-cols-4 gap-5">
 
           {latestEvents.map((event) => (
+
             <EventCard
               key={event.id}
               event={event}
               small
             />
+
           ))}
 
         </div>
@@ -118,18 +122,27 @@ export default function Home() {
       {/* UPCOMING EVENTS */}
       <section className="max-w-6xl mx-auto px-6 pb-10">
 
-        <h3 className="text-xl font-bold text-sky-300 mb-4">
+        <h3
+          className="
+            text-2xl
+            font-bold
+            text-white
+            mb-5
+          "
+        >
           Sự kiện sắp diễn ra
         </h3>
 
         <div className="grid md:grid-cols-4 gap-5">
 
           {upcomingEvents.map((event) => (
+
             <EventCard
               key={event.id}
               event={event}
               small
             />
+
           ))}
 
         </div>
@@ -139,18 +152,27 @@ export default function Home() {
       {/* ALL EVENTS */}
       <section className="max-w-6xl mx-auto px-6 pb-20">
 
-        <h3 className="text-xl font-bold text-sky-300 mb-4">
+        <h3
+          className="
+            text-2xl
+            font-bold
+            text-white
+            mb-5
+          "
+        >
           Tất cả sự kiện
         </h3>
 
         <div className="grid md:grid-cols-4 gap-5">
 
           {events.map((event) => (
+
             <EventCard
               key={event.id}
               event={event}
               small
             />
+
           ))}
 
         </div>
