@@ -9,7 +9,6 @@ import Footer from "../components/Footer";
 export default function Home() {
 
   const [events, setEvents] = useState([]);
-
   const [featuredEvents, setFeaturedEvents] = useState([]);
   const [latestEvents, setLatestEvents] = useState([]);
   const [upcomingEvents, setUpcomingEvents] = useState([]);
@@ -18,9 +17,7 @@ export default function Home() {
 
   useEffect(() => {
 
-    fetch(
-      "https://homieticket-backend.onrender.com/api/events"
-    )
+    fetch(`${import.meta.env.VITE_API_URL}/api/events`)
       .then((res) => res.json())
       .then((data) => {
 
@@ -29,23 +26,27 @@ export default function Home() {
         // FEATURED
         setFeaturedEvents(data.slice(0, 3));
 
-        // NEWEST
-        const newest = [...data].sort(
-          (a, b) =>
-            new Date(b.created_at) -
-            new Date(a.created_at)
-        );
+        // NEWEST EVENTS
+        const newest = [...data]
+          .sort(
+            (a, b) =>
+              new Date(b.created_at) -
+              new Date(a.created_at)
+          )
+          .slice(0, 4);
 
-        setLatestEvents(newest.slice(0, 4));
+        setLatestEvents(newest);
 
-        // UPCOMING
-        const upcoming = [...data].sort(
-          (a, b) =>
-            new Date(a.event_date) -
-            new Date(b.event_date)
-        );
+        // UPCOMING EVENTS
+        const upcoming = [...data]
+          .sort(
+            (a, b) =>
+              new Date(a.event_date) -
+              new Date(b.event_date)
+          )
+          .slice(0, 4);
 
-        setUpcomingEvents(upcoming.slice(0, 4));
+        setUpcomingEvents(upcoming);
 
       })
       .catch((err) => console.log(err))
@@ -56,27 +57,16 @@ export default function Home() {
   if (loading) {
 
     return (
-
-      <div
-        className="
-          min-h-screen
-          flex
-          items-center
-          justify-center
-          bg-gray-950
-          text-white
-        "
-      >
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white">
         Loading...
       </div>
-
     );
 
   }
 
   return (
 
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-gray-900 text-white">
 
       <Navbar />
 
@@ -84,127 +74,88 @@ export default function Home() {
 
       <HeroSection />
 
-      {/* FEATURED */}
-<section className="max-w-7xl mx-auto px-6 py-10">
+      {/* FEATURED EVENTS */}
+      <section className="max-w-6xl mx-auto px-6 pb-10">
 
-  <h2
-    className="
-      text-3xl
-      font-bold
-      text-white
-      mb-6
-    "
-  >
-    Sự kiện nổi bật
-  </h2>
+        <h3 className="text-xl font-bold text-sky-300 mb-4">
+          Sự kiện nổi bật
+        </h3>
 
-  <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid md:grid-cols-3 gap-6">
 
-    {featuredEvents.map((event) => (
+          {featuredEvents.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+            />
+          ))}
 
-      <EventCard
-        key={event.id}
-        event={event}
-      />
+        </div>
 
-    ))}
+      </section>
 
-  </div>
+      {/* NEWEST EVENTS */}
+      <section className="max-w-6xl mx-auto px-6 pb-10">
 
-</section>
+        <h3 className="text-xl font-bold text-sky-300 mb-4">
+          Sự kiện mới nhất
+        </h3>
 
+        <div className="grid md:grid-cols-4 gap-5">
 
-{/* NEWEST */}
-<section className="max-w-7xl mx-auto px-6 pb-10">
+          {latestEvents.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              small
+            />
+          ))}
 
-  <h2
-    className="
-      text-3xl
-      font-bold
-      text-white
-      mb-6
-    "
-  >
-    Sự kiện mới nhất
-  </h2>
+        </div>
 
-  <div className="grid md:grid-cols-4 gap-5">
+      </section>
 
-    {latestEvents.map((event) => (
+      {/* UPCOMING EVENTS */}
+      <section className="max-w-6xl mx-auto px-6 pb-10">
 
-      <EventCard
-        key={event.id}
-        event={event}
-        small
-      />
+        <h3 className="text-xl font-bold text-sky-300 mb-4">
+          Sự kiện sắp diễn ra
+        </h3>
 
-    ))}
+        <div className="grid md:grid-cols-4 gap-5">
 
-  </div>
+          {upcomingEvents.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              small
+            />
+          ))}
 
-</section>
+        </div>
 
+      </section>
 
-{/* UPCOMING */}
-<section className="max-w-7xl mx-auto px-6 pb-10">
+      {/* ALL EVENTS */}
+      <section className="max-w-6xl mx-auto px-6 pb-20">
 
-  <h2
-    className="
-      text-3xl
-      font-bold
-      text-white
-      mb-6
-    "
-  >
-    Sự kiện sắp diễn ra
-  </h2>
+        <h3 className="text-xl font-bold text-sky-300 mb-4">
+          Tất cả sự kiện
+        </h3>
 
-  <div className="grid md:grid-cols-4 gap-5">
+        <div className="grid md:grid-cols-4 gap-5">
 
-    {upcomingEvents.map((event) => (
+          {events.map((event) => (
+            <EventCard
+              key={event.id}
+              event={event}
+              small
+            />
+          ))}
 
-      <EventCard
-        key={event.id}
-        event={event}
-        small
-      />
+        </div>
 
-    ))}
-
-  </div>
-
-</section>
-
-
-{/* ALL EVENTS */}
-<section className="max-w-7xl mx-auto px-6 pb-20">
-
-  <h2
-    className="
-      text-3xl
-      font-bold
-      text-white
-      mb-6
-    "
-  >
-    Tất cả sự kiện
-  </h2>
-
-  <div className="grid md:grid-cols-4 gap-5">
-
-    {events.map((event) => (
-
-      <EventCard
-        key={event.id}
-        event={event}
-        small
-      />
-
-    ))}
-
-  </div>
-
-</section>
+      </section>
 
       <Footer />
 
