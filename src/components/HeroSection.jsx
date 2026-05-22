@@ -9,15 +9,16 @@ export default function HeroSection({ event }) {
 
   return (
 
-    <section className="max-w-6xl mx-auto px-6 py-8">
+    <section className="max-w-7xl mx-auto px-6 py-8">
 
       <div
         className="
           relative
           overflow-hidden
           rounded-3xl
-          h-[420px]
+          h-[460px]
           bg-black
+          border border-gray-800
         "
       >
 
@@ -32,19 +33,18 @@ export default function HeroSection({ event }) {
             w-full
             h-full
             object-cover
-            opacity-70
           "
         />
 
-        {/* OVERLAY */}
+        {/* DARK OVERLAY */}
         <div
           className="
             absolute
             inset-0
             bg-gradient-to-r
             from-black
-            via-black/60
-            to-transparent
+            via-black/70
+            to-black/20
           "
         />
 
@@ -54,52 +54,77 @@ export default function HeroSection({ event }) {
             absolute
             inset-0
             flex
-            flex-col
-            justify-center
-            px-10
+            items-end
           "
         >
 
-          {/* LABEL */}
-          <p className="text-sky-400 font-semibold mb-3">
-            SỰ KIỆN NỔI BẬT
-          </p>
+          <div className="p-10 max-w-3xl">
 
-          {/* TITLE */}
-          <h1
-            className="
-              text-5xl
-              font-black
-              max-w-2xl
-              leading-tight
-            "
-          >
-            {event.title}
-          </h1>
+            {/* LABEL */}
+            <p
+              className="
+                inline-block
+                px-4
+                py-1
+                rounded-full
+                bg-sky-500/20
+                text-sky-300
+                text-sm
+                font-semibold
+                tracking-wide
+                mb-5
+              "
+            >
+              SỰ KIỆN NỔI BẬT
+            </p>
 
-          {/* DESCRIPTION */}
-          <p
-            className="
-              mt-4
-              text-gray-300
-              max-w-xl
-              text-lg
-              line-clamp-3
-            "
-          >
-            {event.description}
-          </p>
+            {/* TITLE */}
+            <h1
+              className="
+                text-5xl
+                font-black
+                leading-tight
+                text-white
+              "
+            >
+              {event.title}
+            </h1>
 
-          {/* BUTTONS */}
-          <div className="flex items-center gap-4 mt-8">
+            {/* DESCRIPTION */}
+            <p
+              className="
+                mt-5
+                text-gray-300
+                text-lg
+                leading-relaxed
+                line-clamp-3
+              "
+            >
+              {event.description}
+            </p>
 
-            {/* DETAIL */}
+            {/* INFO */}
+            <div className="flex items-center gap-6 mt-6 text-sm text-gray-300">
+
+              <span>
+                📍 {event.location}
+              </span>
+
+              <span>
+                📅{" "}
+                {new Date(event.start_date).toLocaleDateString("vi-VN")}
+              </span>
+
+            </div>
+
+            {/* BUTTON */}
             <button
               onClick={() =>
                 navigate(`/events/${event.id}`)
               }
               className="
-                px-7
+                mt-8
+                px-8
                 py-3
                 rounded-2xl
                 bg-sky-500
@@ -107,29 +132,10 @@ export default function HeroSection({ event }) {
                 text-black
                 font-bold
                 transition
+                shadow-lg
               "
             >
               Xem chi tiết
-            </button>
-
-            {/* BOOK */}
-            <button
-              onClick={() =>
-                navigate(`/events/${event.id}/seats`)
-              }
-              className="
-                px-7
-                py-3
-                rounded-2xl
-                border
-                border-white/20
-                bg-white/10
-                hover:bg-white/20
-                font-semibold
-                transition
-              "
-            >
-              Đặt vé ngay
             </button>
 
           </div>
