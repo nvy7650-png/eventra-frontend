@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 
 export default function Navbar() {
@@ -25,9 +26,19 @@ export default function Navbar() {
 
   return (
 
-    <header className="border-b border-gray-700 bg-gray-900">
+    <header className="border-b border-gray-800 bg-[#081120] sticky top-0 z-50">
 
-      <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div
+        className="
+          max-w-6xl
+          mx-auto
+          px-6
+          py-4
+          flex
+          items-center
+          justify-between
+        "
+      >
 
         {/* BRAND */}
         <div
@@ -35,11 +46,18 @@ export default function Navbar() {
           className="cursor-pointer"
         >
 
-          <h1 className="text-2xl font-bold text-sky-300 tracking-widest">
+          <h1
+            className="
+              text-4xl
+              font-black
+              tracking-widest
+              text-sky-400
+            "
+          >
             HOMIETICKET
           </h1>
 
-          <p className="text-xs text-gray-400">
+          <p className="text-sm text-gray-400">
             Event & Ticket Marketplace
           </p>
 
@@ -52,14 +70,16 @@ export default function Navbar() {
             placeholder="Tìm sự kiện..."
             className="
               w-full
-              px-4
-              py-2
-              rounded-lg
-              bg-gray-800
-              border border-gray-700
+              px-5
+              py-3
+              rounded-2xl
+              bg-[#111827]
+              border
+              border-gray-700
               text-white
+              placeholder:text-gray-500
               focus:outline-none
-              focus:border-sky-300
+              focus:border-sky-400
             "
           />
 
@@ -76,12 +96,14 @@ export default function Navbar() {
               <button
                 onClick={() => navigate("/login")}
                 className="
-                  px-4 py-2
-                  text-sm
-                  rounded-lg
-                  border border-gray-600
+                  px-5
+                  py-3
+                  rounded-2xl
+                  border
+                  border-gray-700
                   text-white
-                  hover:bg-gray-800
+                  hover:bg-[#111827]
+                  transition
                 "
               >
                 Đăng nhập
@@ -91,13 +113,14 @@ export default function Navbar() {
               <button
                 onClick={() => navigate("/register")}
                 className="
-                  px-4 py-2
-                  text-sm
-                  rounded-lg
-                  bg-sky-300
-                  hover:bg-sky-400
+                  px-5
+                  py-3
+                  rounded-2xl
+                  bg-sky-400
+                  hover:bg-sky-300
                   text-black
-                  font-semibold
+                  font-bold
+                  transition
                 "
               >
                 Đăng ký
@@ -105,15 +128,18 @@ export default function Navbar() {
 
               {/* ORGANIZER */}
               <button
-                onClick={() => navigate("/organizerregister")}
+                onClick={() =>
+                  navigate("/organizerregister")
+                }
                 className="
-                  px-4 py-2
-                  text-sm
-                  rounded-lg
+                  px-5
+                  py-3
+                  rounded-2xl
                   bg-purple-500
                   hover:bg-purple-400
                   text-white
-                  font-semibold
+                  font-bold
+                  transition
                 "
               >
                 Đăng ký nhà tổ chức
@@ -127,23 +153,31 @@ export default function Navbar() {
 
               {/* ACCOUNT BUTTON */}
               <button
-                onClick={() => setShowMenu(!showMenu)}
+                onClick={() =>
+                  setShowMenu(!showMenu)
+                }
                 className="
                   flex
                   items-center
                   gap-3
-                  px-4
-                  py-2
-                  rounded-xl
-                  bg-gray-800
-                  hover:bg-gray-700
+                  px-5
+                  py-3
+                  rounded-2xl
+                  bg-[#111827]
+                  hover:bg-[#1F2937]
                   transition
                 "
               >
 
                 <div className="text-left">
 
-                  <p className="text-sm font-semibold text-white">
+                  <p
+                    className="
+                      text-sm
+                      font-bold
+                      text-white
+                    "
+                  >
                     {user.name}
                   </p>
 
@@ -163,52 +197,93 @@ export default function Navbar() {
                     absolute
                     right-0
                     mt-3
-                    w-56
-                    bg-gray-900
-                    border
-                    border-gray-700
+                    w-64
                     rounded-2xl
+                    bg-[#0B1220]
+                    border
+                    border-gray-800
                     shadow-2xl
                     overflow-hidden
                     z-50
                   "
                 >
 
-                  {/* ACCOUNT */}
-                  <button
-                    onClick={() => navigate("/profile")}
-                    className="
-                      w-full
-                      text-left
-                      px-5
-                      py-4
-                      hover:bg-gray-800
-                      text-white
-                      transition
-                    "
-                  >
-                    Tài khoản của tôi
-                  </button>
-
-                  {/* DASHBOARD */}
-                  {user.role === "ORGANIZER" && (
+                  {/* DASHBOARD ADMIN */}
+                  {user.role === "ADMIN" && (
 
                     <button
-                      onClick={() => navigate("/organizer/dashboard")}
+                      onClick={() => {
+
+                        setShowMenu(false);
+
+                        navigate("/admin/dashboard");
+
+                      }}
                       className="
                         w-full
                         text-left
                         px-5
                         py-4
-                        hover:bg-gray-800
-                        text-white
+                        hover:bg-[#111827]
                         transition
+                        text-white
+                        font-medium
+                      "
+                    >
+                      Admin Dashboard
+                    </button>
+
+                  )}
+
+                  {/* DASHBOARD ORGANIZER */}
+                  {user.role === "ORGANIZER" && (
+
+                    <button
+                      onClick={() => {
+
+                        setShowMenu(false);
+
+                        navigate("/organizer/dashboard");
+
+                      }}
+                      className="
+                        w-full
+                        text-left
+                        px-5
+                        py-4
+                        hover:bg-[#111827]
+                        transition
+                        text-white
+                        font-medium
                       "
                     >
                       Organizer Dashboard
                     </button>
 
                   )}
+
+                  {/* ACCOUNT */}
+                  <button
+                    onClick={() => {
+
+                      setShowMenu(false);
+
+                      navigate("/");
+
+                    }}
+                    className="
+                      w-full
+                      text-left
+                      px-5
+                      py-4
+                      hover:bg-[#111827]
+                      transition
+                      text-white
+                      font-medium
+                    "
+                  >
+                    Tài khoản của tôi
+                  </button>
 
                   {/* LOGOUT */}
                   <button
@@ -218,10 +293,10 @@ export default function Navbar() {
                       text-left
                       px-5
                       py-4
-                      hover:bg-red-500
-                      text-red-400
-                      hover:text-white
+                      hover:bg-red-500/10
                       transition
+                      text-red-400
+                      font-medium
                     "
                   >
                     Đăng xuất
