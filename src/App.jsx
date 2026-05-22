@@ -13,6 +13,7 @@ import OrganizerRegister from "./pages/OrganizerRegister";
 
 import OrganizerDashboard from "./pages/OrganizerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
+import UserDashboard from "./pages/UserDashboard";
 
 function App() {
 
