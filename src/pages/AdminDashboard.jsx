@@ -8,6 +8,7 @@ export default function AdminDashboard() {
     localStorage.getItem("user")
   );
 
+  // LOGOUT
   const handleLogout = () => {
 
     localStorage.removeItem("user");
@@ -18,6 +19,16 @@ export default function AdminDashboard() {
 
   };
 
+  const menuItems = [
+    "Dashboard",
+    "Quản lý tài khoản",
+    "Quản lý sự kiện",
+    "Quản lý đơn hàng",
+    "Quản lý danh mục",
+    "Doanh thu & thống kê",
+    "Cài đặt hệ thống",
+  ];
+
   return (
 
     <div className="flex min-h-screen bg-[#050816] text-white">
@@ -25,14 +36,14 @@ export default function AdminDashboard() {
       {/* SIDEBAR */}
       <aside
         className="
-          w-[280px]
+          w-[300px]
           bg-black
           border-r
           border-gray-800
-          p-6
           flex
           flex-col
           justify-between
+          p-6
         "
       >
 
@@ -46,63 +57,95 @@ export default function AdminDashboard() {
                 text-4xl
                 font-black
                 text-red-500
+                tracking-wide
               "
             >
               HOMIETICKET
             </h1>
 
-            <p className="text-gray-500">
+            <p className="text-gray-500 mt-1">
               Admin Center
             </p>
 
           </div>
 
-          {/* USER */}
+          {/* ADMIN INFO */}
           <div
             className="
               bg-[#0B1220]
               border
               border-gray-800
-              rounded-2xl
-              p-4
+              rounded-3xl
+              p-5
               mb-8
             "
           >
 
-            <p className="text-gray-400 text-sm">
+            <p className="text-sm text-gray-400">
               Administrator
             </p>
 
-            <h3 className="font-bold text-lg">
+            <h2
+              className="
+                text-xl
+                font-bold
+                mt-1
+              "
+            >
               {user?.name}
-            </h3>
+            </h2>
+
+            <div
+              className="
+                mt-4
+                inline-flex
+                items-center
+                gap-2
+                px-3
+                py-1
+                rounded-full
+                bg-red-500/20
+                text-red-400
+                text-sm
+                font-medium
+              "
+            >
+              ● System Admin
+            </div>
 
           </div>
 
           {/* MENU */}
           <div className="space-y-3">
 
-            {[
-              "Dashboard",
-              "Quản lý tài khoản",
-              "Quản lý sự kiện",
-              "Quản lý đơn hàng",
-              "Doanh thu & thống kê",
-              "Quản lý danh mục",
-            ].map((item) => (
+            {menuItems.map((item, index) => (
 
               <button
                 key={item}
-                className="
+                className={`
                   w-full
                   text-left
-                  px-4
+                  px-5
                   py-4
                   rounded-2xl
-                  bg-[#0B1220]
-                  hover:bg-[#111827]
                   transition
-                "
+                  font-medium
+                  ${
+                    index === 0
+                      ? `
+                        bg-red-500
+                        text-white
+                        shadow-lg
+                        shadow-red-500/20
+                      `
+                      : `
+                        bg-[#0B1220]
+                        border
+                        border-gray-800
+                        hover:bg-[#111827]
+                      `
+                  }
+                `}
               >
                 {item}
               </button>
@@ -122,6 +165,7 @@ export default function AdminDashboard() {
             rounded-2xl
             bg-red-500
             hover:bg-red-400
+            text-white
             font-bold
             transition
           "
@@ -131,9 +175,10 @@ export default function AdminDashboard() {
 
       </aside>
 
-      {/* CONTENT */}
+      {/* MAIN */}
       <main className="flex-1 p-10">
 
+        {/* TOPBAR */}
         <div
           className="
             flex
@@ -147,15 +192,16 @@ export default function AdminDashboard() {
 
             <h1
               className="
-                text-4xl
+                text-5xl
                 font-black
+                leading-tight
               "
             >
               Admin Dashboard
             </h1>
 
-            <p className="text-gray-400 mt-2">
-              Quản trị hệ thống HOMIETICKET
+            <p className="text-gray-400 mt-3 text-lg">
+              Quản trị toàn bộ hệ thống HOMIETICKET
             </p>
 
           </div>
@@ -163,13 +209,14 @@ export default function AdminDashboard() {
           <button
             onClick={() => navigate("/")}
             className="
-              px-5
+              px-6
               py-3
               rounded-2xl
               bg-[#0B1220]
               border
               border-gray-700
               hover:bg-[#111827]
+              transition
             "
           >
             Về trang chủ
@@ -178,43 +225,280 @@ export default function AdminDashboard() {
         </div>
 
         {/* STATS */}
-        <div className="grid md:grid-cols-4 gap-6">
+        <div className="grid md:grid-cols-4 gap-6 mb-10">
 
-          {[
-            "Users",
-            "Events",
-            "Orders",
-            "Revenue",
-          ].map((item) => (
+          {/* USERS */}
+          <div
+            className="
+              bg-[#0B1220]
+              border
+              border-gray-800
+              rounded-3xl
+              p-7
+            "
+          >
+
+            <p className="text-gray-400 mb-3">
+              Tổng Users
+            </p>
+
+            <h2
+              className="
+                text-5xl
+                font-black
+                text-sky-400
+              "
+            >
+              0
+            </h2>
+
+          </div>
+
+          {/* EVENTS */}
+          <div
+            className="
+              bg-[#0B1220]
+              border
+              border-gray-800
+              rounded-3xl
+              p-7
+            "
+          >
+
+            <p className="text-gray-400 mb-3">
+              Tổng Sự kiện
+            </p>
+
+            <h2
+              className="
+                text-5xl
+                font-black
+                text-pink-400
+              "
+            >
+              0
+            </h2>
+
+          </div>
+
+          {/* ORDERS */}
+          <div
+            className="
+              bg-[#0B1220]
+              border
+              border-gray-800
+              rounded-3xl
+              p-7
+            "
+          >
+
+            <p className="text-gray-400 mb-3">
+              Tổng Đơn hàng
+            </p>
+
+            <h2
+              className="
+                text-5xl
+                font-black
+                text-green-400
+              "
+            >
+              0
+            </h2>
+
+          </div>
+
+          {/* REVENUE */}
+          <div
+            className="
+              bg-[#0B1220]
+              border
+              border-gray-800
+              rounded-3xl
+              p-7
+            "
+          >
+
+            <p className="text-gray-400 mb-3">
+              Doanh thu
+            </p>
+
+            <h2
+              className="
+                text-5xl
+                font-black
+                text-red-400
+              "
+            >
+              0đ
+            </h2>
+
+          </div>
+
+        </div>
+
+        {/* RECENT SECTION */}
+        <div className="grid md:grid-cols-2 gap-6">
+
+          {/* NEW USERS */}
+          <div
+            className="
+              bg-[#0B1220]
+              border
+              border-gray-800
+              rounded-3xl
+              p-7
+            "
+          >
 
             <div
-              key={item}
               className="
-                bg-[#0B1220]
-                border
-                border-gray-800
-                rounded-3xl
-                p-8
+                flex
+                items-center
+                justify-between
+                mb-6
               "
             >
 
-              <p className="text-gray-400 mb-3">
-                {item}
-              </p>
+              <h3 className="text-2xl font-bold">
+                User mới
+              </h3>
 
-              <h2
-                className="
-                  text-5xl
-                  font-black
-                  text-red-400
-                "
-              >
-                0
-              </h2>
+              <button className="text-red-400 text-sm">
+                Xem tất cả
+              </button>
 
             </div>
 
-          ))}
+            <div className="space-y-4">
+
+              {[1, 2, 3].map((item) => (
+
+                <div
+                  key={item}
+                  className="
+                    flex
+                    items-center
+                    justify-between
+                    bg-[#111827]
+                    rounded-2xl
+                    px-4
+                    py-4
+                  "
+                >
+
+                  <div>
+
+                    <p className="font-semibold">
+                      User {item}
+                    </p>
+
+                    <p className="text-sm text-gray-400">
+                      user{item}@gmail.com
+                    </p>
+
+                  </div>
+
+                  <span
+                    className="
+                      px-3
+                      py-1
+                      rounded-full
+                      bg-green-500/20
+                      text-green-400
+                      text-sm
+                    "
+                  >
+                    ACTIVE
+                  </span>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
+
+          {/* NEW EVENTS */}
+          <div
+            className="
+              bg-[#0B1220]
+              border
+              border-gray-800
+              rounded-3xl
+              p-7
+            "
+          >
+
+            <div
+              className="
+                flex
+                items-center
+                justify-between
+                mb-6
+              "
+            >
+
+              <h3 className="text-2xl font-bold">
+                Event mới
+              </h3>
+
+              <button className="text-red-400 text-sm">
+                Xem tất cả
+              </button>
+
+            </div>
+
+            <div className="space-y-4">
+
+              {[1, 2, 3].map((item) => (
+
+                <div
+                  key={item}
+                  className="
+                    flex
+                    items-center
+                    justify-between
+                    bg-[#111827]
+                    rounded-2xl
+                    px-4
+                    py-4
+                  "
+                >
+
+                  <div>
+
+                    <p className="font-semibold">
+                      Event {item}
+                    </p>
+
+                    <p className="text-sm text-gray-400">
+                      Organizer {item}
+                    </p>
+
+                  </div>
+
+                  <span
+                    className="
+                      px-3
+                      py-1
+                      rounded-full
+                      bg-yellow-500/20
+                      text-yellow-400
+                      text-sm
+                    "
+                  >
+                    PENDING
+                  </span>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
 
         </div>
 
