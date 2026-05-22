@@ -85,99 +85,126 @@ export default function Home() {
       <HeroSection />
 
       {/* FEATURED */}
-      <section className="max-w-7xl mx-auto px-6 py-10">
+<section className="max-w-7xl mx-auto px-6 py-10">
 
-        <div className="flex items-center justify-between mb-5">
+  <h2
+    className="
+      text-3xl
+      font-bold
+      text-white
+      mb-6
+    "
+  >
+    Sự kiện nổi bật
+  </h2>
 
-          <h2 className="text-2xl font-bold text-sky-400">
-            🔥 Sự kiện nổi bật
-          </h2>
+  <div className="grid md:grid-cols-3 gap-6">
 
-        </div>
+    {featuredEvents.map((event) => (
 
-        <div className="grid md:grid-cols-3 gap-6">
+      <EventCard
+        key={event.id}
+        event={event}
+      />
 
-          {featuredEvents.map((event) => (
+    ))}
 
-            <EventCard
-              key={event.id}
-              event={event}
-            />
+  </div>
 
-          ))}
+</section>
 
-        </div>
 
-      </section>
+{/* NEWEST */}
+<section className="max-w-7xl mx-auto px-6 pb-10">
 
-      {/* NEWEST */}
-      <section className="max-w-7xl mx-auto px-6 pb-10">
+  <h2
+    className="
+      text-3xl
+      font-bold
+      text-white
+      mb-6
+    "
+  >
+    Sự kiện mới nhất
+  </h2>
 
-        <h2 className="text-2xl font-bold text-green-400 mb-5">
-          🆕 Sự kiện mới nhất
-        </h2>
+  <div className="grid md:grid-cols-4 gap-5">
 
-        <div className="grid md:grid-cols-4 gap-5">
+    {latestEvents.map((event) => (
 
-          {latestEvents.map((event) => (
+      <EventCard
+        key={event.id}
+        event={event}
+        small
+      />
 
-            <EventCard
-              key={event.id}
-              event={event}
-              small
-            />
+    ))}
 
-          ))}
+  </div>
 
-        </div>
+</section>
 
-      </section>
 
-      {/* UPCOMING */}
-      <section className="max-w-7xl mx-auto px-6 pb-10">
+{/* UPCOMING */}
+<section className="max-w-7xl mx-auto px-6 pb-10">
 
-        <h2 className="text-2xl font-bold text-pink-400 mb-5">
-          ⏰ Sự kiện sắp diễn ra
-        </h2>
+  <h2
+    className="
+      text-3xl
+      font-bold
+      text-white
+      mb-6
+    "
+  >
+    Sự kiện sắp diễn ra
+  </h2>
 
-        <div className="grid md:grid-cols-4 gap-5">
+  <div className="grid md:grid-cols-4 gap-5">
 
-          {upcomingEvents.map((event) => (
+    {upcomingEvents.map((event) => (
 
-            <EventCard
-              key={event.id}
-              event={event}
-              small
-            />
+      <EventCard
+        key={event.id}
+        event={event}
+        small
+      />
 
-          ))}
+    ))}
 
-        </div>
+  </div>
 
-      </section>
+</section>
 
-      {/* ALL EVENTS */}
-      <section className="max-w-7xl mx-auto px-6 pb-20">
 
-        <h2 className="text-2xl font-bold text-sky-400 mb-5">
-          📌 Tất cả sự kiện
-        </h2>
+{/* ALL EVENTS */}
+<section className="max-w-7xl mx-auto px-6 pb-20">
 
-        <div className="grid md:grid-cols-4 gap-5">
+  <h2
+    className="
+      text-3xl
+      font-bold
+      text-white
+      mb-6
+    "
+  >
+    Tất cả sự kiện
+  </h2>
 
-          {events.map((event) => (
+  <div className="grid md:grid-cols-4 gap-5">
 
-            <EventCard
-              key={event.id}
-              event={event}
-              small
-            />
+    {events.map((event) => (
 
-          ))}
+      <EventCard
+        key={event.id}
+        event={event}
+        small
+      />
 
-        </div>
+    ))}
 
-      </section>
+  </div>
+
+</section>
 
       <Footer />
 
