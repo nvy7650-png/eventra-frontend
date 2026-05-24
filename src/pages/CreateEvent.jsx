@@ -1,4 +1,9 @@
 import { useState } from "react";
+import {
+  ImagePlus,
+  ChevronRight,
+} from "lucide-react";
+
 import { useNavigate } from "react-router-dom";
 
 export default function CreateEvent() {
@@ -14,9 +19,8 @@ export default function CreateEvent() {
     title: "",
     description: "",
     location: "",
+    event_type: "",
     image_url: "",
-    start_date: "",
-    end_date: "",
 
   });
 
@@ -92,17 +96,10 @@ export default function CreateEvent() {
 
       }
 
-      setMessage(
-        "Tạo sự kiện thành công"
+      // SUCCESS
+      navigate(
+        `/organizer/event/${data.event_id}/setup`
       );
-
-      setTimeout(() => {
-
-        navigate(
-          "/organizer/dashboard"
-        );
-
-      }, 1500);
 
     } catch (err) {
 
@@ -132,31 +129,42 @@ export default function CreateEvent() {
 
       <div
         className="
-          max-w-3xl
+          max-w-4xl
           mx-auto
           bg-[#0B1120]
           border
           border-white/10
           rounded-3xl
-          p-8
+          overflow-hidden
         "
       >
 
-        {/* TITLE */}
-        <div className="mb-8">
+        {/* HEADER */}
+        <div
+          className="
+            px-8
+            py-7
+            border-b
+            border-white/10
+            bg-[#081120]
+          "
+        >
+
+          <p className="text-sky-400 font-semibold mb-2">
+            BƯỚC 1 / 4
+          </p>
 
           <h1
             className="
               text-4xl
               font-black
-              text-sky-400
             "
           >
-            Tạo sự kiện mới
+            Tạo sự kiện
           </h1>
 
           <p className="text-gray-400 mt-2">
-            Tạo sự kiện và bắt đầu bán vé
+            Nhập thông tin cơ bản cho sự kiện
           </p>
 
         </div>
@@ -164,26 +172,33 @@ export default function CreateEvent() {
         {/* FORM */}
         <form
           onSubmit={handleSubmit}
-          className="space-y-5"
+          className="p-8 space-y-6"
         >
 
-          {/* TITLE */}
+          {/* EVENT NAME */}
           <div>
 
-            <label className="text-gray-400 text-sm block mb-2">
-              Tên sự kiện
+            <label
+              className="
+                text-sm
+                text-gray-400
+                block
+                mb-2
+              "
+            >
+              Tên sự kiện *
             </label>
 
             <input
               type="text"
               name="title"
-              placeholder="Nhập tên sự kiện"
+              placeholder="Ví dụ: SKY WAVE FESTIVAL 2026"
               value={formData.title}
               onChange={handleChange}
               className="
                 w-full
                 px-4
-                py-3
+                py-4
                 rounded-2xl
                 bg-[#111827]
                 border
@@ -199,28 +214,35 @@ export default function CreateEvent() {
           {/* DESCRIPTION */}
           <div>
 
-            <label className="text-gray-400 text-sm block mb-2">
+            <label
+              className="
+                text-sm
+                text-gray-400
+                block
+                mb-2
+              "
+            >
               Mô tả sự kiện
             </label>
 
             <textarea
               name="description"
               rows="5"
-              placeholder="Nhập mô tả"
+              placeholder="Nhập mô tả sự kiện..."
               value={formData.description}
               onChange={handleChange}
               className="
                 w-full
                 px-4
-                py-3
+                py-4
                 rounded-2xl
                 bg-[#111827]
                 border
                 border-white/10
                 focus:outline-none
                 focus:border-sky-400
+                resize-none
               "
-              required
             />
 
           </div>
@@ -228,20 +250,27 @@ export default function CreateEvent() {
           {/* LOCATION */}
           <div>
 
-            <label className="text-gray-400 text-sm block mb-2">
-              Địa điểm
+            <label
+              className="
+                text-sm
+                text-gray-400
+                block
+                mb-2
+              "
+            >
+              Địa chỉ chi tiết *
             </label>
 
             <input
               type="text"
               name="location"
-              placeholder="Nhập địa điểm"
+              placeholder="Ví dụ: Nhà thi đấu Phú Thọ, TP.HCM"
               value={formData.location}
               onChange={handleChange}
               className="
                 w-full
                 px-4
-                py-3
+                py-4
                 rounded-2xl
                 bg-[#111827]
                 border
@@ -254,23 +283,94 @@ export default function CreateEvent() {
 
           </div>
 
+          {/* EVENT TYPE */}
+          <div>
+
+            <label
+              className="
+                text-sm
+                text-gray-400
+                block
+                mb-2
+              "
+            >
+              Loại sự kiện *
+            </label>
+
+            <select
+              name="event_type"
+              value={formData.event_type}
+              onChange={handleChange}
+              className="
+                w-full
+                px-4
+                py-4
+                rounded-2xl
+                bg-[#111827]
+                border
+                border-white/10
+                focus:outline-none
+                focus:border-sky-400
+              "
+              required
+            >
+
+              <option value="">
+                Chọn loại sự kiện
+              </option>
+
+              <option value="Concert">
+                Concert
+              </option>
+
+              <option value="Festival">
+                Festival
+              </option>
+
+              <option value="Workshop">
+                Workshop
+              </option>
+
+              <option value="Talkshow">
+                Talkshow
+              </option>
+
+              <option value="Fan Meeting">
+                Fan Meeting
+              </option>
+
+              <option value="Sports">
+                Thể thao
+              </option>
+
+            </select>
+
+          </div>
+
           {/* IMAGE */}
           <div>
 
-            <label className="text-gray-400 text-sm block mb-2">
-              Link ảnh banner
+            <label
+              className="
+                text-sm
+                text-gray-400
+                block
+                mb-2
+              "
+            >
+              Banner sự kiện
             </label>
 
             <input
               type="text"
               name="image_url"
-              placeholder="https://..."
+              placeholder="Dán link hình ảnh..."
               value={formData.image_url}
               onChange={handleChange}
               className="
                 w-full
                 px-4
-                py-3
+                py-4
                 rounded-2xl
                 bg-[#111827]
                 border
@@ -280,64 +380,60 @@ export default function CreateEvent() {
               "
             />
 
-          </div>
+            {/* PREVIEW */}
+            {formData.image_url && (
 
-          {/* DATE */}
-          <div className="grid md:grid-cols-2 gap-5">
-
-            <div>
-
-              <label className="text-gray-400 text-sm block mb-2">
-                Ngày bắt đầu
-              </label>
-
-              <input
-                type="datetime-local"
-                name="start_date"
-                value={formData.start_date}
-                onChange={handleChange}
+              <div
                 className="
-                  w-full
-                  px-4
-                  py-3
+                  mt-4
                   rounded-2xl
-                  bg-[#111827]
+                  overflow-hidden
                   border
                   border-white/10
-                  focus:outline-none
-                  focus:border-sky-400
                 "
-                required
-              />
+              >
 
-            </div>
+                <img
+                  src={formData.image_url}
+                  alt="preview"
+                  className="
+                    w-full
+                    h-64
+                    object-cover
+                  "
+                />
 
-            <div>
+              </div>
 
-              <label className="text-gray-400 text-sm block mb-2">
-                Ngày kết thúc
-              </label>
+            )}
 
-              <input
-                type="datetime-local"
-                name="end_date"
-                value={formData.end_date}
-                onChange={handleChange}
+            {!formData.image_url && (
+
+              <div
                 className="
-                  w-full
-                  px-4
-                  py-3
+                  mt-4
+                  h-52
                   rounded-2xl
-                  bg-[#111827]
                   border
+                  border-dashed
                   border-white/10
-                  focus:outline-none
-                  focus:border-sky-400
+                  flex
+                  flex-col
+                  items-center
+                  justify-center
+                  text-gray-500
                 "
-                required
-              />
+              >
 
-            </div>
+                <ImagePlus size={40} />
+
+                <p className="mt-3">
+                  Preview banner sự kiện
+                </p>
+
+              </div>
+
+            )}
 
           </div>
 
@@ -346,10 +442,10 @@ export default function CreateEvent() {
 
             <div
               className="
-                bg-sky-500/10
+                bg-red-500/10
                 border
-                border-sky-500/30
-                text-sky-400
+                border-red-500/20
+                text-red-400
                 px-4
                 py-3
                 rounded-2xl
@@ -374,12 +470,20 @@ export default function CreateEvent() {
               font-bold
               text-lg
               transition
+              flex
+              items-center
+              justify-center
+              gap-2
             "
           >
 
             {loading
               ? "Đang tạo..."
-              : "Tạo sự kiện"}
+              : "Tiếp tục thiết lập vé"}
+
+            {!loading && (
+              <ChevronRight size={22} />
+            )}
 
           </button>
 
