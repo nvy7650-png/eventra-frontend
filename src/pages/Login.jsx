@@ -191,65 +191,57 @@ if (data.user.role === "ADMIN") {
           </div>
 
           {/* PASSWORD */}
-          <div>
+<div>
 
-            <div
-              className="
-                flex
-                items-center
-                justify-between
-                mb-2
-              "
-            >
+  <label
+    className="
+      text-sm
+      text-gray-400
+      mb-2
+      block
+    "
+  >
+    Mật khẩu
+  </label>
 
-              <label
-                className="
-                  text-sm
-                  text-gray-400
-                "
-              >
-                Mật khẩu
-              </label>
+  <input
+    type="password"
+    name="password"
+    placeholder="Nhập mật khẩu"
+    value={formData.password}
+    onChange={handleChange}
+    className="
+      w-full
+      px-4
+      py-3
+      rounded-2xl
+      bg-[#111827]
+      border
+      border-gray-700
+      text-white
+      placeholder-gray-500
+      focus:outline-none
+      focus:border-sky-400
+      transition
+    "
+    required
+  />
 
-              <button
-                type="button"
-                className="
-                  text-sm
-                  text-sky-400
-                  hover:text-sky-300
-                  transition
-                "
-              >
-                Quên mật khẩu?
-              </button>
+  {/* FORGOT PASSWORD */}
+  <button
+    type="button"
+    className="
+      mt-3
+      text-sm
+      text-sky-400
+      hover:text-sky-300
+      transition
+    "
+  >
+    Quên mật khẩu?
+  </button>
 
-            </div>
-
-            <input
-              type="password"
-              name="password"
-              placeholder="Nhập mật khẩu"
-              value={formData.password}
-              onChange={handleChange}
-              className="
-                w-full
-                px-4
-                py-3
-                rounded-2xl
-                bg-[#111827]
-                border
-                border-gray-700
-                text-white
-                placeholder-gray-500
-                focus:outline-none
-                focus:border-sky-400
-                transition
-              "
-              required
-            />
-
-          </div>
-
+</div>
           {/* ERROR */}
           {error && (
 
