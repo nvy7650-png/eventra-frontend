@@ -7,6 +7,7 @@ import {
   LogOut,
   Plus,
   ChevronRight,
+  BadgePercent,
 } from "lucide-react";
 
 import { useNavigate } from "react-router-dom";
@@ -19,6 +20,7 @@ export default function OrganizerDashboard() {
     localStorage.getItem("user")
   );
 
+  // LOGOUT
   const handleLogout = () => {
 
     localStorage.removeItem("user");
@@ -52,7 +54,14 @@ export default function OrganizerDashboard() {
           {/* LOGO */}
           <div className="mb-10">
 
-            <h1 className="text-3xl font-black text-sky-400 tracking-wide">
+            <h1
+              className="
+                text-3xl
+                font-black
+                text-sky-400
+                tracking-wide
+              "
+            >
               HOMIETICKET
             </h1>
 
@@ -88,6 +97,7 @@ export default function OrganizerDashboard() {
                 justify-center
                 font-bold
                 text-lg
+                text-black
               "
             >
               {user?.name?.charAt(0)}
@@ -110,6 +120,7 @@ export default function OrganizerDashboard() {
           {/* MENU */}
           <div className="space-y-2">
 
+            {/* DASHBOARD */}
             <button
               className="
                 w-full
@@ -128,6 +139,7 @@ export default function OrganizerDashboard() {
               Dashboard
             </button>
 
+            {/* EVENTS */}
             <button
               className="
                 w-full
@@ -145,6 +157,7 @@ export default function OrganizerDashboard() {
               Sự kiện của tôi
             </button>
 
+            {/* TICKETS */}
             <button
               className="
                 w-full
@@ -162,6 +175,25 @@ export default function OrganizerDashboard() {
               Quản lý vé
             </button>
 
+            {/* PROMOTIONS */}
+            <button
+              className="
+                w-full
+                flex
+                items-center
+                gap-3
+                px-4
+                py-3
+                rounded-2xl
+                hover:bg-white/5
+                transition
+              "
+            >
+              <BadgePercent size={20} />
+              Khuyến mãi
+            </button>
+
+            {/* REVENUE */}
             <button
               className="
                 w-full
@@ -179,6 +211,7 @@ export default function OrganizerDashboard() {
               Doanh thu
             </button>
 
+            {/* SETTINGS */}
             <button
               className="
                 w-full
@@ -247,11 +280,12 @@ export default function OrganizerDashboard() {
             </h1>
 
             <p className="text-gray-400 mt-1">
-              Quản lý sự kiện và vé của bạn
+              Quản lý sự kiện và bán vé
             </p>
 
           </div>
 
+          {/* HOME */}
           <button
             onClick={() => navigate("/")}
             className="
@@ -280,7 +314,7 @@ export default function OrganizerDashboard() {
           {/* STATS */}
           <div className="grid lg:grid-cols-3 gap-6">
 
-            {/* CARD */}
+            {/* EVENTS */}
             <div
               className="
                 bg-[#0B1120]
@@ -295,13 +329,19 @@ export default function OrganizerDashboard() {
                 Tổng sự kiện
               </p>
 
-              <h2 className="text-5xl font-black text-sky-400">
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-sky-400
+                "
+              >
                 0
               </h2>
 
             </div>
 
-            {/* CARD */}
+            {/* TICKETS */}
             <div
               className="
                 bg-[#0B1120]
@@ -316,13 +356,19 @@ export default function OrganizerDashboard() {
                 Vé đã bán
               </p>
 
-              <h2 className="text-5xl font-black text-green-400">
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-green-400
+                "
+              >
                 0
               </h2>
 
             </div>
 
-            {/* CARD */}
+            {/* REVENUE */}
             <div
               className="
                 bg-[#0B1120]
@@ -337,7 +383,13 @@ export default function OrganizerDashboard() {
                 Doanh thu
               </p>
 
-              <h2 className="text-5xl font-black text-pink-400">
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-pink-400
+                "
+              >
                 0đ
               </h2>
 
@@ -349,6 +401,11 @@ export default function OrganizerDashboard() {
           <div className="mt-8">
 
             <button
+              onClick={() =>
+                navigate(
+                  "/organizer/create-event"
+                )
+              }
               className="
                 flex
                 items-center
@@ -364,8 +421,11 @@ export default function OrganizerDashboard() {
                 transition
               "
             >
+
               <Plus size={22} />
+
               Tạo sự kiện mới
+
             </button>
 
           </div>

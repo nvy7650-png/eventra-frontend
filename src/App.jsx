@@ -14,6 +14,7 @@ import OrganizerRegister from "./pages/OrganizerRegister";
 import OrganizerDashboard from "./pages/OrganizerDashboard";
 import AdminDashboard from "./pages/AdminDashboard";
 import UserDashboard from "./pages/UserDashboard";
+import CreateEvent from "./pages/CreateEvent";
 
 function App() {
 
@@ -76,6 +77,11 @@ function App() {
           element={<OrganizerRegister />}
         />
 
+        <Route
+  path="/organizer/create-event"
+  element={<CreateEvent />}
+/>
+
         {/* USER DASHBOARD */}
         <Route
           path="/user/dashboard"
@@ -111,6 +117,8 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+
 
       </Routes>
 
