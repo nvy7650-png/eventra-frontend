@@ -1,4 +1,5 @@
 import { useState } from "react";
+
 import {
   ImagePlus,
   ChevronRight,
@@ -20,7 +21,9 @@ export default function CreateEvent() {
     description: "",
     location: "",
     event_type: "",
-    image_url: "",
+
+    image_file: null,
+    image_preview: "",
 
   });
 
@@ -44,6 +47,43 @@ export default function CreateEvent() {
 
   };
 
+  // HANDLE IMAGE
+  const handleImageChange = (e) => {
+
+    const file =
+      e.target.files[0];
+
+    if (!file) return;
+
+    // LIMIT 5MB
+    if (
+      file.size >
+      5 * 1024 * 1024
+    ) {
+
+      setMessage(
+        "Ảnh tối đa 5MB"
+      );
+
+      return;
+
+    }
+
+    setMessage("");
+
+    setFormData({
+
+      ...formData,
+
+      image_file: file,
+
+      image_preview:
+        URL.createObjectURL(file),
+
+    });
+
+  };
+
   // CREATE EVENT
   const handleSubmit = async (e) => {
 
@@ -55,6 +95,46 @@ export default function CreateEvent() {
 
     try {
 
+      const submitData =
+        new FormData();
+
+      submitData.append(
+        "organizer_id",
+        user.id
+      );
+
+      submitData.append(
+        "title",
+        formData.title
+      );
+
+      submitData.append(
+        "description",
+        formData.description
+      );
+
+      submitData.append(
+        "location",
+        formData.location
+      );
+
+      submitData.append(
+        "event_type",
+        formData.event_type
+      );
+
+      // IMAGE
+      if (
+        formData.image_file
+      ) {
+
+        submitData.append(
+          "image",
+          formData.image_file
+        );
+
+      }
+
       const res = await fetch(
 
         `${import.meta.env.VITE_API_URL}/api/events`,
@@ -63,18 +143,7 @@ export default function CreateEvent() {
 
           method: "POST",
 
-          headers: {
-            "Content-Type":
-              "application/json",
-          },
-
-          body: JSON.stringify({
-
-            organizer_id: user.id,
-
-            ...formData,
-
-          }),
+          body: submitData,
 
         }
 
@@ -192,6 +261,7 @@ export default function CreateEvent() {
             <input
               type="text"
               name="title"
+              placeholder="Ví dụ: SKY WAVE FESTIVAL 2026"
               value={formData.title}
               onChange={handleChange}
               className="
@@ -263,6 +333,7 @@ export default function CreateEvent() {
             <input
               type="text"
               name="location"
+              placeholder="Ví dụ: Nhà thi đấu Phú Thọ, TP.HCM"
               value={formData.location}
               onChange={handleChange}
               className="
@@ -359,79 +430,72 @@ export default function CreateEvent() {
               Banner sự kiện
             </label>
 
-            <input
-              type="text"
-              name="image_url"
-              placeholder="Dán link hình ảnh..."
-              value={formData.image_url}
-              onChange={handleChange}
+            {/* UPLOAD AREA */}
+            <label
               className="
-                w-full
-                px-4
-                py-4
-                rounded-2xl
-                bg-[#111827]
-                border
+                h-72
+                rounded-3xl
+                border-2
+                border-dashed
                 border-white/10
-                focus:outline-none
-                focus:border-sky-400
+                hover:border-sky-400
+                transition
+                flex
+                flex-col
+                items-center
+                justify-center
+                cursor-pointer
+                overflow-hidden
+                relative
+                bg-[#111827]
               "
-            />
+            >
 
-            {/* PREVIEW */}
-            {formData.image_url && (
-
-              <div
-                className="
-                  mt-4
-                  rounded-2xl
-                  overflow-hidden
-                  border
-                  border-white/10
-                "
-              >
+              {/* IMAGE PREVIEW */}
+              {formData.image_preview ? (
 
                 <img
-                  src={formData.image_url}
+                  src={formData.image_preview}
                   alt="preview"
                   className="
                     w-full
-                    h-64
+                    h-full
                     object-cover
                   "
                 />
 
-              </div>
+              ) : (
 
-            )}
+                <>
 
-            {!formData.image_url && (
+                  <ImagePlus
+                    size={50}
+                    className="text-gray-500"
+                  />
 
-              <div
-                className="
-                  mt-4
-                  h-52
-                  rounded-2xl
-                  border
-                  border-dashed
-                  border-white/10
-                  flex
-                  flex-col
-                  items-center
-                  justify-center
-                  text-gray-500
-                "
-              >
+                  <p className="mt-4 text-gray-300 font-medium">
+                    Upload banner sự kiện
+                  </p>
 
-                <ImagePlus size={40} />
+                  <p className="text-sm text-gray-500 mt-1">
+                    PNG, JPG • Khuyến nghị 1600x900
+                  </p>
 
-                <p className="mt-3">
-                  Preview banner sự kiện
-                </p>
+                </>
 
-              </div>
+              )}
 
-            )}
+              {/* INPUT FILE */}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={
+                  handleImageChange
+                }
+              />
+
+            </label>
 
           </div>
 
