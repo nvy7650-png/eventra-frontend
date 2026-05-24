@@ -192,7 +192,6 @@ export default function CreateEvent() {
             <input
               type="text"
               name="title"
-              placeholder="Ví dụ: SKY WAVE FESTIVAL 2026"
               value={formData.title}
               onChange={handleChange}
               className="
@@ -264,7 +263,6 @@ export default function CreateEvent() {
             <input
               type="text"
               name="location"
-              placeholder="Ví dụ: Nhà thi đấu Phú Thọ, TP.HCM"
               value={formData.location}
               onChange={handleChange}
               className="
