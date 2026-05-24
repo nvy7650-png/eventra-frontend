@@ -20,7 +20,8 @@ export default function CreateEvent() {
     title: "",
     description: "",
     location: "",
-    event_type: "",
+
+    category_id: "",
 
     image_file: null,
     image_preview: "",
@@ -104,6 +105,11 @@ export default function CreateEvent() {
       );
 
       submitData.append(
+        "category_id",
+        formData.category_id
+      );
+
+      submitData.append(
         "title",
         formData.title
       );
@@ -118,9 +124,10 @@ export default function CreateEvent() {
         formData.location
       );
 
+      // DEFAULT SEAT MODE
       submitData.append(
-        "event_type",
-        formData.event_type
+        "seat_mode",
+        "MANUAL"
       );
 
       // IMAGE
@@ -261,6 +268,7 @@ export default function CreateEvent() {
             <input
               type="text"
               name="title"
+              placeholder="Ví dụ: SKY WAVE FESTIVAL 2026"
               value={formData.title}
               onChange={handleChange}
               className="
@@ -332,6 +340,7 @@ export default function CreateEvent() {
             <input
               type="text"
               name="location"
+              placeholder="Ví dụ: Nhà thi đấu Phú Thọ"
               value={formData.location}
               onChange={handleChange}
               className="
@@ -350,7 +359,7 @@ export default function CreateEvent() {
 
           </div>
 
-          {/* EVENT TYPE */}
+          {/* CATEGORY */}
           <div>
 
             <label
@@ -361,12 +370,12 @@ export default function CreateEvent() {
                 mb-2
               "
             >
-              Loại sự kiện *
+              Danh mục sự kiện *
             </label>
 
             <select
-              name="event_type"
-              value={formData.event_type}
+              name="category_id"
+              value={formData.category_id}
               onChange={handleChange}
               className="
                 w-full
@@ -383,30 +392,22 @@ export default function CreateEvent() {
             >
 
               <option value="">
-                Chọn loại sự kiện
+                Chọn danh mục
               </option>
 
-              <option value="Concert">
-                Concert
+              <option value="1">
+                Âm nhạc
               </option>
 
-              <option value="Festival">
-                Festival
-              </option>
-
-              <option value="Workshop">
+              <option value="2">
                 Workshop
               </option>
 
-              <option value="Talkshow">
-                Talkshow
+              <option value="3">
+                Công nghệ
               </option>
 
-              <option value="Fan Meeting">
-                Fan Meeting
-              </option>
-
-              <option value="Sports">
+              <option value="4">
                 Thể thao
               </option>
 
@@ -449,7 +450,7 @@ export default function CreateEvent() {
               "
             >
 
-              {/* IMAGE PREVIEW */}
+              {/* PREVIEW */}
               {formData.image_preview ? (
 
                 <img
@@ -483,7 +484,6 @@ export default function CreateEvent() {
 
               )}
 
-              {/* INPUT FILE */}
               <input
                 type="file"
                 accept="image/*"
