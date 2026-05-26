@@ -137,7 +137,7 @@ export default function CreateEvent() {
 
     image.onload = () => {
 
-      // CHECK EXACT SIZE
+      // CHECK SIZE
       if (
 
         image.width !==
@@ -282,7 +282,7 @@ export default function CreateEvent() {
         // SUCCESS
         navigate(
 
-          `/organizer/event/${data.event_id}/setup`
+          `/organizer/event/${data.event_id}/tickets`
 
         );
 
@@ -335,21 +335,64 @@ export default function CreateEvent() {
           "
         >
 
-          <p className="text-sky-400 font-semibold mb-2">
-            BƯỚC 1 / 4
-          </p>
-
-          <h1
+          {/* STEP */}
+          <div
             className="
-              text-4xl
-              font-black
+              flex
+              items-center
+              justify-between
+              mb-5
             "
           >
-            Tạo sự kiện
-          </h1>
 
-          <p className="text-gray-400 mt-2">
-            Nhập thông tin cơ bản
+            <div>
+
+              <p
+                className="
+                  text-sky-400
+                  font-semibold
+                "
+              >
+                BƯỚC 1 / 3
+              </p>
+
+              <h1
+                className="
+                  text-4xl
+                  font-black
+                  mt-2
+                "
+              >
+                Thông tin sự kiện
+              </h1>
+
+            </div>
+
+          </div>
+
+          {/* PROGRESS */}
+          <div
+            className="
+              w-full
+              h-2
+              bg-white/10
+              rounded-full
+              overflow-hidden
+            "
+          >
+
+            <div
+              className="
+                h-full
+                w-1/3
+                bg-sky-400
+              "
+            />
+
+          </div>
+
+          <p className="text-gray-400 mt-4">
+            Thiết lập thông tin cơ bản cho sự kiện
           </p>
 
         </div>
@@ -611,15 +654,16 @@ export default function CreateEvent() {
                 </>
 
               )}
-<input
-  ref={fileInputRef}
-  type="file"
-  accept="image/*"
-  className="hidden"
-  onChange={
-    handleImageChange
-  }
-/>
+
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={
+                  handleImageChange
+                }
+              />
 
             </label>
 
@@ -669,7 +713,7 @@ export default function CreateEvent() {
 
             {loading
               ? "Đang tạo..."
-              : "Tiếp tục"}
+              : "Tiếp tục setup vé"}
 
             {!loading && (
               <ChevronRight size={22} />
