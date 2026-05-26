@@ -611,17 +611,15 @@ export default function CreateEvent() {
                 </>
 
               )}
-
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={
-                  handleImageChange
-                }
-                required
-              />
+<input
+  ref={fileInputRef}
+  type="file"
+  accept="image/*"
+  className="hidden"
+  onChange={
+    handleImageChange
+  }
+/>
 
             </label>
 
