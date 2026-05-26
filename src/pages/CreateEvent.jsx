@@ -1,6 +1,7 @@
 import {
   useEffect,
   useState,
+  useRef,
 } from "react";
 
 import {
@@ -16,9 +17,19 @@ export default function CreateEvent() {
 
   const navigate = useNavigate();
 
+  const fileInputRef =
+    useRef(null);
+
   const user = JSON.parse(
     localStorage.getItem("user")
   );
+
+  // REQUIRED SIZE
+  const REQUIRED_WIDTH =
+    1600;
+
+  const REQUIRED_HEIGHT =
+    900;
 
   const [categories,
     setCategories] =
@@ -35,6 +46,7 @@ export default function CreateEvent() {
       category_id: "",
 
       image_file: null,
+
       image_preview: "",
 
     });
@@ -100,7 +112,7 @@ export default function CreateEvent() {
 
     if (!file) return;
 
-    // LIMIT 5MB
+    // LIMIT SIZE
     if (
       file.size >
       5 * 1024 * 1024
@@ -110,22 +122,59 @@ export default function CreateEvent() {
         "Ảnh tối đa 5MB"
       );
 
+      fileInputRef.current.value =
+        "";
+
       return;
 
     }
 
-    setMessage("");
+    const image =
+      new Image();
 
-    setFormData({
+    image.src =
+      URL.createObjectURL(file);
 
-      ...formData,
+    image.onload = () => {
 
-      image_file: file,
+      // CHECK EXACT SIZE
+      if (
 
-      image_preview:
-        URL.createObjectURL(file),
+        image.width !==
+          REQUIRED_WIDTH ||
 
-    });
+        image.height !==
+          REQUIRED_HEIGHT
+
+      ) {
+
+        setMessage(
+
+          `Banner phải đúng ${REQUIRED_WIDTH}x${REQUIRED_HEIGHT}px`
+
+        );
+
+        fileInputRef.current.value =
+          "";
+
+        return;
+
+      }
+
+      setMessage("");
+
+      setFormData({
+
+        ...formData,
+
+        image_file: file,
+
+        image_preview:
+          URL.createObjectURL(file),
+
+      });
+
+    };
 
   };
 
@@ -184,7 +233,6 @@ export default function CreateEvent() {
           formData.location
         );
 
-        // DEFAULT SEAT MODE
         submitData.append(
           "seat_mode",
           "MANUAL"
@@ -329,7 +377,6 @@ export default function CreateEvent() {
             <input
               type="text"
               name="title"
-              placeholder="Tên sự kiện"
               value={formData.title}
               onChange={handleChange}
               className="
@@ -365,7 +412,6 @@ export default function CreateEvent() {
             <textarea
               name="description"
               rows="5"
-              placeholder="Mô tả sự kiện"
               value={
                 formData.description
               }
@@ -403,7 +449,6 @@ export default function CreateEvent() {
             <input
               type="text"
               name="location"
-              placeholder="Địa chỉ sự kiện"
               value={
                 formData.location
               }
@@ -495,11 +540,10 @@ export default function CreateEvent() {
               Banner sự kiện *
             </label>
 
-            {/* UPLOAD */}
             <label
               className="
                 w-full
-                h-[340px]
+                aspect-video
                 rounded-3xl
                 border-2
                 border-dashed
@@ -560,7 +604,8 @@ export default function CreateEvent() {
                       mt-1
                     "
                   >
-                    JPG, PNG • 16:9
+                    Bắt buộc:
+                    1600x900px
                   </p>
 
                 </>
@@ -568,6 +613,7 @@ export default function CreateEvent() {
               )}
 
               <input
+                ref={fileInputRef}
                 type="file"
                 accept="image/*"
                 className="hidden"
