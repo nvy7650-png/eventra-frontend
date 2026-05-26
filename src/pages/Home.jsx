@@ -1,4 +1,11 @@
-import { useEffect, useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import Navbar from "../components/Navbar";
 import CategoryBar from "../components/CategoryBar";
@@ -6,20 +13,29 @@ import HeroSection from "../components/HeroSection";
 import EventCard from "../components/EventCard";
 import Footer from "../components/Footer";
 
-
 export default function Home() {
 
-  const [events, setEvents] = useState([]);
+  const navigate = useNavigate();
 
-  const [latestEvents, setLatestEvents] = useState([]);
-  const [upcomingEvents, setUpcomingEvents] = useState([]);
+  const [events, setEvents] =
+    useState([]);
 
-  const [loading, setLoading] = useState(true);
+  const [latestEvents, setLatestEvents] =
+    useState([]);
+
+  const [upcomingEvents, setUpcomingEvents] =
+    useState([]);
+
+  const [loading, setLoading] =
+    useState(true);
 
   useEffect(() => {
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/events`)
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/events`
+    )
       .then((res) => res.json())
+
       .then((data) => {
 
         // ALL EVENTS
@@ -27,36 +43,50 @@ export default function Home() {
 
         // NEWEST EVENTS
         const newest = [...data]
+
           .sort(
             (a, b) =>
               new Date(b.created_at) -
               new Date(a.created_at)
           )
+
           .slice(0, 4);
 
         setLatestEvents(newest);
 
         // UPCOMING EVENTS
         const upcoming = [...data]
+
           .filter(
             (event) =>
-              new Date(event.start_date) >= new Date()
+
+              event.start_date &&
+
+              new Date(
+                event.start_date
+              ) >= new Date()
           )
+
           .sort(
             (a, b) =>
+
               new Date(a.start_date) -
+
               new Date(b.start_date)
           )
+
           .slice(0, 4);
 
         setUpcomingEvents(upcoming);
 
       })
+
       .catch((err) => {
 
         console.log(err);
 
       })
+
       .finally(() => {
 
         setLoading(false);
@@ -118,11 +148,15 @@ export default function Home() {
       {/* CATEGORY */}
       <CategoryBar />
 
-      {/* HERO SECTION */}
-      {upcomingEvents.length > 0 && (
+      {/* HERO */}
+      {(upcomingEvents.length > 0 ||
+        latestEvents.length > 0) && (
 
         <HeroSection
-          event={upcomingEvents[0]}
+          event={
+            upcomingEvents[0] ||
+            latestEvents[0]
+          }
         />
 
       )}
@@ -236,7 +270,14 @@ export default function Home() {
       {/* ALL EVENTS */}
       <section className="max-w-6xl mx-auto px-6 pb-20">
 
-        <div className="flex items-center justify-between mb-5">
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            mb-5
+          "
+        >
 
           <h3
             className="
@@ -248,9 +289,25 @@ export default function Home() {
             Tất cả sự kiện
           </h3>
 
-          <p className="text-sm text-gray-500">
-            {events.length} sự kiện
-          </p>
+          <button
+            onClick={() =>
+              navigate("/events")
+            }
+            className="
+              px-5
+              py-2
+              rounded-2xl
+              bg-[#0B1220]
+              border
+              border-white/10
+              hover:bg-white/10
+              transition
+              text-sm
+              font-semibold
+            "
+          >
+            Xem thêm
+          </button>
 
         </div>
 
