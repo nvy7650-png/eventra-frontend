@@ -1,11 +1,16 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
 import {
   ImagePlus,
   ChevronRight,
 } from "lucide-react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 export default function CreateEvent() {
 
@@ -15,26 +20,63 @@ export default function CreateEvent() {
     localStorage.getItem("user")
   );
 
-  const [formData, setFormData] = useState({
+  const [categories,
+    setCategories] =
+    useState([]);
 
-    title: "",
-    description: "",
-    location: "",
+  const [formData,
+    setFormData] =
+    useState({
 
-    category_id: "",
+      title: "",
+      description: "",
+      location: "",
 
-    image_file: null,
-    image_preview: "",
+      category_id: "",
 
-  });
+      image_file: null,
+      image_preview: "",
 
-  const [loading, setLoading] =
+    });
+
+  const [loading,
+    setLoading] =
     useState(false);
 
-  const [message, setMessage] =
+  const [message,
+    setMessage] =
     useState("");
 
+  // ============================
+  // GET CATEGORIES
+  // ============================
+  useEffect(() => {
+
+    fetch(
+
+      `${import.meta.env.VITE_API_URL}/api/categories`
+
+    )
+
+      .then((res) => res.json())
+
+      .then((data) => {
+
+        setCategories(data);
+
+      })
+
+      .catch((err) => {
+
+        console.log(err);
+
+      });
+
+  }, []);
+
+  // ============================
   // HANDLE CHANGE
+  // ============================
   const handleChange = (e) => {
 
     setFormData({
@@ -48,7 +90,9 @@ export default function CreateEvent() {
 
   };
 
+  // ============================
   // HANDLE IMAGE
+  // ============================
   const handleImageChange = (e) => {
 
     const file =
@@ -85,111 +129,128 @@ export default function CreateEvent() {
 
   };
 
+  // ============================
   // CREATE EVENT
-  const handleSubmit = async (e) => {
+  // ============================
+  const handleSubmit =
+    async (e) => {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    setLoading(true);
+      setMessage("");
 
-    setMessage("");
-
-    try {
-
-      const submitData =
-        new FormData();
-
-      submitData.append(
-        "organizer_id",
-        user.id
-      );
-
-      submitData.append(
-        "category_id",
-        formData.category_id
-      );
-
-      submitData.append(
-        "title",
-        formData.title
-      );
-
-      submitData.append(
-        "description",
-        formData.description
-      );
-
-      submitData.append(
-        "location",
-        formData.location
-      );
-
-      // DEFAULT SEAT MODE
-      submitData.append(
-        "seat_mode",
-        "MANUAL"
-      );
-
-      // IMAGE
+      // REQUIRE IMAGE
       if (
-        formData.image_file
+        !formData.image_file
       ) {
 
-        submitData.append(
-          "image",
-          formData.image_file
-        );
-
-      }
-
-      const res = await fetch(
-
-        `${import.meta.env.VITE_API_URL}/api/events`,
-
-        {
-
-          method: "POST",
-
-          body: submitData,
-
-        }
-
-      );
-
-      const data =
-        await res.json();
-
-      if (!res.ok) {
-
         setMessage(
-          data.message ||
-          "Tạo sự kiện thất bại"
+          "Banner sự kiện là bắt buộc"
         );
-
-        setLoading(false);
 
         return;
 
       }
 
-      // SUCCESS
-      navigate(
-        `/organizer/event/${data.event_id}/setup`
-      );
+      setLoading(true);
 
-    } catch (err) {
+      try {
 
-      console.log(err);
+        const submitData =
+          new FormData();
 
-      setMessage(
-        "Không thể kết nối server"
-      );
+        submitData.append(
+          "organizer_id",
+          user.id
+        );
 
-    }
+        submitData.append(
+          "category_id",
+          formData.category_id
+        );
 
-    setLoading(false);
+        submitData.append(
+          "title",
+          formData.title
+        );
 
-  };
+        submitData.append(
+          "description",
+          formData.description
+        );
+
+        submitData.append(
+          "location",
+          formData.location
+        );
+
+        // DEFAULT SEAT MODE
+        submitData.append(
+          "seat_mode",
+          "MANUAL"
+        );
+
+        // IMAGE
+        submitData.append(
+          "image",
+          formData.image_file
+        );
+
+        const res =
+          await fetch(
+
+            `${import.meta.env.VITE_API_URL}/api/events`,
+
+            {
+
+              method: "POST",
+
+              body: submitData,
+
+            }
+
+          );
+
+        const data =
+          await res.json();
+
+        // FAIL
+        if (!res.ok) {
+
+          setMessage(
+
+            data.message ||
+
+            "Tạo sự kiện thất bại"
+
+          );
+
+          setLoading(false);
+
+          return;
+
+        }
+
+        // SUCCESS
+        navigate(
+
+          `/organizer/event/${data.event_id}/setup`
+
+        );
+
+      } catch (err) {
+
+        console.log(err);
+
+        setMessage(
+          "Không thể kết nối server"
+        );
+
+      }
+
+      setLoading(false);
+
+    };
 
   return (
 
@@ -240,7 +301,7 @@ export default function CreateEvent() {
           </h1>
 
           <p className="text-gray-400 mt-2">
-            Nhập thông tin cơ bản cho sự kiện
+            Nhập thông tin cơ bản
           </p>
 
         </div>
@@ -251,7 +312,7 @@ export default function CreateEvent() {
           className="p-8 space-y-6"
         >
 
-          {/* EVENT NAME */}
+          {/* TITLE */}
           <div>
 
             <label
@@ -268,7 +329,7 @@ export default function CreateEvent() {
             <input
               type="text"
               name="title"
-              placeholder="Ví dụ: SKY WAVE FESTIVAL 2026"
+              placeholder="Tên sự kiện"
               value={formData.title}
               onChange={handleChange}
               className="
@@ -304,8 +365,10 @@ export default function CreateEvent() {
             <textarea
               name="description"
               rows="5"
-              placeholder="Nhập mô tả sự kiện..."
-              value={formData.description}
+              placeholder="Mô tả sự kiện"
+              value={
+                formData.description
+              }
               onChange={handleChange}
               className="
                 w-full
@@ -340,8 +403,10 @@ export default function CreateEvent() {
             <input
               type="text"
               name="location"
-              placeholder="Ví dụ: Nhà thi đấu Phú Thọ"
-              value={formData.location}
+              placeholder="Địa chỉ sự kiện"
+              value={
+                formData.location
+              }
               onChange={handleChange}
               className="
                 w-full
@@ -370,12 +435,14 @@ export default function CreateEvent() {
                 mb-2
               "
             >
-              Danh mục sự kiện *
+              Danh mục *
             </label>
 
             <select
               name="category_id"
-              value={formData.category_id}
+              value={
+                formData.category_id
+              }
               onChange={handleChange}
               className="
                 w-full
@@ -395,27 +462,26 @@ export default function CreateEvent() {
                 Chọn danh mục
               </option>
 
-              <option value="1">
-                Âm nhạc
-              </option>
+              {categories.map(
+                (category) => (
 
-              <option value="2">
-                Workshop
-              </option>
+                  <option
+                    key={category.id}
+                    value={category.id}
+                  >
 
-              <option value="3">
-                Công nghệ
-              </option>
+                    {category.name}
 
-              <option value="4">
-                Thể thao
-              </option>
+                  </option>
+
+                )
+              )}
 
             </select>
 
           </div>
 
-          {/* IMAGE */}
+          {/* BANNER */}
           <div>
 
             <label
@@ -426,13 +492,14 @@ export default function CreateEvent() {
                 mb-2
               "
             >
-              Banner sự kiện
+              Banner sự kiện *
             </label>
 
-            {/* UPLOAD AREA */}
+            {/* UPLOAD */}
             <label
               className="
-                h-72
+                w-full
+                h-[340px]
                 rounded-3xl
                 border-2
                 border-dashed
@@ -454,7 +521,9 @@ export default function CreateEvent() {
               {formData.image_preview ? (
 
                 <img
-                  src={formData.image_preview}
+                  src={
+                    formData.image_preview
+                  }
                   alt="preview"
                   className="
                     w-full
@@ -468,16 +537,30 @@ export default function CreateEvent() {
                 <>
 
                   <ImagePlus
-                    size={50}
-                    className="text-gray-500"
+                    size={52}
+                    className="
+                      text-gray-500
+                    "
                   />
 
-                  <p className="mt-4 text-gray-300 font-medium">
-                    Upload banner sự kiện
+                  <p
+                    className="
+                      mt-4
+                      text-gray-300
+                      font-medium
+                    "
+                  >
+                    Upload banner
                   </p>
 
-                  <p className="text-sm text-gray-500 mt-1">
-                    PNG, JPG • Khuyến nghị 1600x900
+                  <p
+                    className="
+                      text-sm
+                      text-gray-500
+                      mt-1
+                    "
+                  >
+                    JPG, PNG • 16:9
                   </p>
 
                 </>
@@ -491,6 +574,7 @@ export default function CreateEvent() {
                 onChange={
                   handleImageChange
                 }
+                required
               />
 
             </label>
@@ -511,7 +595,9 @@ export default function CreateEvent() {
                 rounded-2xl
               "
             >
+
               {message}
+
             </div>
 
           )}
@@ -539,7 +625,7 @@ export default function CreateEvent() {
 
             {loading
               ? "Đang tạo..."
-              : "Tiếp tục thiết lập vé"}
+              : "Tiếp tục"}
 
             {!loading && (
               <ChevronRight size={22} />
