@@ -32,36 +32,6 @@ export default function CategoryBar() {
 
   }, []);
 
-  // ICONS
-  const getCategoryIcon = (name) => {
-
-    const lower =
-      name.toLowerCase();
-
-    if (
-      lower.includes("âm nhạc")
-    ) return "🎤";
-
-    if (
-      lower.includes("công nghệ")
-    ) return "💻";
-
-    if (
-      lower.includes("workshop")
-    ) return "🎓";
-
-    if (
-      lower.includes("thể thao")
-    ) return "⚽";
-
-    if (
-      lower.includes("festival")
-    ) return "🎉";
-
-    return "🔥";
-
-  };
-
   return (
 
     <div
@@ -81,28 +51,9 @@ export default function CategoryBar() {
           flex
           gap-4
           overflow-x-auto
-          scrollbar-hide
         "
       >
 
-        {/* HOT */}
-        <button
-          className="
-            px-5
-            py-2
-            rounded-2xl
-            bg-sky-500
-            text-black
-            font-semibold
-            whitespace-nowrap
-            hover:bg-sky-400
-            transition
-          "
-        >
-          🔥 Nổi bật
-        </button>
-
-        {/* CATEGORIES */}
         {categories.map((category) => (
 
           <button
@@ -120,10 +71,6 @@ export default function CategoryBar() {
               transition
             "
           >
-
-            {getCategoryIcon(
-              category.name
-            )}{" "}
 
             {category.name}
 
