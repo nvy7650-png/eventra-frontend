@@ -1,542 +1,457 @@
 import {
-  useEffect,
   useState,
 } from "react";
-
-import {
-  LayoutDashboard,
-  CalendarDays,
-  Ticket,
-  Wallet,
-  Settings,
-  LogOut,
-  Plus,
-  ChevronRight,
-  BadgePercent,
-} from "lucide-react";
 
 import {
   useNavigate,
 } from "react-router-dom";
 
-export default function OrganizerDashboard() {
+export default function OrganizerRegister() {
 
   const navigate = useNavigate();
 
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
-
-  const [stats, setStats] =
+  const [formData,
+    setFormData] =
     useState({
 
-      totalEvents: 0,
-      totalTickets: 0,
-      revenue: 0,
+      organization_name: "",
+      email: "",
+      phone: "",
+      password: "",
 
     });
 
-  const [loading, setLoading] =
-    useState(true);
+  const [error,
+    setError] =
+    useState("");
 
-  // GET STATS
-  useEffect(() => {
+  const [loading,
+    setLoading] =
+    useState(false);
 
-    fetch(
+  const [showPassword,
+    setShowPassword] =
+    useState(false);
 
-      `${import.meta.env.VITE_API_URL}/api/events/organizer/${user.id}/stats`
+  // HANDLE INPUT
+  const handleChange = (e) => {
 
-    )
+    setFormData({
 
-      .then((res) => res.json())
+      ...formData,
 
-      .then((data) => {
+      [e.target.name]:
+        e.target.value,
 
-        setStats(data);
-
-      })
-
-      .catch((err) => {
-
-        console.log(err);
-
-      })
-
-      .finally(() => {
-
-        setLoading(false);
-
-      });
-
-  }, []);
-
-  // LOGOUT
-  const handleLogout = () => {
-
-    localStorage.removeItem("user");
-
-    navigate("/");
-
-    window.location.reload();
+    });
 
   };
 
-  // LOADING
-  if (loading) {
+  // SUBMIT
+  const handleSubmit =
+    async (e) => {
 
-    return (
+      e.preventDefault();
 
-      <div
-        className="
-          min-h-screen
-          bg-[#050816]
-          flex
-          items-center
-          justify-center
-          text-white
-        "
-      >
+      setError("");
 
-        <div className="text-center">
+      setLoading(true);
 
-          <div
-            className="
-              w-12
-              h-12
-              border-4
-              border-sky-400
-              border-t-transparent
-              rounded-full
-              animate-spin
-              mx-auto
-            "
-          />
+      try {
 
-          <p className="mt-4 text-gray-400">
-            Đang tải dashboard...
-          </p>
+        const res = await fetch(
 
-        </div>
+          `${import.meta.env.VITE_API_URL}/api/auth/organizer/register`,
 
-      </div>
+          {
 
-    );
+            method: "POST",
 
-  }
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body:
+              JSON.stringify(formData),
+
+          }
+
+        );
+
+        const data =
+          await res.json();
+
+        // FAIL
+        if (!res.ok) {
+
+          setError(
+
+            data.message ||
+
+            "Đăng ký thất bại"
+
+          );
+
+          setLoading(false);
+
+          return;
+
+        }
+
+        // AUTO LOGIN
+        localStorage.setItem(
+
+          "user",
+
+          JSON.stringify({
+
+            id:
+              data.user?.id,
+
+            name:
+              data.user?.name ||
+
+              formData.organization_name,
+
+            email:
+              data.user?.email ||
+
+              formData.email,
+
+            role:
+              "ORGANIZER",
+
+          })
+
+        );
+
+        // SUCCESS
+        navigate(
+          "/organizer/dashboard"
+        );
+
+      } catch (err) {
+
+        console.log(err);
+
+        setError(
+          "Không thể kết nối server"
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
 
   return (
 
-    <div className="min-h-screen bg-[#050816] text-white flex">
+    <div
+      className="
+        min-h-screen
+        bg-[#050816]
+        text-white
+        flex
+        items-center
+        justify-center
+        px-4
+        py-10
+      "
+    >
 
-      {/* SIDEBAR */}
-      <aside
-        className="
-          w-64
-          bg-[#0B1120]
-          border-r
-          border-white/10
-          flex
-          flex-col
-          justify-between
-          p-5
-        "
-      >
+      <div className="w-full max-w-lg">
 
-        <div>
+        {/* BACK */}
+        <button
+          onClick={() =>
+            navigate("/")
+          }
+          className="
+            mb-5
+            flex
+            items-center
+            gap-2
+            px-5
+            py-3
+            rounded-2xl
+            bg-[#0B1220]
+            border
+            border-white/10
+            text-gray-300
+            hover:border-sky-400
+            hover:text-sky-400
+            transition
+          "
+        >
 
-          {/* LOGO */}
-          <div className="mb-10">
+          ← Quay về trang chủ
+
+        </button>
+
+        {/* CARD */}
+        <div
+          className="
+            bg-[#0B1220]
+            border
+            border-white/10
+            rounded-3xl
+            p-8
+            shadow-2xl
+          "
+        >
+
+          {/* TITLE */}
+          <div className="text-center mb-8">
 
             <h1
               className="
-                text-3xl
+                text-4xl
                 font-black
                 text-sky-400
-                tracking-wide
               "
             >
               HOMIETICKET
             </h1>
 
-            <p className="text-sm text-gray-400 mt-1">
-              Organizer Center
+            <p className="text-gray-400 mt-3">
+              Đăng ký tài khoản Organizer
             </p>
 
           </div>
 
-          {/* USER */}
-          <div
-            className="
-              flex
-              items-center
-              gap-3
-              bg-white/5
-              border
-              border-white/10
-              rounded-2xl
-              p-4
-              mb-8
-            "
+          {/* FORM */}
+          <form
+            onSubmit={handleSubmit}
+            className="space-y-5"
           >
 
-            <div
-              className="
-                w-12
-                h-12
-                rounded-full
-                bg-sky-500
-                flex
-                items-center
-                justify-center
-                font-bold
-                text-lg
-                text-black
-              "
-            >
-              {user?.name?.charAt(0)}
-            </div>
-
+            {/* ORGANIZATION */}
             <div>
 
-              <p className="font-semibold">
-                {user?.name}
-              </p>
-
-              <p className="text-xs text-gray-400">
-                Organizer
-              </p>
-
-            </div>
-
-          </div>
-
-          {/* MENU */}
-          <div className="space-y-2">
-
-            {/* DASHBOARD */}
-            <button
-              className="
-                w-full
-                flex
-                items-center
-                gap-3
-                px-4
-                py-3
-                rounded-2xl
-                bg-sky-500
-                text-black
-                font-semibold
-              "
-            >
-
-              <LayoutDashboard size={20} />
-
-              Dashboard
-
-            </button>
-
-            {/* EVENTS */}
-            <button
-              className="
-                w-full
-                flex
-                items-center
-                gap-3
-                px-4
-                py-3
-                rounded-2xl
-                hover:bg-white/5
-                transition
-              "
-            >
-
-              <CalendarDays size={20} />
-
-              Sự kiện của tôi
-
-            </button>
-
-            {/* TICKETS */}
-            <button
-              className="
-                w-full
-                flex
-                items-center
-                gap-3
-                px-4
-                py-3
-                rounded-2xl
-                hover:bg-white/5
-                transition
-              "
-            >
-
-              <Ticket size={20} />
-
-              Quản lý vé
-
-            </button>
-
-            {/* PROMOTIONS */}
-            <button
-              className="
-                w-full
-                flex
-                items-center
-                gap-3
-                px-4
-                py-3
-                rounded-2xl
-                hover:bg-white/5
-                transition
-              "
-            >
-
-              <BadgePercent size={20} />
-
-              Khuyến mãi
-
-            </button>
-
-            {/* REVENUE */}
-            <button
-              className="
-                w-full
-                flex
-                items-center
-                gap-3
-                px-4
-                py-3
-                rounded-2xl
-                hover:bg-white/5
-                transition
-              "
-            >
-
-              <Wallet size={20} />
-
-              Doanh thu
-
-            </button>
-
-            {/* SETTINGS */}
-            <button
-              className="
-                w-full
-                flex
-                items-center
-                gap-3
-                px-4
-                py-3
-                rounded-2xl
-                hover:bg-white/5
-                transition
-              "
-            >
-
-              <Settings size={20} />
-
-              Cài đặt
-
-            </button>
-
-          </div>
-
-        </div>
-
-        {/* LOGOUT */}
-        <button
-          onClick={handleLogout}
-          className="
-            w-full
-            flex
-            items-center
-            justify-center
-            gap-2
-            py-3
-            rounded-2xl
-            bg-red-500
-            hover:bg-red-400
-            font-semibold
-            transition
-          "
-        >
-
-          <LogOut size={18} />
-
-          Đăng xuất
-
-        </button>
-
-      </aside>
-
-      {/* MAIN */}
-      <main className="flex-1">
-
-        {/* TOPBAR */}
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-            px-10
-            py-6
-            border-b
-            border-white/10
-            bg-[#081120]
-          "
-        >
-
-          <div>
-
-            <h1 className="text-3xl font-bold">
-              Organizer Dashboard
-            </h1>
-
-            <p className="text-gray-400 mt-1">
-              Quản lý sự kiện và bán vé
-            </p>
-
-          </div>
-
-          {/* HOME */}
-          <button
-            onClick={() =>
-              navigate("/")
-            }
-            className="
-              flex
-              items-center
-              gap-2
-              px-5
-              py-3
-              rounded-2xl
-              bg-white/5
-              hover:bg-white/10
-              border
-              border-white/10
-              transition
-            "
-          >
-
-            Trang chủ
-
-            <ChevronRight size={18} />
-
-          </button>
-
-        </div>
-
-        {/* CONTENT */}
-        <div className="p-10">
-
-          {/* STATS */}
-          <div className="grid lg:grid-cols-3 gap-6">
-
-            {/* EVENTS */}
-            <div
-              className="
-                bg-[#0B1120]
-                border
-                border-white/10
-                rounded-3xl
-                p-7
-              "
-            >
-
-              <p className="text-gray-400 mb-3">
-                Tổng sự kiện
-              </p>
-
-              <h2
+              <label
                 className="
-                  text-5xl
-                  font-black
-                  text-sky-400
+                  text-sm
+                  text-gray-400
+                  mb-2
+                  block
                 "
               >
-                {stats.totalEvents}
-              </h2>
+                Tên tổ chức
+              </label>
+
+              <input
+                type="text"
+                name="organization_name"
+                placeholder="Tên công ty / tổ chức"
+                value={
+                  formData.organization_name
+                }
+                onChange={handleChange}
+                className="
+                  w-full
+                  px-4
+                  py-3
+                  rounded-2xl
+                  bg-[#111827]
+                  border
+                  border-gray-700
+                  text-white
+                  placeholder-gray-500
+                  focus:outline-none
+                  focus:border-sky-400
+                  transition
+                "
+                required
+              />
 
             </div>
 
-            {/* TICKETS */}
-            <div
-              className="
-                bg-[#0B1120]
-                border
-                border-white/10
-                rounded-3xl
-                p-7
-              "
-            >
+            {/* EMAIL */}
+            <div>
 
-              <p className="text-gray-400 mb-3">
-                Vé đã bán
-              </p>
-
-              <h2
+              <label
                 className="
-                  text-5xl
-                  font-black
-                  text-green-400
+                  text-sm
+                  text-gray-400
+                  mb-2
+                  block
                 "
               >
-                {stats.totalTickets}
-              </h2>
+                Email
+              </label>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Nhập email"
+                value={
+                  formData.email
+                }
+                onChange={handleChange}
+                className="
+                  w-full
+                  px-4
+                  py-3
+                  rounded-2xl
+                  bg-[#111827]
+                  border
+                  border-gray-700
+                  text-white
+                  placeholder-gray-500
+                  focus:outline-none
+                  focus:border-sky-400
+                  transition
+                "
+                required
+              />
 
             </div>
 
-            {/* REVENUE */}
-            <div
-              className="
-                bg-[#0B1120]
-                border
-                border-white/10
-                rounded-3xl
-                p-7
-              "
-            >
+            {/* PHONE */}
+            <div>
 
-              <p className="text-gray-400 mb-3">
-                Doanh thu
-              </p>
-
-              <h2
+              <label
                 className="
-                  text-5xl
-                  font-black
-                  text-pink-400
+                  text-sm
+                  text-gray-400
+                  mb-2
+                  block
                 "
               >
-                {Number(stats.revenue)
-                  .toLocaleString("vi-VN")}đ
-              </h2>
+                Số điện thoại
+              </label>
+
+              <input
+                type="text"
+                name="phone"
+                placeholder="Nhập số điện thoại"
+                value={
+                  formData.phone
+                }
+                onChange={handleChange}
+                className="
+                  w-full
+                  px-4
+                  py-3
+                  rounded-2xl
+                  bg-[#111827]
+                  border
+                  border-gray-700
+                  text-white
+                  placeholder-gray-500
+                  focus:outline-none
+                  focus:border-sky-400
+                  transition
+                "
+                required
+              />
 
             </div>
 
-          </div>
+            {/* PASSWORD */}
+            <div>
 
-          {/* ACTION */}
-          <div className="mt-8">
+              <label
+                className="
+                  text-sm
+                  text-gray-400
+                  mb-2
+                  block
+                "
+              >
+                Mật khẩu
+              </label>
 
+              <input
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
+                name="password"
+                placeholder="Nhập mật khẩu"
+                value={
+                  formData.password
+                }
+                onChange={handleChange}
+                className="
+                  w-full
+                  px-4
+                  py-3
+                  rounded-2xl
+                  bg-[#111827]
+                  border
+                  border-gray-700
+                  text-white
+                  placeholder-gray-500
+                  focus:outline-none
+                  focus:border-sky-400
+                  transition
+                "
+                required
+              />
+
+              {/* SHOW PASSWORD */}
+              <button
+                type="button"
+                onClick={() =>
+
+                  setShowPassword(
+                    !showPassword
+                  )
+
+                }
+                className="
+                  mt-3
+                  text-sm
+                  text-gray-400
+                  hover:text-sky-400
+                  transition
+                "
+              >
+
+                {showPassword
+                  ? "Ẩn mật khẩu"
+                  : "Hiện mật khẩu"}
+
+              </button>
+
+            </div>
+
+            {/* ERROR */}
+            {error && (
+
+              <div
+                className="
+                  bg-red-500/10
+                  border
+                  border-red-500/30
+                  text-red-400
+                  text-sm
+                  rounded-2xl
+                  px-4
+                  py-3
+                "
+              >
+                {error}
+              </div>
+
+            )}
+
+            {/* BUTTON */}
             <button
-              onClick={() =>
-
-                navigate(
-                  "/organizer/create-event"
-                )
-
-              }
+              type="submit"
+              disabled={loading}
               className="
-                flex
-                items-center
-                gap-2
-                px-7
-                py-4
+                w-full
+                py-3
                 rounded-2xl
                 bg-sky-500
                 hover:bg-sky-400
+                disabled:opacity-50
                 text-black
                 font-bold
                 text-lg
@@ -544,17 +459,45 @@ export default function OrganizerDashboard() {
               "
             >
 
-              <Plus size={22} />
-
-              Tạo sự kiện mới
+              {loading
+                ? "Đang xử lý..."
+                : "Đăng ký Organizer"}
 
             </button>
+
+          </form>
+
+          {/* LOGIN */}
+          <div
+            className="
+              text-center
+              text-sm
+              text-gray-500
+              mt-8
+            "
+          >
+
+            Đã có tài khoản?{" "}
+
+            <span
+              onClick={() =>
+                navigate("/login")
+              }
+              className="
+                text-sky-400
+                hover:text-sky-300
+                cursor-pointer
+                font-semibold
+              "
+            >
+              Đăng nhập
+            </span>
 
           </div>
 
         </div>
 
-      </main>
+      </div>
 
     </div>
 

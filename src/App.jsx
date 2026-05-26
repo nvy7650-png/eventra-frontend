@@ -6,14 +6,17 @@ import {
 } from "react-router-dom";
 
 import Home from "./pages/Home";
+
 import Login from "./pages/Login";
+
 import Register from "./pages/Register";
 
 import OrganizerRegister from "./pages/OrganizerRegister";
 
 import OrganizerDashboard from "./pages/OrganizerDashboard";
+
 import AdminDashboard from "./pages/AdminDashboard";
-import UserDashboard from "./pages/UserDashboard";
+
 import CreateEvent from "./pages/CreateEvent";
 
 function App() {
@@ -23,7 +26,9 @@ function App() {
     localStorage.getItem("user")
   );
 
+  // ============================
   // PROTECTED ROUTE
+  // ============================
   const ProtectedRoute = ({
     children,
     role,
@@ -32,14 +37,27 @@ function App() {
     // NOT LOGIN
     if (!user) {
 
-      return <Navigate to="/login" />;
+      return (
+        <Navigate
+          to="/login"
+          replace
+        />
+      );
 
     }
 
     // WRONG ROLE
-    if (role && user.role !== role) {
+    if (
+      role &&
+      user.role !== role
+    ) {
 
-      return <Navigate to="/" />;
+      return (
+        <Navigate
+          to="/"
+          replace
+        />
+      );
 
     }
 
@@ -74,23 +92,8 @@ function App() {
         {/* ORGANIZER REGISTER */}
         <Route
           path="/organizerregister"
-          element={<OrganizerRegister />}
-        />
-
-        <Route
-  path="/organizer/create-event"
-  element={<CreateEvent />}
-/>
-
-        {/* USER DASHBOARD */}
-        <Route
-          path="/user/dashboard"
           element={
-            <ProtectedRoute role="USER">
-
-              <UserDashboard />
-
-            </ProtectedRoute>
+            <OrganizerRegister />
           }
         />
 
@@ -98,11 +101,27 @@ function App() {
         <Route
           path="/organizer/dashboard"
           element={
+
             <ProtectedRoute role="ORGANIZER">
 
               <OrganizerDashboard />
 
             </ProtectedRoute>
+
+          }
+        />
+
+        {/* CREATE EVENT */}
+        <Route
+          path="/organizer/create-event"
+          element={
+
+            <ProtectedRoute role="ORGANIZER">
+
+              <CreateEvent />
+
+            </ProtectedRoute>
+
           }
         />
 
@@ -110,15 +129,26 @@ function App() {
         <Route
           path="/admin/dashboard"
           element={
+
             <ProtectedRoute role="ADMIN">
 
               <AdminDashboard />
 
             </ProtectedRoute>
+
           }
         />
 
-
+        {/* 404 */}
+        <Route
+          path="*"
+          element={
+            <Navigate
+              to="/"
+              replace
+            />
+          }
+        />
 
       </Routes>
 

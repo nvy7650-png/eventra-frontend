@@ -4,6 +4,10 @@ import {
 } from "react";
 
 import {
+  useNavigate,
+} from "react-router-dom";
+
+import {
   LayoutDashboard,
   CalendarDays,
   Ticket,
@@ -15,18 +19,16 @@ import {
   BadgePercent,
 } from "lucide-react";
 
-import {
-  useNavigate,
-} from "react-router-dom";
-
 export default function OrganizerDashboard() {
 
   const navigate = useNavigate();
 
+  // USER
   const user = JSON.parse(
     localStorage.getItem("user")
   );
 
+  // STATS
   const [stats, setStats] =
     useState({
 
@@ -36,11 +38,39 @@ export default function OrganizerDashboard() {
 
     });
 
+  // LOADING
   const [loading, setLoading] =
     useState(true);
 
+  // CHECK LOGIN
+  useEffect(() => {
+
+    if (
+      !user ||
+
+      user.role !==
+      "ORGANIZER"
+    ) {
+
+      navigate("/login");
+
+      return;
+
+    }
+
+  }, []);
+
   // GET STATS
   useEffect(() => {
+
+    // NO USER
+    if (!user?.id) {
+
+      setLoading(false);
+
+      return;
+
+    }
 
     fetch(
 
@@ -52,7 +82,18 @@ export default function OrganizerDashboard() {
 
       .then((data) => {
 
-        setStats(data);
+        setStats({
+
+          totalEvents:
+            data.totalEvents || 0,
+
+          totalTickets:
+            data.totalTickets || 0,
+
+          revenue:
+            data.revenue || 0,
+
+        });
 
       })
 
@@ -179,6 +220,7 @@ export default function OrganizerDashboard() {
             "
           >
 
+            {/* AVATAR */}
             <div
               className="
                 w-12
@@ -193,17 +235,26 @@ export default function OrganizerDashboard() {
                 text-black
               "
             >
-              {user?.name?.charAt(0)}
+
+              {user?.name
+                ?.charAt(0)
+                ?.toUpperCase()}
+
             </div>
 
+            {/* INFO */}
             <div>
 
               <p className="font-semibold">
+
                 {user?.name}
+
               </p>
 
               <p className="text-xs text-gray-400">
+
                 Organizer
+
               </p>
 
             </div>
@@ -237,6 +288,13 @@ export default function OrganizerDashboard() {
 
             {/* EVENTS */}
             <button
+              onClick={() =>
+
+                navigate(
+                  "/organizer/events"
+                )
+
+              }
               className="
                 w-full
                 flex
@@ -455,7 +513,9 @@ export default function OrganizerDashboard() {
                   text-sky-400
                 "
               >
+
                 {stats.totalEvents}
+
               </h2>
 
             </div>
@@ -482,7 +542,9 @@ export default function OrganizerDashboard() {
                   text-green-400
                 "
               >
+
                 {stats.totalTickets}
+
               </h2>
 
             </div>
@@ -509,15 +571,17 @@ export default function OrganizerDashboard() {
                   text-pink-400
                 "
               >
+
                 {Number(stats.revenue)
                   .toLocaleString("vi-VN")}đ
+
               </h2>
 
             </div>
 
           </div>
 
-          {/* ACTION */}
+          {/* CREATE EVENT */}
           <div className="mt-8">
 
             <button

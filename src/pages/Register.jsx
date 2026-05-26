@@ -1,205 +1,506 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+} from "react-router-dom";
 
 export default function Register() {
 
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-    phone: "",
-  });
+  const [formData,
+    setFormData] =
+    useState({
 
+      name: "",
+      email: "",
+      password: "",
+      phone: "",
+
+    });
+
+  const [error,
+    setError] =
+    useState("");
+
+  const [loading,
+    setLoading] =
+    useState(false);
+
+  const [showPassword,
+    setShowPassword] =
+    useState(false);
+
+  // HANDLE INPUT
   const handleChange = (e) => {
 
     setFormData({
+
       ...formData,
-      [e.target.name]: e.target.value,
+
+      [e.target.name]:
+        e.target.value,
+
     });
 
   };
 
-  const handleSubmit = (e) => {
+  // SUBMIT
+  const handleSubmit =
+    async (e) => {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    console.log(formData);
+      setError("");
 
-    // TODO:
-    // gọi API register user ở đây
+      setLoading(true);
 
-  };
+      try {
+
+        const res = await fetch(
+
+          `${import.meta.env.VITE_API_URL}/api/auth/register`,
+
+          {
+
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body:
+              JSON.stringify(formData),
+
+          }
+
+        );
+
+        const data =
+          await res.json();
+
+        // FAIL
+        if (!res.ok) {
+
+          setError(
+
+            data.message ||
+
+            "Đăng ký thất bại"
+
+          );
+
+          setLoading(false);
+
+          return;
+
+        }
+
+        // AUTO LOGIN
+        localStorage.setItem(
+
+          "user",
+
+          JSON.stringify({
+
+            id:
+              data.user?.id,
+
+            name:
+              data.user?.name ||
+
+              formData.name,
+
+            email:
+              data.user?.email ||
+
+              formData.email,
+
+            role:
+              "USER",
+
+          })
+
+        );
+
+        // SUCCESS
+        navigate(
+          "/user/dashboard"
+        );
+
+      } catch (err) {
+
+        console.log(err);
+
+        setError(
+          "Không thể kết nối server"
+        );
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
 
   return (
-    <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center px-4">
+
+    <div
+      className="
+        min-h-screen
+        bg-[#050816]
+        text-white
+        flex
+        items-center
+        justify-center
+        px-4
+        py-10
+      "
+    >
 
       <div className="w-full max-w-md">
 
         {/* BACK */}
         <button
-          onClick={() => navigate("/")}
+          onClick={() =>
+            navigate("/")
+          }
           className="
-            mb-4
+            mb-5
             flex
             items-center
             gap-2
-            px-4
-            py-2
-            rounded-xl
-            bg-gray-900
+            px-5
+            py-3
+            rounded-2xl
+            bg-[#0B1220]
             border
-            border-gray-800
+            border-white/10
             text-gray-300
             hover:border-sky-400
             hover:text-sky-400
-            hover:bg-gray-800
             transition
           "
         >
+
           ← Quay về trang chủ
+
         </button>
 
         {/* CARD */}
-        <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl">
+        <div
+          className="
+            bg-[#0B1220]
+            border
+            border-white/10
+            rounded-3xl
+            p-8
+            shadow-2xl
+          "
+        >
 
-          <h1 className="text-2xl font-bold text-center text-sky-400 mb-2">
-            Đăng ký tài khoản
-          </h1>
+          {/* TITLE */}
+          <div className="text-center mb-8">
 
-          <p className="text-gray-400 text-center mb-8">
-            Tạo tài khoản để mua vé sự kiện
-          </p>
+            <h1
+              className="
+                text-4xl
+                font-black
+                text-sky-400
+              "
+            >
+              HOMIETICKET
+            </h1>
+
+            <p className="text-gray-400 mt-3">
+              Tạo tài khoản để mua vé sự kiện
+            </p>
+
+          </div>
 
           {/* FORM */}
           <form
             onSubmit={handleSubmit}
-            className="space-y-4"
+            className="space-y-5"
           >
 
             {/* NAME */}
-            <input
-              type="text"
-              name="name"
-              placeholder="Họ và tên"
-              value={formData.name}
-              onChange={handleChange}
-              className="
-                w-full
-                px-4
-                py-3
-                rounded-xl
-                bg-gray-800
-                border
-                border-gray-700
-                focus:outline-none
-                focus:border-sky-400
-              "
-              required
-            />
+            <div>
+
+              <label
+                className="
+                  text-sm
+                  text-gray-400
+                  mb-2
+                  block
+                "
+              >
+                Họ và tên
+              </label>
+
+              <input
+                type="text"
+                name="name"
+                placeholder="Nhập họ và tên"
+                value={
+                  formData.name
+                }
+                onChange={handleChange}
+                className="
+                  w-full
+                  px-4
+                  py-3
+                  rounded-2xl
+                  bg-[#111827]
+                  border
+                  border-gray-700
+                  text-white
+                  placeholder-gray-500
+                  focus:outline-none
+                  focus:border-sky-400
+                  transition
+                "
+                required
+              />
+
+            </div>
 
             {/* EMAIL */}
-            <input
-              type="email"
-              name="email"
-              placeholder="Email"
-              value={formData.email}
-              onChange={handleChange}
-              className="
-                w-full
-                px-4
-                py-3
-                rounded-xl
-                bg-gray-800
-                border
-                border-gray-700
-                focus:outline-none
-                focus:border-sky-400
-              "
-              required
-            />
+            <div>
+
+              <label
+                className="
+                  text-sm
+                  text-gray-400
+                  mb-2
+                  block
+                "
+              >
+                Email
+              </label>
+
+              <input
+                type="email"
+                name="email"
+                placeholder="Nhập email"
+                value={
+                  formData.email
+                }
+                onChange={handleChange}
+                className="
+                  w-full
+                  px-4
+                  py-3
+                  rounded-2xl
+                  bg-[#111827]
+                  border
+                  border-gray-700
+                  text-white
+                  placeholder-gray-500
+                  focus:outline-none
+                  focus:border-sky-400
+                  transition
+                "
+                required
+              />
+
+            </div>
 
             {/* PHONE */}
-            <input
-              type="text"
-              name="phone"
-              placeholder="Số điện thoại"
-              value={formData.phone}
-              onChange={handleChange}
-              className="
-                w-full
-                px-4
-                py-3
-                rounded-xl
-                bg-gray-800
-                border
-                border-gray-700
-                focus:outline-none
-                focus:border-sky-400
-              "
-            />
+            <div>
+
+              <label
+                className="
+                  text-sm
+                  text-gray-400
+                  mb-2
+                  block
+                "
+              >
+                Số điện thoại
+              </label>
+
+              <input
+                type="text"
+                name="phone"
+                placeholder="Nhập số điện thoại"
+                value={
+                  formData.phone
+                }
+                onChange={handleChange}
+                className="
+                  w-full
+                  px-4
+                  py-3
+                  rounded-2xl
+                  bg-[#111827]
+                  border
+                  border-gray-700
+                  text-white
+                  placeholder-gray-500
+                  focus:outline-none
+                  focus:border-sky-400
+                  transition
+                "
+                required
+              />
+
+            </div>
 
             {/* PASSWORD */}
-            <input
-              type="password"
-              name="password"
-              placeholder="Mật khẩu"
-              value={formData.password}
-              onChange={handleChange}
-              className="
-                w-full
-                px-4
-                py-3
-                rounded-xl
-                bg-gray-800
-                border
-                border-gray-700
-                focus:outline-none
-                focus:border-sky-400
-              "
-              required
-            />
+            <div>
 
-            {/* REGISTER BUTTON */}
+              <label
+                className="
+                  text-sm
+                  text-gray-400
+                  mb-2
+                  block
+                "
+              >
+                Mật khẩu
+              </label>
+
+              <input
+                type={
+                  showPassword
+                    ? "text"
+                    : "password"
+                }
+                name="password"
+                placeholder="Nhập mật khẩu"
+                value={
+                  formData.password
+                }
+                onChange={handleChange}
+                className="
+                  w-full
+                  px-4
+                  py-3
+                  rounded-2xl
+                  bg-[#111827]
+                  border
+                  border-gray-700
+                  text-white
+                  placeholder-gray-500
+                  focus:outline-none
+                  focus:border-sky-400
+                  transition
+                "
+                required
+              />
+
+              {/* SHOW PASSWORD */}
+              <button
+                type="button"
+                onClick={() =>
+
+                  setShowPassword(
+                    !showPassword
+                  )
+
+                }
+                className="
+                  mt-3
+                  text-sm
+                  text-gray-400
+                  hover:text-sky-400
+                  transition
+                "
+              >
+
+                {showPassword
+                  ? "Ẩn mật khẩu"
+                  : "Hiện mật khẩu"}
+
+              </button>
+
+            </div>
+
+            {/* ERROR */}
+            {error && (
+
+              <div
+                className="
+                  bg-red-500/10
+                  border
+                  border-red-500/30
+                  text-red-400
+                  text-sm
+                  rounded-2xl
+                  px-4
+                  py-3
+                "
+              >
+                {error}
+              </div>
+
+            )}
+
+            {/* BUTTON */}
             <button
               type="submit"
+              disabled={loading}
               className="
                 w-full
                 py-3
-                rounded-xl
+                rounded-2xl
                 bg-sky-500
+                hover:bg-sky-400
+                disabled:opacity-50
                 text-black
                 font-bold
-                hover:bg-sky-400
+                text-lg
                 transition
               "
             >
-              Đăng ký
+
+              {loading
+                ? "Đang xử lý..."
+                : "Đăng ký"}
+
             </button>
 
           </form>
 
           {/* LOGIN */}
-          <p className="text-center text-sm text-gray-400 mt-6">
+          <div
+            className="
+              text-center
+              text-sm
+              text-gray-500
+              mt-8
+            "
+          >
 
             Đã có tài khoản?{" "}
 
             <span
-              onClick={() => navigate("/login")}
+              onClick={() =>
+                navigate("/login")
+              }
               className="
                 text-sky-400
+                hover:text-sky-300
                 cursor-pointer
-                hover:underline
+                font-semibold
               "
             >
               Đăng nhập
             </span>
 
-          </p>
+          </div>
 
         </div>
+
       </div>
+
     </div>
+
   );
+
 }

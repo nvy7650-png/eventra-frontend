@@ -1,4 +1,5 @@
 import {
+  useEffect,
   useState,
 } from "react";
 
@@ -31,7 +32,54 @@ export default function Login() {
     setShowPassword] =
     useState(false);
 
+  // ============================
+  // AUTO REDIRECT
+  // ============================
+  useEffect(() => {
+
+    const user = JSON.parse(
+      localStorage.getItem("user")
+    );
+
+    if (!user) return;
+
+    // ADMIN
+    if (
+      user.role === "ADMIN"
+    ) {
+
+      navigate(
+        "/admin/dashboard"
+      );
+
+    }
+
+    // ORGANIZER
+    else if (
+
+      user.role ===
+      "ORGANIZER"
+
+    ) {
+
+      navigate(
+        "/organizer/dashboard"
+      );
+
+    }
+
+    // USER
+    else {
+
+      navigate("/");
+
+    }
+
+  }, []);
+
+  // ============================
   // HANDLE INPUT
+  // ============================
   const handleChange = (e) => {
 
     setFormData({
@@ -45,7 +93,9 @@ export default function Login() {
 
   };
 
+  // ============================
   // HANDLE LOGIN
+  // ============================
   const handleSubmit =
     async (e) => {
 
@@ -66,8 +116,10 @@ export default function Login() {
             method: "POST",
 
             headers: {
+
               "Content-Type":
                 "application/json",
+
             },
 
             body:
@@ -135,9 +187,7 @@ export default function Login() {
         // USER
         else {
 
-          navigate(
-            "/user/dashboard"
-          );
+          navigate("/");
 
         }
 
@@ -333,7 +383,9 @@ export default function Login() {
                   transition
                 "
               >
+
                 Quên mật khẩu?
+
               </button>
 
             </div>
@@ -355,7 +407,9 @@ export default function Login() {
                 py-3
               "
             >
+
               {error}
+
             </div>
 
           )}
@@ -409,7 +463,9 @@ export default function Login() {
               font-semibold
             "
           >
+
             Đăng ký ngay
+
           </span>
 
         </div>
