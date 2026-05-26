@@ -1,46 +1,195 @@
-export default function EventCard({ event, small }) {
+export default function EventCard({
+  event,
+  small,
+}) {
 
-  const formattedDate = event.start_date
-    ? new Date(event.start_date).toLocaleString("vi-VN", {
-        dateStyle: "medium",
-        timeStyle: "short",
-      })
-    : "Chưa có ngày";
+  // FORMAT DATE
+  const formattedDate =
+    event.start_date
+
+      ? new Date(
+          event.start_date
+        ).toLocaleString(
+          "vi-VN",
+          {
+            dateStyle: "medium",
+            timeStyle: "short",
+          }
+        )
+
+      : "Sắp cập nhật";
+
+  // IMAGE URL
+  const imageUrl =
+    event.image_url
+
+      ? `${import.meta.env.VITE_API_URL}${event.image_url}`
+
+      : "/no-image.png";
+
+  // STATUS
+  const getStatus = () => {
+
+    if (
+      event.status ===
+      "APPROVED"
+    ) {
+
+      return {
+        text: "Đang mở bán",
+        color:
+          "bg-green-500/20 text-green-400",
+      };
+
+    }
+
+    if (
+      event.status ===
+      "PENDING"
+    ) {
+
+      return {
+        text: "Chờ duyệt",
+        color:
+          "bg-yellow-500/20 text-yellow-400",
+      };
+
+    }
+
+    return {
+      text: "Đã hủy",
+      color:
+        "bg-red-500/20 text-red-400",
+    };
+
+  };
+
+  const status =
+    getStatus();
 
   return (
-    <div className="bg-gray-800 border border-gray-700 rounded-xl overflow-hidden hover:border-sky-300 hover:shadow-lg transition cursor-pointer">
+
+    <div
+      className="
+        bg-[#0B1220]
+        border
+        border-white/10
+        rounded-3xl
+        overflow-hidden
+        hover:border-sky-400
+        hover:-translate-y-1
+        transition
+        duration-300
+        cursor-pointer
+      "
+    >
 
       {/* IMAGE */}
-      <img
-        src={
-          event.image_url ||
-          "https://placehold.co/600x400?text=EVENTRA"
-        }
-        alt={event.title}
-        className={`w-full object-cover ${
-          small ? "h-40" : "h-52"
-        }`}
-      />
+      <div
+        className={`
+          overflow-hidden
+          ${
+            small
+              ? "h-44"
+              : "h-60"
+          }
+        `}
+      >
 
-      <div className="p-4">
+        <img
+          src={imageUrl}
+          alt={event.title}
+          className="
+            w-full
+            h-full
+            object-cover
+            hover:scale-105
+            transition
+            duration-500
+          "
+        />
 
-        <h4 className="font-semibold text-white line-clamp-2">
+      </div>
+
+      {/* CONTENT */}
+      <div className="p-5">
+
+        {/* STATUS */}
+        <div
+          className={`
+            inline-flex
+            px-3
+            py-1
+            rounded-full
+            text-xs
+            font-semibold
+            mb-3
+            ${status.color}
+          `}
+        >
+
+          {status.text}
+
+        </div>
+
+        {/* TITLE */}
+        <h3
+          className="
+            text-lg
+            font-bold
+            text-white
+            line-clamp-2
+            min-h-[56px]
+          "
+        >
           {event.title}
-        </h4>
+        </h3>
 
-        <p className="text-gray-400 text-sm mt-1">
+        {/* DATE */}
+        <p
+          className="
+            text-gray-400
+            text-sm
+            mt-3
+          "
+        >
           {formattedDate}
         </p>
 
-        <p className="text-gray-500 text-sm mt-1">
+        {/* LOCATION */}
+        <p
+          className="
+            text-gray-500
+            text-sm
+            mt-1
+            line-clamp-1
+          "
+        >
           {event.location}
         </p>
 
-        <div className="mt-3 text-sky-300 font-semibold">
+        {/* BUTTON */}
+        <button
+          className="
+            mt-5
+            w-full
+            py-3
+            rounded-2xl
+            bg-sky-500/10
+            text-sky-400
+            font-semibold
+            hover:bg-sky-500
+            hover:text-black
+            transition
+          "
+        >
           Xem chi tiết
-        </div>
+        </button>
 
       </div>
+
     </div>
+
   );
+
 }

@@ -1,43 +1,84 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useEffect,
+  useState,
+} from "react";
 
-export default function HeroSection({ event }) {
+import {
+  useNavigate,
+} from "react-router-dom";
+
+export default function HeroSection({
+  event,
+}) {
 
   const navigate = useNavigate();
-
-  const [currentImage, setCurrentImage] =
-    useState(0);
 
   // NO EVENT
   if (!event) return null;
 
-  // SLIDES
-  const images = [
-    event.image_url,
+  // IMAGE
+  const imageUrl =
+    event.image_url
 
-    "https://images.unsplash.com/photo-1493225457124-a3eb161ffa5f",
+      ? `${import.meta.env.VITE_API_URL}${event.image_url}`
 
-    "https://images.unsplash.com/photo-1501386761578-eac5c94b800a",
+      : "/no-image.png";
 
-    "https://images.unsplash.com/photo-1514525253161-7a46d19cd819",
-  ];
+  // FORMAT DATE
+  const formattedDate =
+    event.start_date
 
-  // AUTO SLIDE
-  useEffect(() => {
+      ? new Date(
+          event.start_date
+        ).toLocaleString(
+          "vi-VN",
+          {
+            dateStyle: "full",
+            timeStyle: "short",
+          }
+        )
 
-    const interval = setInterval(() => {
+      : "Sắp cập nhật thời gian";
 
-      setCurrentImage((prev) =>
-        prev === images.length - 1
-          ? 0
-          : prev + 1
-      );
+  // STATUS
+  const getStatus = () => {
 
-    }, 4000);
+    if (
+      event.status ===
+      "APPROVED"
+    ) {
 
-    return () => clearInterval(interval);
+      return {
+        text: "Đang mở bán",
+        color:
+          "bg-green-500/20 text-green-400 border-green-500/20",
+      };
 
-  }, []);
+    }
+
+    if (
+      event.status ===
+      "PENDING"
+    ) {
+
+      return {
+        text: "Chờ duyệt",
+        color:
+          "bg-yellow-500/20 text-yellow-400 border-yellow-500/20",
+      };
+
+    }
+
+    return {
+      text: "Đã hủy",
+      color:
+        "bg-red-500/20 text-red-400 border-red-500/20",
+    };
+
+  };
+
+  const status =
+    getStatus();
 
   return (
 
@@ -47,17 +88,17 @@ export default function HeroSection({ event }) {
         className="
           relative
           overflow-hidden
-          rounded-[32px]
-          h-[460px]
+          rounded-[36px]
+          h-[520px]
           bg-black
           border
-          border-gray-800
+          border-white/10
         "
       >
 
         {/* IMAGE */}
         <img
-          src={images[currentImage]}
+          src={imageUrl}
           alt={event.title}
           className="
             absolute
@@ -65,8 +106,6 @@ export default function HeroSection({ event }) {
             w-full
             h-full
             object-cover
-            transition-all
-            duration-700
             opacity-70
           "
         />
@@ -79,7 +118,7 @@ export default function HeroSection({ event }) {
             bg-gradient-to-r
             from-black
             via-black/70
-            to-transparent
+            to-black/20
           "
         />
 
@@ -88,32 +127,51 @@ export default function HeroSection({ event }) {
           className="
             absolute
             inset-0
+            z-10
             flex
             flex-col
             justify-center
             px-12
-            z-10
           "
         >
 
-          {/* LABEL */}
-          <div
-            className="
-              w-fit
-              px-4
-              py-2
-              rounded-full
-              bg-sky-500/20
-              border
-              border-sky-400/30
-              text-sky-300
-              text-sm
-              font-semibold
-              backdrop-blur-sm
-              mb-5
-            "
-          >
-            ✨ SỰ KIỆN NỔI BẬT
+          {/* TOP BADGES */}
+          <div className="flex gap-3 mb-5">
+
+            {/* FEATURED */}
+            <div
+              className="
+                px-4
+                py-2
+                rounded-full
+                bg-sky-500/20
+                border
+                border-sky-500/20
+                text-sky-300
+                text-sm
+                font-semibold
+                backdrop-blur-sm
+              "
+            >
+              SỰ KIỆN NỔI BẬT
+            </div>
+
+            {/* STATUS */}
+            <div
+              className={`
+                px-4
+                py-2
+                rounded-full
+                border
+                text-sm
+                font-semibold
+                backdrop-blur-sm
+                ${status.color}
+              `}
+            >
+              {status.text}
+            </div>
+
           </div>
 
           {/* TITLE */}
@@ -122,8 +180,8 @@ export default function HeroSection({ event }) {
               text-5xl
               md:text-6xl
               font-black
-              max-w-3xl
               leading-tight
+              max-w-4xl
             "
           >
             {event.title}
@@ -134,21 +192,46 @@ export default function HeroSection({ event }) {
             className="
               mt-5
               text-gray-300
-              max-w-2xl
               text-lg
+              max-w-2xl
               leading-relaxed
               line-clamp-3
             "
           >
-            {event.description}
+            {event.description ||
+              "Sự kiện đang cập nhật mô tả"}
           </p>
 
+          {/* DATE */}
+          <div
+            className="
+              mt-6
+              text-gray-300
+              text-base
+            "
+          >
+            📅 {formattedDate}
+          </div>
+
+          {/* LOCATION */}
+          <div
+            className="
+              mt-2
+              text-gray-400
+              text-base
+            "
+          >
+            📍 {event.location}
+          </div>
+
           {/* BUTTON */}
-          <div className="mt-8">
+          <div className="mt-10">
 
             <button
               onClick={() =>
-                navigate(`/events/${event.id}`)
+                navigate(
+                  `/events/${event.id}`
+                )
               }
               className="
                 px-8
@@ -168,43 +251,6 @@ export default function HeroSection({ event }) {
             </button>
 
           </div>
-
-        </div>
-
-        {/* DOTS */}
-        <div
-          className="
-            absolute
-            bottom-6
-            left-1/2
-            -translate-x-1/2
-            flex
-            gap-3
-            z-20
-          "
-        >
-
-          {images.map((_, index) => (
-
-            <button
-              key={index}
-              onClick={() =>
-                setCurrentImage(index)
-              }
-              className={`
-                w-3
-                h-3
-                rounded-full
-                transition-all
-                ${
-                  currentImage === index
-                    ? "bg-white scale-125"
-                    : "bg-white/40"
-                }
-              `}
-            />
-
-          ))}
 
         </div>
 

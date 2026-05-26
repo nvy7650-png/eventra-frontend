@@ -1,4 +1,11 @@
-import { useNavigate } from "react-router-dom";
+import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+} from "react-router-dom";
 
 import {
   LayoutDashboard,
@@ -20,6 +27,48 @@ export default function AdminDashboard() {
     localStorage.getItem("user")
   );
 
+  const [stats, setStats] =
+    useState({
+
+      totalUsers: 0,
+      totalEvents: 0,
+      totalOrders: 0,
+      revenue: 0,
+
+    });
+
+  const [loading, setLoading] =
+    useState(true);
+
+  // GET ADMIN STATS
+  useEffect(() => {
+
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/admin/stats`
+    )
+
+      .then((res) => res.json())
+
+      .then((data) => {
+
+        setStats(data);
+
+      })
+
+      .catch((err) => {
+
+        console.log(err);
+
+      })
+
+      .finally(() => {
+
+        setLoading(false);
+
+      });
+
+  }, []);
+
   // LOGOUT
   const handleLogout = () => {
 
@@ -30,6 +79,49 @@ export default function AdminDashboard() {
     window.location.reload();
 
   };
+
+  // LOADING
+  if (loading) {
+
+    return (
+
+      <div
+        className="
+          min-h-screen
+          bg-[#050816]
+          flex
+          items-center
+          justify-center
+          text-white
+        "
+      >
+
+        <div className="text-center">
+
+          <div
+            className="
+              w-12
+              h-12
+              border-4
+              border-sky-400
+              border-t-transparent
+              rounded-full
+              animate-spin
+              mx-auto
+            "
+          />
+
+          <p className="mt-4 text-gray-400">
+            Đang tải dashboard...
+          </p>
+
+        </div>
+
+      </div>
+
+    );
+
+  }
 
   return (
 
@@ -54,7 +146,14 @@ export default function AdminDashboard() {
           {/* LOGO */}
           <div className="mb-10">
 
-            <h1 className="text-3xl font-black text-sky-400 tracking-wide">
+            <h1
+              className="
+                text-3xl
+                font-black
+                text-sky-400
+                tracking-wide
+              "
+            >
               HOMIETICKET
             </h1>
 
@@ -132,7 +231,7 @@ export default function AdminDashboard() {
               Dashboard
             </button>
 
-            {/* ACCOUNT */}
+            {/* USERS */}
             <button
               className="
                 w-full
@@ -150,7 +249,7 @@ export default function AdminDashboard() {
               Quản lý tài khoản
             </button>
 
-            {/* EVENT */}
+            {/* EVENTS */}
             <button
               className="
                 w-full
@@ -168,7 +267,7 @@ export default function AdminDashboard() {
               Quản lý sự kiện
             </button>
 
-            {/* ORDER */}
+            {/* ORDERS */}
             <button
               className="
                 w-full
@@ -262,8 +361,11 @@ export default function AdminDashboard() {
             mt-6
           "
         >
+
           <LogOut size={18} />
+
           Đăng xuất
+
         </button>
 
       </aside>
@@ -298,7 +400,9 @@ export default function AdminDashboard() {
           </div>
 
           <button
-            onClick={() => navigate("/")}
+            onClick={() =>
+              navigate("/")
+            }
             className="
               flex
               items-center
@@ -313,8 +417,11 @@ export default function AdminDashboard() {
               transition
             "
           >
+
             Trang chủ
+
             <ChevronRight size={18} />
+
           </button>
 
         </div>
@@ -340,8 +447,14 @@ export default function AdminDashboard() {
                 Tổng Users
               </p>
 
-              <h2 className="text-5xl font-black text-sky-400">
-                0
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-sky-400
+                "
+              >
+                {stats.totalUsers}
               </h2>
 
             </div>
@@ -361,8 +474,14 @@ export default function AdminDashboard() {
                 Tổng sự kiện
               </p>
 
-              <h2 className="text-5xl font-black text-pink-400">
-                0
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-pink-400
+                "
+              >
+                {stats.totalEvents}
               </h2>
 
             </div>
@@ -382,8 +501,14 @@ export default function AdminDashboard() {
                 Tổng đơn hàng
               </p>
 
-              <h2 className="text-5xl font-black text-green-400">
-                0
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-green-400
+                "
+              >
+                {stats.totalOrders}
               </h2>
 
             </div>
@@ -403,8 +528,15 @@ export default function AdminDashboard() {
                 Doanh thu
               </p>
 
-              <h2 className="text-5xl font-black text-orange-400">
-                0đ
+              <h2
+                className="
+                  text-5xl
+                  font-black
+                  text-orange-400
+                "
+              >
+                {Number(stats.revenue)
+                  .toLocaleString("vi-VN")}đ
               </h2>
 
             </div>

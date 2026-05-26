@@ -1,4 +1,9 @@
 import {
+  useEffect,
+  useState,
+} from "react";
+
+import {
   LayoutDashboard,
   CalendarDays,
   Ticket,
@@ -10,7 +15,9 @@ import {
   BadgePercent,
 } from "lucide-react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+} from "react-router-dom";
 
 export default function OrganizerDashboard() {
 
@@ -19,6 +26,49 @@ export default function OrganizerDashboard() {
   const user = JSON.parse(
     localStorage.getItem("user")
   );
+
+  const [stats, setStats] =
+    useState({
+
+      totalEvents: 0,
+      totalTickets: 0,
+      revenue: 0,
+
+    });
+
+  const [loading, setLoading] =
+    useState(true);
+
+  // GET STATS
+  useEffect(() => {
+
+    fetch(
+
+      `${import.meta.env.VITE_API_URL}/api/events/organizer/${user.id}/stats`
+
+    )
+
+      .then((res) => res.json())
+
+      .then((data) => {
+
+        setStats(data);
+
+      })
+
+      .catch((err) => {
+
+        console.log(err);
+
+      })
+
+      .finally(() => {
+
+        setLoading(false);
+
+      });
+
+  }, []);
 
   // LOGOUT
   const handleLogout = () => {
@@ -30,6 +80,49 @@ export default function OrganizerDashboard() {
     window.location.reload();
 
   };
+
+  // LOADING
+  if (loading) {
+
+    return (
+
+      <div
+        className="
+          min-h-screen
+          bg-[#050816]
+          flex
+          items-center
+          justify-center
+          text-white
+        "
+      >
+
+        <div className="text-center">
+
+          <div
+            className="
+              w-12
+              h-12
+              border-4
+              border-sky-400
+              border-t-transparent
+              rounded-full
+              animate-spin
+              mx-auto
+            "
+          />
+
+          <p className="mt-4 text-gray-400">
+            Đang tải dashboard...
+          </p>
+
+        </div>
+
+      </div>
+
+    );
+
+  }
 
   return (
 
@@ -135,8 +228,11 @@ export default function OrganizerDashboard() {
                 font-semibold
               "
             >
+
               <LayoutDashboard size={20} />
+
               Dashboard
+
             </button>
 
             {/* EVENTS */}
@@ -153,8 +249,11 @@ export default function OrganizerDashboard() {
                 transition
               "
             >
+
               <CalendarDays size={20} />
+
               Sự kiện của tôi
+
             </button>
 
             {/* TICKETS */}
@@ -171,8 +270,11 @@ export default function OrganizerDashboard() {
                 transition
               "
             >
+
               <Ticket size={20} />
+
               Quản lý vé
+
             </button>
 
             {/* PROMOTIONS */}
@@ -189,8 +291,11 @@ export default function OrganizerDashboard() {
                 transition
               "
             >
+
               <BadgePercent size={20} />
+
               Khuyến mãi
+
             </button>
 
             {/* REVENUE */}
@@ -207,8 +312,11 @@ export default function OrganizerDashboard() {
                 transition
               "
             >
+
               <Wallet size={20} />
+
               Doanh thu
+
             </button>
 
             {/* SETTINGS */}
@@ -225,8 +333,11 @@ export default function OrganizerDashboard() {
                 transition
               "
             >
+
               <Settings size={20} />
+
               Cài đặt
+
             </button>
 
           </div>
@@ -250,8 +361,11 @@ export default function OrganizerDashboard() {
             transition
           "
         >
+
           <LogOut size={18} />
+
           Đăng xuất
+
         </button>
 
       </aside>
@@ -287,7 +401,9 @@ export default function OrganizerDashboard() {
 
           {/* HOME */}
           <button
-            onClick={() => navigate("/")}
+            onClick={() =>
+              navigate("/")
+            }
             className="
               flex
               items-center
@@ -302,8 +418,11 @@ export default function OrganizerDashboard() {
               transition
             "
           >
+
             Trang chủ
+
             <ChevronRight size={18} />
+
           </button>
 
         </div>
@@ -336,7 +455,7 @@ export default function OrganizerDashboard() {
                   text-sky-400
                 "
               >
-                0
+                {stats.totalEvents}
               </h2>
 
             </div>
@@ -363,7 +482,7 @@ export default function OrganizerDashboard() {
                   text-green-400
                 "
               >
-                0
+                {stats.totalTickets}
               </h2>
 
             </div>
@@ -390,7 +509,8 @@ export default function OrganizerDashboard() {
                   text-pink-400
                 "
               >
-                0đ
+                {Number(stats.revenue)
+                  .toLocaleString("vi-VN")}đ
               </h2>
 
             </div>
@@ -402,9 +522,11 @@ export default function OrganizerDashboard() {
 
             <button
               onClick={() =>
+
                 navigate(
                   "/organizer/create-event"
                 )
+
               }
               className="
                 flex

@@ -1,103 +1,161 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import {
+  useState,
+} from "react";
+
+import {
+  useNavigate,
+} from "react-router-dom";
 
 export default function Login() {
 
   const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
+  const [formData,
+    setFormData] =
+    useState({
 
-  const [error, setError] = useState("");
+      email: "",
+      password: "",
+
+    });
+
+  const [error,
+    setError] =
+    useState("");
+
+  const [loading,
+    setLoading] =
+    useState(false);
+
+  const [showPassword,
+    setShowPassword] =
+    useState(false);
 
   // HANDLE INPUT
   const handleChange = (e) => {
 
     setFormData({
+
       ...formData,
-      [e.target.name]: e.target.value,
+
+      [e.target.name]:
+        e.target.value,
+
     });
 
   };
 
   // HANDLE LOGIN
-  const handleSubmit = async (e) => {
+  const handleSubmit =
+    async (e) => {
 
-    e.preventDefault();
+      e.preventDefault();
 
-    setError("");
+      setError("");
 
-    try {
+      setLoading(true);
 
-      const res = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/login`,
-        {
-          method: "POST",
+      try {
 
-          headers: {
-            "Content-Type": "application/json",
-          },
+        const res = await fetch(
 
-          body: JSON.stringify(formData),
-        }
-      );
+          `${import.meta.env.VITE_API_URL}/api/auth/login`,
 
-      const data = await res.json();
+          {
 
-      console.log("STATUS:", res.status);
-      console.log("DATA:", data);
+            method: "POST",
 
-      // LOGIN FAIL
-      if (!res.ok) {
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
 
-        setError(
-          data.message ||
-          "Sai email hoặc mật khẩu"
+            body:
+              JSON.stringify(formData),
+
+          }
+
         );
 
-        return;
+        const data =
+          await res.json();
+
+        // LOGIN FAIL
+        if (!res.ok) {
+
+          setError(
+
+            data.message ||
+
+            "Sai email hoặc mật khẩu"
+
+          );
+
+          setLoading(false);
+
+          return;
+
+        }
+
+        // SAVE USER
+        localStorage.setItem(
+
+          "user",
+
+          JSON.stringify(data.user)
+
+        );
+
+        // ADMIN
+        if (
+          data.user.role ===
+          "ADMIN"
+        ) {
+
+          navigate(
+            "/admin/dashboard"
+          );
+
+        }
+
+        // ORGANIZER
+        else if (
+
+          data.user.role ===
+          "ORGANIZER"
+
+        ) {
+
+          navigate(
+            "/organizer/dashboard"
+          );
+
+        }
+
+        // USER
+        else {
+
+          navigate(
+            "/user/dashboard"
+          );
+
+        }
+
+      } catch (err) {
+
+        console.log(err);
+
+        setError(
+          "Không thể kết nối server"
+        );
+
+      } finally {
+
+        setLoading(false);
 
       }
 
-      // SAVE USER
-      localStorage.setItem(
-        "user",
-        JSON.stringify(data.user)
-      );
-
-      // ADMIN
-if (data.user.role === "ADMIN") {
-
-  window.location.href =
-    "/admin/dashboard";
-
-// ORGANIZER
-} else if (
-  data.user.role === "ORGANIZER"
-) {
-
-  window.location.href =
-    "/organizer/dashboard";
-
-// USER
-} else {
-
-  window.location.href =
-    "/user/dashboard";
-
-}
-
-    } catch (err) {
-
-      console.log(err);
-
-      setError("Không thể kết nối server");
-
-    }
-
-  };
+    };
 
   return (
 
@@ -118,7 +176,7 @@ if (data.user.role === "ADMIN") {
           max-w-md
           bg-[#0B1220]
           border
-          border-gray-800
+          border-white/10
           rounded-3xl
           p-8
           shadow-2xl
@@ -191,57 +249,97 @@ if (data.user.role === "ADMIN") {
           </div>
 
           {/* PASSWORD */}
-<div>
+          <div>
 
-  <label
-    className="
-      text-sm
-      text-gray-400
-      mb-2
-      block
-    "
-  >
-    Mật khẩu
-  </label>
+            <label
+              className="
+                text-sm
+                text-gray-400
+                mb-2
+                block
+              "
+            >
+              Mật khẩu
+            </label>
 
-  <input
-    type="password"
-    name="password"
-    placeholder="Nhập mật khẩu"
-    value={formData.password}
-    onChange={handleChange}
-    className="
-      w-full
-      px-4
-      py-3
-      rounded-2xl
-      bg-[#111827]
-      border
-      border-gray-700
-      text-white
-      placeholder-gray-500
-      focus:outline-none
-      focus:border-sky-400
-      transition
-    "
-    required
-  />
+            <input
+              type={
+                showPassword
+                  ? "text"
+                  : "password"
+              }
+              name="password"
+              placeholder="Nhập mật khẩu"
+              value={formData.password}
+              onChange={handleChange}
+              className="
+                w-full
+                px-4
+                py-3
+                rounded-2xl
+                bg-[#111827]
+                border
+                border-gray-700
+                text-white
+                placeholder-gray-500
+                focus:outline-none
+                focus:border-sky-400
+                transition
+              "
+              required
+            />
 
-  {/* FORGOT PASSWORD */}
-  <button
-    type="button"
-    className="
-      mt-3
-      text-sm
-      text-sky-400
-      hover:text-sky-300
-      transition
-    "
-  >
-    Quên mật khẩu?
-  </button>
+            {/* ACTIONS */}
+            <div
+              className="
+                mt-3
+                flex
+                items-center
+                justify-between
+              "
+            >
 
-</div>
+              {/* SHOW PASSWORD */}
+              <button
+                type="button"
+                onClick={() =>
+
+                  setShowPassword(
+                    !showPassword
+                  )
+
+                }
+                className="
+                  text-sm
+                  text-gray-400
+                  hover:text-sky-400
+                  transition
+                "
+              >
+
+                {showPassword
+                  ? "Ẩn mật khẩu"
+                  : "Hiện mật khẩu"}
+
+              </button>
+
+              {/* FORGOT PASSWORD */}
+              <button
+                type="button"
+                className="
+                  text-sm
+                  text-sky-400
+                  hover:text-sky-300
+                  transition
+                "
+              >
+                Quên mật khẩu?
+              </button>
+
+            </div>
+
+          </div>
+
           {/* ERROR */}
           {error && (
 
@@ -265,19 +363,25 @@ if (data.user.role === "ADMIN") {
           {/* BUTTON */}
           <button
             type="submit"
+            disabled={loading}
             className="
               w-full
               py-3
               rounded-2xl
               bg-sky-500
               hover:bg-sky-400
+              disabled:opacity-50
               text-black
               font-bold
               text-lg
               transition
             "
           >
-            Đăng nhập
+
+            {loading
+              ? "Đang đăng nhập..."
+              : "Đăng nhập"}
+
           </button>
 
         </form>
@@ -295,7 +399,9 @@ if (data.user.role === "ADMIN") {
           Chưa có tài khoản?{" "}
 
           <span
-            onClick={() => navigate("/register")}
+            onClick={() =>
+              navigate("/register")
+            }
             className="
               text-sky-400
               hover:text-sky-300
