@@ -19,6 +19,8 @@ import AdminDashboard from "./pages/AdminDashboard";
 
 import CreateEvent from "./pages/CreateEvent";
 
+import SetupTickets from "./pages/SetupTickets";
+
 function App() {
 
   // GET USER
@@ -119,6 +121,20 @@ function App() {
             <ProtectedRoute role="ORGANIZER">
 
               <CreateEvent />
+
+            </ProtectedRoute>
+
+          }
+        />
+
+        {/* STEP 2 - SETUP TICKETS */}
+        <Route
+          path="/organizer/event/:id/tickets"
+          element={
+
+            <ProtectedRoute role="ORGANIZER">
+
+              <SetupTickets />
 
             </ProtectedRoute>
 
