@@ -15,11 +15,15 @@ import OrganizerRegister from "./pages/OrganizerRegister";
 
 import OrganizerDashboard from "./pages/OrganizerDashboard";
 
+import OrganizerEvents from "./pages/OrganizerEvents";
+
 import AdminDashboard from "./pages/AdminDashboard";
 
 import CreateEvent from "./pages/CreateEvent";
 
 import SetupTickets from "./pages/SetupTickets";
+
+import OrganizerPayment from "./pages/OrganizerPayment";
 
 function App() {
 
@@ -31,6 +35,7 @@ function App() {
   // ============================
   // PROTECTED ROUTE
   // ============================
+
   const ProtectedRoute = ({
     children,
     role,
@@ -113,6 +118,20 @@ function App() {
           }
         />
 
+        {/* ORGANIZER EVENTS */}
+        <Route
+          path="/organizer/events"
+          element={
+
+            <ProtectedRoute role="ORGANIZER">
+
+              <OrganizerEvents />
+
+            </ProtectedRoute>
+
+          }
+        />
+
         {/* CREATE EVENT */}
         <Route
           path="/organizer/create-event"
@@ -127,7 +146,7 @@ function App() {
           }
         />
 
-        {/* STEP 2 - SETUP TICKETS */}
+        {/* STEP 2 */}
         <Route
           path="/organizer/event/:id/tickets"
           element={
@@ -135,6 +154,20 @@ function App() {
             <ProtectedRoute role="ORGANIZER">
 
               <SetupTickets />
+
+            </ProtectedRoute>
+
+          }
+        />
+
+        {/* STEP 3 */}
+        <Route
+          path="/organizer/event/:id/payment"
+          element={
+
+            <ProtectedRoute role="ORGANIZER">
+
+              <OrganizerPayment />
 
             </ProtectedRoute>
 
