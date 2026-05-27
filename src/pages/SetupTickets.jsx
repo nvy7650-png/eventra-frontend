@@ -47,6 +47,10 @@ export default function SetupTickets() {
 
             quantity: "",
 
+            sale_start: "",
+
+            sale_end: "",
+
           },
 
         ],
@@ -100,6 +104,10 @@ export default function SetupTickets() {
             price: "",
 
             quantity: "",
+
+            sale_start: "",
+
+            sale_end: "",
 
           },
 
@@ -177,6 +185,10 @@ export default function SetupTickets() {
       price: "",
 
       quantity: "",
+
+      sale_start: "",
+
+      sale_end: "",
 
     });
 
@@ -424,7 +436,7 @@ export default function SetupTickets() {
 
                   </div>
 
-                  {/* TIMES */}
+                  {/* SHOWTIME TIME */}
                   <div
                     className="
                       grid
@@ -433,61 +445,95 @@ export default function SetupTickets() {
                     "
                   >
 
-                    <input
-                      type="datetime-local"
-                      value={
-                        showtime.start_time
-                      }
-                      onChange={(e) =>
+                    <div>
 
-                        handleShowtimeChange(
+                      <label
+                        className="
+                          text-sm
+                          text-gray-400
+                          block
+                          mb-2
+                        "
+                      >
+                        Thời gian bắt đầu *
+                      </label>
 
-                          showtimeIndex,
+                      <input
+                        type="datetime-local"
+                        value={
+                          showtime.start_time
+                        }
+                        onChange={(e) =>
 
-                          "start_time",
+                          handleShowtimeChange(
 
-                          e.target.value
+                            showtimeIndex,
 
-                        )
+                            "start_time",
 
-                      }
-                      className="
-                        px-4
-                        py-4
-                        rounded-2xl
-                        bg-[#0B1120]
-                        border
-                        border-white/10
-                      "
-                    />
+                            e.target.value
 
-                    <input
-                      type="datetime-local"
-                      value={
-                        showtime.end_time
-                      }
-                      onChange={(e) =>
+                          )
 
-                        handleShowtimeChange(
+                        }
+                        className="
+                          w-full
+                          px-4
+                          py-4
+                          rounded-2xl
+                          bg-[#0B1120]
+                          border
+                          border-white/10
+                        "
+                        required
+                      />
 
-                          showtimeIndex,
+                    </div>
 
-                          "end_time",
+                    <div>
 
-                          e.target.value
+                      <label
+                        className="
+                          text-sm
+                          text-gray-400
+                          block
+                          mb-2
+                        "
+                      >
+                        Thời gian kết thúc *
+                      </label>
 
-                        )
+                      <input
+                        type="datetime-local"
+                        value={
+                          showtime.end_time
+                        }
+                        onChange={(e) =>
 
-                      }
-                      className="
-                        px-4
-                        py-4
-                        rounded-2xl
-                        bg-[#0B1120]
-                        border
-                        border-white/10
-                      "
-                    />
+                          handleShowtimeChange(
+
+                            showtimeIndex,
+
+                            "end_time",
+
+                            e.target.value
+
+                          )
+
+                        }
+                        className="
+                          w-full
+                          px-4
+                          py-4
+                          rounded-2xl
+                          bg-[#0B1120]
+                          border
+                          border-white/10
+                        "
+                        required
+                      />
+
+                    </div>
 
                   </div>
 
@@ -554,131 +600,323 @@ export default function SetupTickets() {
                           <div
                             key={ticketIndex}
                             className="
-                              grid
-                              md:grid-cols-4
-                              gap-3
+                              bg-[#0B1120]
+                              border
+                              border-white/10
+                              rounded-3xl
+                              p-5
+                              space-y-5
                             "
                           >
 
-                            <input
-                              type="text"
-                              placeholder="Tên vé"
-                              value={
-                                ticket.name
-                              }
-                              onChange={(e) =>
-
-                                handleTicketChange(
-
-                                  showtimeIndex,
-
-                                  ticketIndex,
-
-                                  "name",
-
-                                  e.target.value
-
-                                )
-
-                              }
+                            {/* HEADER */}
+                            <div
                               className="
-                                px-4
-                                py-4
-                                rounded-2xl
-                                bg-[#0B1120]
-                                border
-                                border-white/10
-                              "
-                            />
-
-                            <input
-                              type="number"
-                              placeholder="Giá vé"
-                              value={
-                                ticket.price
-                              }
-                              onChange={(e) =>
-
-                                handleTicketChange(
-
-                                  showtimeIndex,
-
-                                  ticketIndex,
-
-                                  "price",
-
-                                  e.target.value
-
-                                )
-
-                              }
-                              className="
-                                px-4
-                                py-4
-                                rounded-2xl
-                                bg-[#0B1120]
-                                border
-                                border-white/10
-                              "
-                            />
-
-                            <input
-                              type="number"
-                              placeholder="Số lượng"
-                              value={
-                                ticket.quantity
-                              }
-                              onChange={(e) =>
-
-                                handleTicketChange(
-
-                                  showtimeIndex,
-
-                                  ticketIndex,
-
-                                  "quantity",
-
-                                  e.target.value
-
-                                )
-
-                              }
-                              className="
-                                px-4
-                                py-4
-                                rounded-2xl
-                                bg-[#0B1120]
-                                border
-                                border-white/10
-                              "
-                            />
-
-                            <button
-                              onClick={() =>
-
-                                removeTicket(
-
-                                  showtimeIndex,
-
-                                  ticketIndex
-
-                                )
-
-                              }
-                              className="
-                                rounded-2xl
-                                bg-red-500
                                 flex
                                 items-center
-                                justify-center
+                                justify-between
                               "
                             >
 
-                              <Trash2
-                                size={18}
-                              />
+                              <h4
+                                className="
+                                  text-lg
+                                  font-bold
+                                "
+                              >
+                                Loại vé #
 
-                            </button>
+                                {ticketIndex + 1}
+
+                              </h4>
+
+                              <button
+                                onClick={() =>
+
+                                  removeTicket(
+
+                                    showtimeIndex,
+
+                                    ticketIndex
+
+                                  )
+
+                                }
+                                className="
+                                  w-11
+                                  h-11
+                                  rounded-2xl
+                                  bg-red-500
+                                  flex
+                                  items-center
+                                  justify-center
+                                "
+                              >
+
+                                <Trash2
+                                  size={18}
+                                />
+
+                              </button>
+
+                            </div>
+
+                            {/* BASIC */}
+                            <div
+                              className="
+                                grid
+                                md:grid-cols-3
+                                gap-4
+                              "
+                            >
+
+                              <div>
+
+                                <label
+                                  className="
+                                    text-sm
+                                    text-gray-400
+                                    block
+                                    mb-2
+                                  "
+                                >
+                                  Tên loại vé *
+                                </label>
+
+                                <input
+                                  type="text"
+                                  value={
+                                    ticket.name
+                                  }
+                                  onChange={(e) =>
+
+                                    handleTicketChange(
+
+                                      showtimeIndex,
+
+                                      ticketIndex,
+
+                                      "name",
+
+                                      e.target.value
+
+                                    )
+
+                                  }
+                                  className="
+                                    w-full
+                                    px-4
+                                    py-4
+                                    rounded-2xl
+                                    bg-[#111827]
+                                    border
+                                    border-white/10
+                                  "
+                                  required
+                                />
+
+                              </div>
+
+                              <div>
+
+                                <label
+                                  className="
+                                    text-sm
+                                    text-gray-400
+                                    block
+                                    mb-2
+                                  "
+                                >
+                                  Giá vé *
+                                </label>
+
+                                <input
+                                  type="number"
+                                  value={
+                                    ticket.price
+                                  }
+                                  onChange={(e) =>
+
+                                    handleTicketChange(
+
+                                      showtimeIndex,
+
+                                      ticketIndex,
+
+                                      "price",
+
+                                      e.target.value
+
+                                    )
+
+                                  }
+                                  className="
+                                    w-full
+                                    px-4
+                                    py-4
+                                    rounded-2xl
+                                    bg-[#111827]
+                                    border
+                                    border-white/10
+                                  "
+                                  required
+                                />
+
+                              </div>
+
+                              <div>
+
+                                <label
+                                  className="
+                                    text-sm
+                                    text-gray-400
+                                    block
+                                    mb-2
+                                  "
+                                >
+                                  Số lượng vé *
+                                </label>
+
+                                <input
+                                  type="number"
+                                  value={
+                                    ticket.quantity
+                                  }
+                                  onChange={(e) =>
+
+                                    handleTicketChange(
+
+                                      showtimeIndex,
+
+                                      ticketIndex,
+
+                                      "quantity",
+
+                                      e.target.value
+
+                                    )
+
+                                  }
+                                  className="
+                                    w-full
+                                    px-4
+                                    py-4
+                                    rounded-2xl
+                                    bg-[#111827]
+                                    border
+                                    border-white/10
+                                  "
+                                  required
+                                />
+
+                              </div>
+
+                            </div>
+
+                            {/* SALE TIME */}
+                            <div
+                              className="
+                                grid
+                                md:grid-cols-2
+                                gap-4
+                              "
+                            >
+
+                              <div>
+
+                                <label
+                                  className="
+                                    text-sm
+                                    text-gray-400
+                                    block
+                                    mb-2
+                                  "
+                                >
+                                  Thời gian bắt đầu bán vé *
+                                </label>
+
+                                <input
+                                  type="datetime-local"
+                                  value={
+                                    ticket.sale_start
+                                  }
+                                  onChange={(e) =>
+
+                                    handleTicketChange(
+
+                                      showtimeIndex,
+
+                                      ticketIndex,
+
+                                      "sale_start",
+
+                                      e.target.value
+
+                                    )
+
+                                  }
+                                  className="
+                                    w-full
+                                    px-4
+                                    py-4
+                                    rounded-2xl
+                                    bg-[#111827]
+                                    border
+                                    border-white/10
+                                  "
+                                  required
+                                />
+
+                              </div>
+
+                              <div>
+
+                                <label
+                                  className="
+                                    text-sm
+                                    text-gray-400
+                                    block
+                                    mb-2
+                                  "
+                                >
+                                  Thời gian kết thúc bán vé *
+                                </label>
+
+                                <input
+                                  type="datetime-local"
+                                  value={
+                                    ticket.sale_end
+                                  }
+                                  onChange={(e) =>
+
+                                    handleTicketChange(
+
+                                      showtimeIndex,
+
+                                      ticketIndex,
+
+                                      "sale_end",
+
+                                      e.target.value
+
+                                    )
+
+                                  }
+                                  className="
+                                    w-full
+                                    px-4
+                                    py-4
+                                    rounded-2xl
+                                    bg-[#111827]
+                                    border
+                                    border-white/10
+                                  "
+                                  required
+                                />
+
+                              </div>
+
+                            </div>
 
                           </div>
 
