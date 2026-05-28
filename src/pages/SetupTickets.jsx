@@ -29,8 +29,11 @@ const handleSubmit =
 
       // EMPTY
       if (
+
         !showtime.start_time ||
+
         !showtime.end_time
+
       ) {
 
         alert(
@@ -211,6 +214,21 @@ const handleSubmit =
           alert(
 
             `Loại vé #${j + 1} - Suất diễn #${i + 1}: Hạn cuối bán vé phải trước thời gian bắt đầu sự kiện`
+
+          );
+
+          return;
+
+        }
+
+        // SALE START < EVENT START
+        if (
+          saleStart >= startTime
+        ) {
+
+          alert(
+
+            `Loại vé #${j + 1} - Suất diễn #${i + 1}: Thời gian bắt đầu bán vé phải trước thời gian bắt đầu sự kiện`
 
           );
 
