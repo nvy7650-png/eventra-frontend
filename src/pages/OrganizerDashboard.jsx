@@ -266,6 +266,14 @@ export default function OrganizerDashboard() {
 
             {/* DASHBOARD */}
             <button
+              type="button"
+              onClick={() => {
+
+                navigate(
+                  "/organizer/dashboard"
+                );
+
+              }}
               className="
                 w-full
                 flex
@@ -288,13 +296,14 @@ export default function OrganizerDashboard() {
 
             {/* EVENTS */}
             <button
-              onClick={() =>
+              type="button"
+              onClick={() => {
 
                 navigate(
                   "/organizer/events"
-                )
+                );
 
-              }
+              }}
               className="
                 w-full
                 flex
@@ -316,6 +325,7 @@ export default function OrganizerDashboard() {
 
             {/* TICKETS */}
             <button
+              type="button"
               className="
                 w-full
                 flex
@@ -337,6 +347,7 @@ export default function OrganizerDashboard() {
 
             {/* PROMOTIONS */}
             <button
+              type="button"
               className="
                 w-full
                 flex
@@ -358,6 +369,7 @@ export default function OrganizerDashboard() {
 
             {/* REVENUE */}
             <button
+              type="button"
               className="
                 w-full
                 flex
@@ -379,6 +391,7 @@ export default function OrganizerDashboard() {
 
             {/* SETTINGS */}
             <button
+              type="button"
               className="
                 w-full
                 flex
@@ -404,6 +417,7 @@ export default function OrganizerDashboard() {
 
         {/* LOGOUT */}
         <button
+          type="button"
           onClick={handleLogout}
           className="
             w-full
@@ -459,9 +473,12 @@ export default function OrganizerDashboard() {
 
           {/* HOME */}
           <button
-            onClick={() =>
-              navigate("/")
-            }
+            type="button"
+            onClick={() => {
+
+              navigate("/");
+
+            }}
             className="
               flex
               items-center
@@ -585,13 +602,14 @@ export default function OrganizerDashboard() {
           <div className="mt-8">
 
             <button
-              onClick={() =>
+              type="button"
+              onClick={() => {
 
                 navigate(
                   "/organizer/create-event"
-                )
+                );
 
-              }
+              }}
               className="
                 flex
                 items-center
