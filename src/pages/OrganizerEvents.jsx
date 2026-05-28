@@ -1,883 +1,466 @@
 import {
+  useEffect,
   useState,
 } from "react";
 
 import {
   useNavigate,
-  useParams,
 } from "react-router-dom";
 
 import {
+  ChevronRight,
   Plus,
-  Trash2,
-  Ticket,
+  LayoutDashboard,
 } from "lucide-react";
 
-function SetupTickets() {
+export default function OrganizerEvents() {
 
-  const navigate =
-    useNavigate();
+  const navigate = useNavigate();
 
-  const { id } =
-    useParams();
+  const user = JSON.parse(
+    localStorage.getItem("user")
+  );
 
-  const [loading, setLoading] =
-    useState(false);
+  const [events,
+    setEvents] =
+    useState([]);
 
-  const [showtimes, setShowtimes] =
-    useState([
-
-      {
-
-        start_time: "",
-
-        end_time: "",
-
-        tickets: [],
-
-      },
-
-    ]);
+  const [loading,
+    setLoading] =
+    useState(true);
 
   // ============================
-  // ADD SHOWTIME
+  // GET EVENTS
   // ============================
 
-  const addShowtime =
-    () => {
+  useEffect(() => {
 
-      setShowtimes([
+    fetch(
 
-        ...showtimes,
+      `${import.meta.env.VITE_API_URL}/api/events/organizer/${user.id}`
 
-        {
+    )
 
-          start_time: "",
+      .then((res) => res.json())
 
-          end_time: "",
+      .then((data) => {
 
-          tickets: [],
+        setEvents(data);
 
-        },
+      })
 
-      ]);
-
-    };
-
-  // ============================
-  // REMOVE SHOWTIME
-  // ============================
-
-  const removeShowtime =
-    (index) => {
-
-      const updated =
-        [...showtimes];
-
-      updated.splice(index, 1);
-
-      setShowtimes(updated);
-
-    };
-
-  // ============================
-  // HANDLE SHOWTIME
-  // ============================
-
-  const handleShowtimeChange =
-    (
-      index,
-      field,
-      value
-    ) => {
-
-      const updated =
-        [...showtimes];
-
-      updated[index][field] =
-        value;
-
-      setShowtimes(updated);
-
-    };
-
-  // ============================
-  // ADD TICKET
-  // ============================
-
-  const addTicket =
-    (showtimeIndex) => {
-
-      const updated =
-        [...showtimes];
-
-      updated[
-        showtimeIndex
-      ].tickets.push({
-
-        name: "",
-
-        price: "",
-
-        quantity: "",
-
-        sale_start: "",
-
-        sale_end: "",
-
-      });
-
-      setShowtimes(updated);
-
-    };
-
-  // ============================
-  // REMOVE TICKET
-  // ============================
-
-  const removeTicket =
-    (
-      showtimeIndex,
-      ticketIndex
-    ) => {
-
-      const updated =
-        [...showtimes];
-
-      updated[
-        showtimeIndex
-      ].tickets.splice(
-        ticketIndex,
-        1
-      );
-
-      setShowtimes(updated);
-
-    };
-
-  // ============================
-  // HANDLE TICKET
-  // ============================
-
-  const handleTicketChange =
-    (
-      showtimeIndex,
-      ticketIndex,
-      field,
-      value
-    ) => {
-
-      const updated =
-        [...showtimes];
-
-      updated[
-        showtimeIndex
-      ].tickets[
-        ticketIndex
-      ][field] = value;
-
-      setShowtimes(updated);
-
-    };
-
-  // ============================
-  // SUBMIT
-  // ============================
-
-  const handleSubmit =
-    async () => {
-
-      const now =
-        new Date();
-
-      for (
-        let i = 0;
-        i < showtimes.length;
-        i++
-      ) {
-
-        const showtime =
-          showtimes[i];
-
-        const startTime =
-          new Date(
-            showtime.start_time
-          );
-
-        const endTime =
-          new Date(
-            showtime.end_time
-          );
-
-        // EMPTY
-        if (
-
-          !showtime.start_time ||
-
-          !showtime.end_time
-
-        ) {
-
-          alert(
-
-            `Suất diễn #${i + 1}: Vui lòng nhập đầy đủ thời gian`
-
-          );
-
-          return;
-
-        }
-
-        // EVENT START > NOW
-        if (
-          startTime <= now
-        ) {
-
-          alert(
-
-            `Suất diễn #${i + 1}: Thời gian bắt đầu phải sau hiện tại`
-
-          );
-
-          return;
-
-        }
-
-        // EVENT END > START
-        if (
-          endTime <= startTime
-        ) {
-
-          alert(
-
-            `Suất diễn #${i + 1}: Thời gian kết thúc phải sau thời gian bắt đầu`
-
-          );
-
-          return;
-
-        }
-
-        // NO TICKET
-        if (
-          showtime.tickets
-            .length === 0
-        ) {
-
-          alert(
-
-            `Suất diễn #${i + 1}: Phải có ít nhất 1 loại vé`
-
-          );
-
-          return;
-
-        }
-
-        // ============================
-        // TICKETS
-        // ============================
-
-        for (
-          let j = 0;
-          j <
-          showtime.tickets
-            .length;
-          j++
-        ) {
-
-          const ticket =
-            showtime.tickets[j];
-
-          const saleStart =
-            new Date(
-              ticket.sale_start
-            );
-
-          const saleEnd =
-            new Date(
-              ticket.sale_end
-            );
-
-          // EMPTY
-          if (
-
-            !ticket.name ||
-
-            !ticket.price ||
-
-            !ticket.quantity ||
-
-            !ticket.sale_start ||
-
-            !ticket.sale_end
-
-          ) {
-
-            alert(
-
-              `Loại vé #${j + 1}: Vui lòng nhập đầy đủ thông tin`
-
-            );
-
-            return;
-
-          }
-
-          // PRICE
-          if (
-            Number(
-              ticket.price
-            ) <= 0
-          ) {
-
-            alert(
-
-              `Loại vé #${j + 1}: Giá vé phải lớn hơn 0`
-
-            );
-
-            return;
-
-          }
-
-          // QUANTITY
-          if (
-            Number(
-              ticket.quantity
-            ) <= 0
-          ) {
-
-            alert(
-
-              `Loại vé #${j + 1}: Số lượng vé phải lớn hơn 0`
-
-            );
-
-            return;
-
-          }
-
-          // SALE START > NOW
-          if (
-            saleStart <= now
-          ) {
-
-            alert(
-
-              `Loại vé #${j + 1}: Thời gian bắt đầu bán vé phải sau hiện tại`
-
-            );
-
-            return;
-
-          }
-
-          // SALE END > SALE START
-          if (
-            saleEnd <= saleStart
-          ) {
-
-            alert(
-
-              `Loại vé #${j + 1}: Thời gian kết thúc bán vé phải sau thời gian bắt đầu`
-
-            );
-
-            return;
-
-          }
-
-          // SALE START < EVENT START
-          if (
-            saleStart >= startTime
-          ) {
-
-            alert(
-
-              `Loại vé #${j + 1}: Thời gian bắt đầu bán vé phải trước thời gian bắt đầu sự kiện`
-
-            );
-
-            return;
-
-          }
-
-          // SALE END < EVENT START
-          if (
-            saleEnd >= startTime
-          ) {
-
-            alert(
-
-              `Loại vé #${j + 1}: Hạn cuối bán vé phải trước thời gian bắt đầu sự kiện`
-
-            );
-
-            return;
-
-          }
-
-        }
-
-      }
-
-      setLoading(true);
-
-      try {
-
-        const res =
-          await fetch(
-
-            `${import.meta.env.VITE_API_URL}/api/events/${id}/tickets`,
-
-            {
-
-              method: "POST",
-
-              headers: {
-
-                "Content-Type":
-                  "application/json",
-
-              },
-
-              body:
-                JSON.stringify({
-
-                  showtimes,
-
-                }),
-
-            }
-
-          );
-
-        const data =
-          await res.json();
-
-        if (!res.ok) {
-
-          alert(
-
-            data.message ||
-            "Lỗi setup vé"
-
-          );
-
-          setLoading(false);
-
-          return;
-
-        }
-
-        alert(
-          "Setup vé thành công"
-        );
-
-        // STEP 3
-        navigate(
-
-          `/organizer/event/${id}/payment`
-
-        );
-
-      } catch (err) {
+      .catch((err) => {
 
         console.log(err);
 
-        alert(
-          "Lỗi server"
-        );
+      })
 
-      }
+      .finally(() => {
 
-      setLoading(false);
+        setLoading(false);
 
-    };
+      });
+
+  }, []);
+
+  // ============================
+  // STATUS COLOR
+  // ============================
+
+  const getStatusColor = (
+    status
+  ) => {
+
+    if (
+      status ===
+      "APPROVED"
+    ) {
+
+      return
+        "bg-green-500/20 text-green-400";
+
+    }
+
+    if (
+      status ===
+      "PENDING"
+    ) {
+
+      return
+        "bg-yellow-500/20 text-yellow-400";
+
+    }
+
+    if (
+      status ===
+      "CANCELLED"
+    ) {
+
+      return
+        "bg-red-500/20 text-red-400";
+
+    }
+
+    if (
+      status ===
+      "DRAFT"
+    ) {
+
+      return
+        "bg-sky-500/20 text-sky-400";
+
+    }
+
+    return
+      "bg-gray-500/20 text-gray-300";
+
+  };
+
+  // ============================
+  // LOADING
+  // ============================
+
+  if (loading) {
+
+    return (
+
+      <div
+        className="
+          min-h-screen
+          bg-[#050816]
+          flex
+          items-center
+          justify-center
+          text-white
+        "
+      >
+
+        Đang tải...
+
+      </div>
+
+    );
+
+  }
 
   return (
 
-    <div className="min-h-screen bg-[#050816] text-white p-10">
+    <div
+      className="
+        min-h-screen
+        bg-[#050816]
+        text-white
+        px-6
+        py-10
+      "
+    >
 
-      {/* HEADER */}
-      <div className="mb-10">
+      <div
+        className="
+          max-w-7xl
+          mx-auto
+        "
+      >
 
-        <h1 className="text-4xl font-black">
+        {/* HEADER */}
+        <div
+          className="
+            flex
+            items-center
+            justify-between
+            mb-8
+          "
+        >
 
-          Setup vé & suất diễn
+          <div>
 
-        </h1>
-
-        <p className="text-gray-400 mt-2">
-
-          Bước 2/3
-
-        </p>
-
-      </div>
-
-      {/* SHOWTIMES */}
-      <div className="space-y-10">
-
-        {showtimes.map(
-
-          (
-            showtime,
-            showtimeIndex
-          ) => (
-
-            <div
-              key={showtimeIndex}
+            <h1
               className="
-                bg-[#0B1120]
+                text-4xl
+                font-black
+              "
+            >
+              Sự kiện của tôi
+            </h1>
+
+            <p
+              className="
+                text-gray-400
+                mt-2
+              "
+            >
+              Quản lý tất cả sự kiện
+              organizer đã tạo
+            </p>
+
+          </div>
+
+          {/* ACTIONS */}
+          <div className="flex gap-4">
+
+            {/* DASHBOARD */}
+            <button
+              onClick={() =>
+
+                navigate(
+                  "/organizer/dashboard"
+                )
+
+              }
+              className="
+                flex
+                items-center
+                gap-2
+                px-6
+                py-4
+                rounded-2xl
+                bg-white/10
+                hover:bg-white/20
                 border
                 border-white/10
-                rounded-3xl
-                p-8
+                font-semibold
               "
             >
 
-              {/* TOP */}
-              <div className="flex items-center justify-between mb-8">
+              <LayoutDashboard
+                size={20}
+              />
 
-                <h2 className="text-2xl font-bold">
+              Dashboard
 
-                  Suất diễn #
-                  {showtimeIndex + 1}
+            </button>
 
-                </h2>
+            {/* CREATE */}
+            <button
+              onClick={() =>
 
-                {showtimes.length > 1 && (
+                navigate(
+                  "/organizer/create-event"
+                )
 
-                  <button
-                    onClick={() =>
-                      removeShowtime(
-                        showtimeIndex
-                      )
-                    }
-                    className="
-                      p-3
-                      rounded-xl
-                      bg-red-500/20
-                    "
-                  >
+              }
+              className="
+                flex
+                items-center
+                gap-2
+                px-6
+                py-4
+                rounded-2xl
+                bg-sky-500
+                hover:bg-sky-400
+                text-black
+                font-bold
+              "
+            >
 
-                    <Trash2 size={18} />
+              <Plus size={20} />
 
-                  </button>
+              Tạo sự kiện
 
-                )}
+            </button>
 
-              </div>
+          </div>
 
-              {/* TIME */}
-              <div className="grid md:grid-cols-2 gap-5 mb-8">
+        </div>
 
-                <div>
+        {/* EMPTY */}
+        {events.length === 0 && (
 
-                  <label className="block mb-2">
+          <div
+            className="
+              bg-[#0B1120]
+              border
+              border-white/10
+              rounded-3xl
+              p-16
+              text-center
+            "
+          >
 
-                    Thời gian bắt đầu
+            <h2
+              className="
+                text-3xl
+                font-black
+                mb-3
+              "
+            >
+              Chưa có sự kiện
+            </h2>
 
-                  </label>
+            <p
+              className="
+                text-gray-400
+              "
+            >
+              Hãy tạo sự kiện đầu tiên
+            </p>
 
-                  <input
-                    type="datetime-local"
-                    value={
-                      showtime.start_time
-                    }
-                    onChange={(e) =>
-                      handleShowtimeChange(
-                        showtimeIndex,
-                        "start_time",
-                        e.target.value
-                      )
-                    }
-                    className="
-                      w-full
-                      px-4
-                      py-3
-                      rounded-2xl
-                      bg-[#111827]
-                      border
-                      border-white/10
-                    "
-                  />
-
-                </div>
-
-                <div>
-
-                  <label className="block mb-2">
-
-                    Thời gian kết thúc
-
-                  </label>
-
-                  <input
-                    type="datetime-local"
-                    value={
-                      showtime.end_time
-                    }
-                    onChange={(e) =>
-                      handleShowtimeChange(
-                        showtimeIndex,
-                        "end_time",
-                        e.target.value
-                      )
-                    }
-                    className="
-                      w-full
-                      px-4
-                      py-3
-                      rounded-2xl
-                      bg-[#111827]
-                      border
-                      border-white/10
-                    "
-                  />
-
-                </div>
-
-              </div>
-
-              {/* TICKETS */}
-              <div className="space-y-5">
-
-                {showtime.tickets.map(
-
-                  (
-                    ticket,
-                    ticketIndex
-                  ) => (
-
-                    <div
-                      key={ticketIndex}
-                      className="
-                        bg-black/30
-                        border
-                        border-white/10
-                        rounded-2xl
-                        p-6
-                      "
-                    >
-
-                      <div className="flex justify-between mb-5">
-
-                        <h3 className="font-bold">
-
-                          Loại vé #
-                          {ticketIndex + 1}
-
-                        </h3>
-
-                        <button
-                          onClick={() =>
-                            removeTicket(
-                              showtimeIndex,
-                              ticketIndex
-                            )
-                          }
-                        >
-
-                          <Trash2 size={18} />
-
-                        </button>
-
-                      </div>
-
-                      <div className="grid md:grid-cols-2 gap-5">
-
-                        <input
-                          type="text"
-                          placeholder="Tên vé"
-                          value={ticket.name}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "name",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Giá vé"
-                          value={ticket.price}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "price",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Số lượng vé"
-                          value={ticket.quantity}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "quantity",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                        <div />
-
-                        <input
-                          type="datetime-local"
-                          value={ticket.sale_start}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "sale_start",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                        <input
-                          type="datetime-local"
-                          value={ticket.sale_end}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "sale_end",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                      </div>
-
-                    </div>
-
-                  )
-
-                )}
-
-                {/* ADD TICKET */}
-                <button
-                  onClick={() =>
-                    addTicket(
-                      showtimeIndex
-                    )
-                  }
-                  className="
-                    flex
-                    items-center
-                    gap-2
-                    px-5
-                    py-3
-                    rounded-2xl
-                    bg-sky-500
-                    text-black
-                    font-bold
-                  "
-                >
-
-                  <Plus size={18} />
-
-                  Tạo loại vé
-
-                </button>
-
-              </div>
-
-            </div>
-
-          )
+          </div>
 
         )}
 
-      </div>
-
-      {/* ACTIONS */}
-      <div className="flex gap-4 mt-10">
-
-        <button
-          onClick={addShowtime}
+        {/* LIST */}
+        <div
           className="
-            px-6
-            py-4
-            rounded-2xl
-            bg-white/10
+            grid
+            lg:grid-cols-2
+            gap-6
           "
         >
 
-          Thêm suất diễn
+          {events.map(
+            (event) => (
 
-        </button>
+              <div
+                key={event.id}
+                className="
+                  bg-[#0B1120]
+                  border
+                  border-white/10
+                  rounded-3xl
+                  overflow-hidden
+                "
+              >
 
-        <button
-          onClick={handleSubmit}
-          disabled={loading}
-          className="
-            px-8
-            py-4
-            rounded-2xl
-            bg-sky-500
-            text-black
-            font-bold
-          "
-        >
+                {/* IMAGE */}
+                <img
+                  src={
+                    `${import.meta.env.VITE_API_URL}${event.image_url}`
+                  }
+                  alt={
+                    event.title
+                  }
+                  className="
+                    w-full
+                    h-56
+                    object-cover
+                  "
+                />
 
-          {loading
-            ? "Đang xử lý..."
-            : "Tiếp tục bước 3"}
+                {/* CONTENT */}
+                <div className="p-6">
 
-        </button>
+                  {/* STATUS */}
+                  <div
+                    className={`
+                      inline-flex
+                      px-4
+                      py-2
+                      rounded-full
+                      text-sm
+                      font-semibold
+                      mb-4
+                      ${getStatusColor(
+                        event.status
+                      )}
+                    `}
+                  >
+
+                    {event.status}
+
+                  </div>
+
+                  {/* TITLE */}
+                  <h2
+                    className="
+                      text-2xl
+                      font-bold
+                    "
+                  >
+                    {event.title}
+                  </h2>
+
+                  {/* CATEGORY */}
+                  <p
+                    className="
+                      text-gray-400
+                      mt-2
+                    "
+                  >
+                    {
+                      event.category_name
+                    }
+                  </p>
+
+                  {/* LOCATION */}
+                  <p
+                    className="
+                      text-gray-500
+                      mt-1
+                    "
+                  >
+                    {
+                      event.location
+                    }
+                  </p>
+
+                  {/* ACTION */}
+                  <div className="mt-6">
+
+                    <button
+                      onClick={() => {
+
+                        // DRAFT
+                        if (
+                          event.status ===
+                          "DRAFT"
+                        ) {
+
+                          navigate(
+
+                            `/organizer/event/${event.id}/tickets`
+
+                          );
+
+                          return;
+
+                        }
+
+                        // PENDING / APPROVED
+                        navigate(
+
+                          `/organizer/event/${event.id}/payment`
+
+                        );
+
+                      }}
+                      className="
+                        flex
+                        items-center
+                        gap-2
+                        px-5
+                        py-3
+                        rounded-2xl
+                        bg-sky-500
+                        hover:bg-sky-400
+                        text-black
+                        font-bold
+                      "
+                    >
+
+                      {event.status ===
+                      "DRAFT"
+
+                        ? "Tiếp tục setup"
+
+                        : "Xem chi tiết"}
+
+                      <ChevronRight
+                        size={18}
+                      />
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            )
+          )}
+
+        </div>
 
       </div>
 
@@ -886,5 +469,3 @@ function SetupTickets() {
   );
 
 }
-
-export default SetupTickets;
