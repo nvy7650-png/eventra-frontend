@@ -1,203 +1,426 @@
 import {
-  useEffect,
   useState,
-  useRef,
 } from "react";
 
 import {
-  ImagePlus,
-  ChevronRight,
-} from "lucide-react";
-
-import {
   useNavigate,
+  useParams,
 } from "react-router-dom";
 
-export default function CreateEvent() {
+import {
+  Plus,
+  Trash2,
+  Ticket,
+  Clock3,
+} from "lucide-react";
 
-  const navigate = useNavigate();
+function SetupTickets() {
 
-  const fileInputRef =
-    useRef(null);
+  const navigate =
+    useNavigate();
 
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
+  const { id } =
+    useParams();
 
-  // REQUIRED SIZE
-  const REQUIRED_WIDTH =
-    1600;
-
-  const REQUIRED_HEIGHT =
-    900;
-
-  const [categories,
-    setCategories] =
-    useState([]);
-
-  const [formData,
-    setFormData] =
-    useState({
-
-      title: "",
-      description: "",
-      location: "",
-
-      category_id: "",
-
-      image_file: null,
-
-      image_preview: "",
-
-    });
-
-  const [loading,
-    setLoading] =
+  const [loading, setLoading] =
     useState(false);
 
-  const [message,
-    setMessage] =
-    useState("");
+  const [showtimes, setShowtimes] =
+    useState([
+
+      {
+
+        start_time: "",
+
+        end_time: "",
+
+        tickets: [],
+
+      },
+
+    ]);
 
   // ============================
-  // GET CATEGORIES
+  // ADD SHOWTIME
   // ============================
-  useEffect(() => {
 
-    fetch(
+  const addShowtime =
+    () => {
 
-      `${import.meta.env.VITE_API_URL}/api/categories`
+      setShowtimes([
 
-    )
+        ...showtimes,
 
-      .then((res) => res.json())
+        {
 
-      .then((data) => {
+          start_time: "",
 
-        setCategories(data);
+          end_time: "",
 
-      })
+          tickets: [],
 
-      .catch((err) => {
+        },
 
-        console.log(err);
-
-      });
-
-  }, []);
-
-  // ============================
-  // HANDLE CHANGE
-  // ============================
-  const handleChange = (e) => {
-
-    setFormData({
-
-      ...formData,
-
-      [e.target.name]:
-        e.target.value,
-
-    });
-
-  };
-
-  // ============================
-  // HANDLE IMAGE
-  // ============================
-  const handleImageChange = (e) => {
-
-    const file =
-      e.target.files[0];
-
-    if (!file) return;
-
-    // LIMIT SIZE
-    if (
-      file.size >
-      5 * 1024 * 1024
-    ) {
-
-      setMessage(
-        "Ảnh tối đa 5MB"
-      );
-
-      fileInputRef.current.value =
-        "";
-
-      return;
-
-    }
-
-    const image =
-      new Image();
-
-    image.src =
-      URL.createObjectURL(file);
-
-    image.onload = () => {
-
-      // CHECK SIZE
-      if (
-
-        image.width !==
-          REQUIRED_WIDTH ||
-
-        image.height !==
-          REQUIRED_HEIGHT
-
-      ) {
-
-        setMessage(
-
-          `Banner phải đúng ${REQUIRED_WIDTH}x${REQUIRED_HEIGHT}px`
-
-        );
-
-        fileInputRef.current.value =
-          "";
-
-        return;
-
-      }
-
-      setMessage("");
-
-      setFormData({
-
-        ...formData,
-
-        image_file: file,
-
-        image_preview:
-          URL.createObjectURL(file),
-
-      });
+      ]);
 
     };
 
-  };
+  // ============================
+  // REMOVE SHOWTIME
+  // ============================
+
+  const removeShowtime =
+    (index) => {
+
+      const updated =
+        [...showtimes];
+
+      updated.splice(index, 1);
+
+      setShowtimes(updated);
+
+    };
 
   // ============================
-  // CREATE EVENT
+  // HANDLE SHOWTIME
   // ============================
+
+  const handleShowtimeChange =
+    (
+      index,
+      field,
+      value
+    ) => {
+
+      const updated =
+        [...showtimes];
+
+      updated[index][field] =
+        value;
+
+      setShowtimes(updated);
+
+    };
+
+  // ============================
+  // ADD TICKET
+  // ============================
+
+  const addTicket =
+    (showtimeIndex) => {
+
+      const updated =
+        [...showtimes];
+
+      updated[
+        showtimeIndex
+      ].tickets.push({
+
+        name: "",
+
+        price: "",
+
+        quantity: "",
+
+        sale_start: "",
+
+        sale_end: "",
+
+      });
+
+      setShowtimes(updated);
+
+    };
+
+  // ============================
+  // REMOVE TICKET
+  // ============================
+
+  const removeTicket =
+    (
+      showtimeIndex,
+      ticketIndex
+    ) => {
+
+      const updated =
+        [...showtimes];
+
+      updated[
+        showtimeIndex
+      ].tickets.splice(
+        ticketIndex,
+        1
+      );
+
+      setShowtimes(updated);
+
+    };
+
+  // ============================
+  // HANDLE TICKET
+  // ============================
+
+  const handleTicketChange =
+    (
+      showtimeIndex,
+      ticketIndex,
+      field,
+      value
+    ) => {
+
+      const updated =
+        [...showtimes];
+
+      updated[
+        showtimeIndex
+      ].tickets[
+        ticketIndex
+      ][field] = value;
+
+      setShowtimes(updated);
+
+    };
+
+  // ============================
+  // SUBMIT
+  // ============================
+
   const handleSubmit =
-    async (e) => {
+    async () => {
 
-      e.preventDefault();
+      // VALIDATE
+      const now =
+        new Date();
 
-      setMessage("");
-
-      // REQUIRE IMAGE
-      if (
-        !formData.image_file
+      for (
+        let i = 0;
+        i < showtimes.length;
+        i++
       ) {
 
-        setMessage(
-          "Banner sự kiện là bắt buộc"
-        );
+        const showtime =
+          showtimes[i];
 
-        return;
+        const startTime =
+          new Date(
+            showtime.start_time
+          );
+
+        const endTime =
+          new Date(
+            showtime.end_time
+          );
+
+        // EMPTY
+        if (
+
+          !showtime.start_time ||
+
+          !showtime.end_time
+
+        ) {
+
+          alert(
+
+            `Suất diễn #${i + 1}: Vui lòng nhập đầy đủ thời gian`
+
+          );
+
+          return;
+
+        }
+
+        // START > NOW
+        if (
+          startTime <= now
+        ) {
+
+          alert(
+
+            `Suất diễn #${i + 1}: Thời gian bắt đầu phải sau hiện tại`
+
+          );
+
+          return;
+
+        }
+
+        // END > START
+        if (
+          endTime <= startTime
+        ) {
+
+          alert(
+
+            `Suất diễn #${i + 1}: Thời gian kết thúc phải sau thời gian bắt đầu`
+
+          );
+
+          return;
+
+        }
+
+        // NO TICKET
+        if (
+          showtime.tickets
+            .length === 0
+        ) {
+
+          alert(
+
+            `Suất diễn #${i + 1}: Phải có ít nhất 1 loại vé`
+
+          );
+
+          return;
+
+        }
+
+        // ============================
+        // TICKETS
+        // ============================
+
+        for (
+          let j = 0;
+          j <
+          showtime.tickets
+            .length;
+          j++
+        ) {
+
+          const ticket =
+            showtime.tickets[j];
+
+          const saleStart =
+            new Date(
+              ticket.sale_start
+            );
+
+          const saleEnd =
+            new Date(
+              ticket.sale_end
+            );
+
+          // EMPTY
+          if (
+
+            !ticket.name ||
+
+            !ticket.price ||
+
+            !ticket.quantity ||
+
+            !ticket.sale_start ||
+
+            !ticket.sale_end
+
+          ) {
+
+            alert(
+
+              `Loại vé #${j + 1} - Suất diễn #${i + 1}: Vui lòng nhập đầy đủ thông tin`
+
+            );
+
+            return;
+
+          }
+
+          // PRICE
+          if (
+            Number(
+              ticket.price
+            ) <= 0
+          ) {
+
+            alert(
+
+              `Loại vé #${j + 1}: Giá vé phải lớn hơn 0`
+
+            );
+
+            return;
+
+          }
+
+          // QUANTITY
+          if (
+            Number(
+              ticket.quantity
+            ) <= 0
+          ) {
+
+            alert(
+
+              `Loại vé #${j + 1}: Số lượng vé phải lớn hơn 0`
+
+            );
+
+            return;
+
+          }
+
+          // SALE START > NOW
+          if (
+            saleStart <= now
+          ) {
+
+            alert(
+
+              `Loại vé #${j + 1}: Thời gian bắt đầu bán vé phải sau hiện tại`
+
+            );
+
+            return;
+
+          }
+
+          // SALE END > SALE START
+          if (
+            saleEnd <= saleStart
+          ) {
+
+            alert(
+
+              `Loại vé #${j + 1}: Thời gian kết thúc bán vé phải sau thời gian bắt đầu`
+
+            );
+
+            return;
+
+          }
+
+          // SALE START < EVENT START
+          if (
+            saleStart >= startTime
+          ) {
+
+            alert(
+
+              `Loại vé #${j + 1}: Thời gian bắt đầu bán vé phải trước thời gian bắt đầu sự kiện`
+
+            );
+
+            return;
+
+          }
+
+          // SALE END < EVENT START
+          if (
+            saleEnd >= startTime
+          ) {
+
+            alert(
+
+              `Loại vé #${j + 1}: Hạn cuối bán vé phải trước thời gian bắt đầu sự kiện`
+
+            );
+
+            return;
+
+          }
+
+        }
 
       }
 
@@ -205,55 +428,28 @@ export default function CreateEvent() {
 
       try {
 
-        const submitData =
-          new FormData();
-
-        submitData.append(
-          "organizer_id",
-          user.id
-        );
-
-        submitData.append(
-          "category_id",
-          formData.category_id
-        );
-
-        submitData.append(
-          "title",
-          formData.title
-        );
-
-        submitData.append(
-          "description",
-          formData.description
-        );
-
-        submitData.append(
-          "location",
-          formData.location
-        );
-
-        submitData.append(
-          "seat_mode",
-          "MANUAL"
-        );
-
-        // IMAGE
-        submitData.append(
-          "image",
-          formData.image_file
-        );
-
         const res =
           await fetch(
 
-            `${import.meta.env.VITE_API_URL}/api/events`,
+            `${import.meta.env.VITE_API_URL}/api/events/${id}/tickets`,
 
             {
 
               method: "POST",
 
-              body: submitData,
+              headers: {
+
+                "Content-Type":
+                  "application/json",
+
+              },
+
+              body:
+                JSON.stringify({
+
+                  showtimes,
+
+                }),
 
             }
 
@@ -262,14 +458,12 @@ export default function CreateEvent() {
         const data =
           await res.json();
 
-        // FAIL
         if (!res.ok) {
 
-          setMessage(
+          alert(
 
             data.message ||
-
-            "Tạo sự kiện thất bại"
+            "Lỗi setup vé"
 
           );
 
@@ -279,10 +473,14 @@ export default function CreateEvent() {
 
         }
 
-        // SUCCESS
+        alert(
+          "Setup vé thành công"
+        );
+
+        // STEP 3
         navigate(
 
-          `/organizer/event/${data.event_id}/tickets`
+          `/organizer/event/${id}/payment`
 
         );
 
@@ -290,8 +488,8 @@ export default function CreateEvent() {
 
         console.log(err);
 
-        setMessage(
-          "Không thể kết nối server"
+        alert(
+          "Lỗi server"
         );
 
       }
@@ -302,426 +500,435 @@ export default function CreateEvent() {
 
   return (
 
-    <div
-      className="
-        min-h-screen
-        bg-[#050816]
-        text-white
-        px-6
-        py-10
-      "
-    >
+    <div className="min-h-screen bg-[#050816] text-white p-10">
 
-      <div
-        className="
-          max-w-4xl
-          mx-auto
-          bg-[#0B1120]
-          border
-          border-white/10
-          rounded-3xl
-          overflow-hidden
-        "
-      >
+      {/* HEADER */}
+      <div className="mb-10">
 
-        {/* HEADER */}
-        <div
-          className="
-            px-8
-            py-7
-            border-b
-            border-white/10
-            bg-[#081120]
-          "
-        >
+        <h1 className="text-4xl font-black">
 
-          {/* STEP */}
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              mb-5
-            "
-          >
+          Setup vé & suất diễn
 
-            <div>
+        </h1>
 
-              <p
-                className="
-                  text-sky-400
-                  font-semibold
-                "
-              >
-                BƯỚC 1 / 3
-              </p>
+        <p className="text-gray-400 mt-2">
 
-              <h1
-                className="
-                  text-4xl
-                  font-black
-                  mt-2
-                "
-              >
-                Thông tin sự kiện
-              </h1>
+          Bước 2/3
 
-            </div>
+        </p>
 
-          </div>
+      </div>
 
-          {/* PROGRESS */}
-          <div
-            className="
-              w-full
-              h-2
-              bg-white/10
-              rounded-full
-              overflow-hidden
-            "
-          >
+      {/* SHOWTIMES */}
+      <div className="space-y-10">
+
+        {showtimes.map(
+
+          (
+            showtime,
+            showtimeIndex
+          ) => (
 
             <div
+              key={showtimeIndex}
               className="
-                h-full
-                w-1/3
-                bg-sky-400
-              "
-            />
-
-          </div>
-
-          <p className="text-gray-400 mt-4">
-            Thiết lập thông tin cơ bản cho sự kiện
-          </p>
-
-        </div>
-
-        {/* FORM */}
-        <form
-          onSubmit={handleSubmit}
-          className="p-8 space-y-6"
-        >
-
-          {/* TITLE */}
-          <div>
-
-            <label
-              className="
-                text-sm
-                text-gray-400
-                block
-                mb-2
-              "
-            >
-              Tên sự kiện *
-            </label>
-
-            <input
-              type="text"
-              name="title"
-              value={formData.title}
-              onChange={handleChange}
-              className="
-                w-full
-                px-4
-                py-4
-                rounded-2xl
-                bg-[#111827]
+                bg-[#0B1120]
                 border
                 border-white/10
-                focus:outline-none
-                focus:border-sky-400
-              "
-              required
-            />
-
-          </div>
-
-          {/* DESCRIPTION */}
-          <div>
-
-            <label
-              className="
-                text-sm
-                text-gray-400
-                block
-                mb-2
+                rounded-3xl
+                p-8
               "
             >
-              Mô tả sự kiện
-            </label>
 
-            <textarea
-              name="description"
-              rows="5"
-              value={
-                formData.description
-              }
-              onChange={handleChange}
-              className="
-                w-full
-                px-4
-                py-4
-                rounded-2xl
-                bg-[#111827]
-                border
-                border-white/10
-                focus:outline-none
-                focus:border-sky-400
-                resize-none
-              "
-            />
+              {/* TOP */}
+              <div className="flex items-center justify-between mb-8">
 
-          </div>
+                <h2 className="text-2xl font-bold">
 
-          {/* LOCATION */}
-          <div>
+                  Suất diễn #
+                  {showtimeIndex + 1}
 
-            <label
-              className="
-                text-sm
-                text-gray-400
-                block
-                mb-2
-              "
-            >
-              Địa chỉ chi tiết *
-            </label>
+                </h2>
 
-            <input
-              type="text"
-              name="location"
-              value={
-                formData.location
-              }
-              onChange={handleChange}
-              className="
-                w-full
-                px-4
-                py-4
-                rounded-2xl
-                bg-[#111827]
-                border
-                border-white/10
-                focus:outline-none
-                focus:border-sky-400
-              "
-              required
-            />
+                {showtimes.length > 1 && (
 
-          </div>
-
-          {/* CATEGORY */}
-          <div>
-
-            <label
-              className="
-                text-sm
-                text-gray-400
-                block
-                mb-2
-              "
-            >
-              Danh mục *
-            </label>
-
-            <select
-              name="category_id"
-              value={
-                formData.category_id
-              }
-              onChange={handleChange}
-              className="
-                w-full
-                px-4
-                py-4
-                rounded-2xl
-                bg-[#111827]
-                border
-                border-white/10
-                focus:outline-none
-                focus:border-sky-400
-              "
-              required
-            >
-
-              <option value="">
-                Chọn danh mục
-              </option>
-
-              {categories.map(
-                (category) => (
-
-                  <option
-                    key={category.id}
-                    value={category.id}
+                  <button
+                    onClick={() =>
+                      removeShowtime(
+                        showtimeIndex
+                      )
+                    }
+                    className="
+                      p-3
+                      rounded-xl
+                      bg-red-500/20
+                      hover:bg-red-500
+                      transition
+                    "
                   >
 
-                    {category.name}
+                    <Trash2 size={18} />
 
-                  </option>
+                  </button>
 
-                )
-              )}
+                )}
 
-            </select>
+              </div>
 
-          </div>
+              {/* TIME */}
+              <div className="grid md:grid-cols-2 gap-5 mb-8">
 
-          {/* BANNER */}
-          <div>
+                {/* START */}
+                <div>
 
-            <label
-              className="
-                text-sm
-                text-gray-400
-                block
-                mb-2
-              "
-            >
-              Banner sự kiện *
-            </label>
+                  <label className="block mb-2 font-semibold">
 
-            <label
-              className="
-                w-full
-                aspect-video
-                rounded-3xl
-                border-2
-                border-dashed
-                border-white/10
-                hover:border-sky-400
-                transition
-                flex
-                flex-col
-                items-center
-                justify-center
-                cursor-pointer
-                overflow-hidden
-                relative
-                bg-[#111827]
-              "
-            >
+                    Thời gian bắt đầu
 
-              {/* PREVIEW */}
-              {formData.image_preview ? (
+                  </label>
 
-                <img
-                  src={
-                    formData.image_preview
-                  }
-                  alt="preview"
-                  className="
-                    w-full
-                    h-full
-                    object-cover
-                  "
-                />
-
-              ) : (
-
-                <>
-
-                  <ImagePlus
-                    size={52}
+                  <input
+                    type="datetime-local"
+                    value={
+                      showtime.start_time
+                    }
+                    onChange={(e) =>
+                      handleShowtimeChange(
+                        showtimeIndex,
+                        "start_time",
+                        e.target.value
+                      )
+                    }
                     className="
-                      text-gray-500
+                      w-full
+                      px-4
+                      py-3
+                      rounded-2xl
+                      bg-[#111827]
+                      border
+                      border-white/10
                     "
                   />
 
-                  <p
+                </div>
+
+                {/* END */}
+                <div>
+
+                  <label className="block mb-2 font-semibold">
+
+                    Thời gian kết thúc
+
+                  </label>
+
+                  <input
+                    type="datetime-local"
+                    value={
+                      showtime.end_time
+                    }
+                    onChange={(e) =>
+                      handleShowtimeChange(
+                        showtimeIndex,
+                        "end_time",
+                        e.target.value
+                      )
+                    }
                     className="
-                      mt-4
-                      text-gray-300
-                      font-medium
+                      w-full
+                      px-4
+                      py-3
+                      rounded-2xl
+                      bg-[#111827]
+                      border
+                      border-white/10
                     "
-                  >
-                    Upload banner
-                  </p>
+                  />
 
-                  <p
-                    className="
-                      text-sm
-                      text-gray-500
-                      mt-1
-                    "
-                  >
-                    Bắt buộc:
-                    1600x900px
-                  </p>
+                </div>
 
-                </>
+              </div>
 
-              )}
+              {/* TICKETS */}
+              <div className="space-y-5">
 
-              <input
-                ref={fileInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={
-                  handleImageChange
-                }
-              />
+                {showtime.tickets.map(
 
-            </label>
+                  (
+                    ticket,
+                    ticketIndex
+                  ) => (
 
-          </div>
+                    <div
+                      key={ticketIndex}
+                      className="
+                        bg-black/30
+                        border
+                        border-white/10
+                        rounded-2xl
+                        p-6
+                      "
+                    >
 
-          {/* MESSAGE */}
-          {message && (
+                      <div className="flex items-center justify-between mb-5">
 
-            <div
-              className="
-                bg-red-500/10
-                border
-                border-red-500/20
-                text-red-400
-                px-4
-                py-3
-                rounded-2xl
-              "
-            >
+                        <h3 className="font-bold text-lg">
 
-              {message}
+                          Loại vé #
+                          {ticketIndex + 1}
+
+                        </h3>
+
+                        <button
+                          onClick={() =>
+                            removeTicket(
+                              showtimeIndex,
+                              ticketIndex
+                            )
+                          }
+                          className="
+                            p-2
+                            rounded-lg
+                            bg-red-500/20
+                          "
+                        >
+
+                          <Trash2 size={16} />
+
+                        </button>
+
+                      </div>
+
+                      <div className="grid md:grid-cols-2 gap-5">
+
+                        <input
+                          type="text"
+                          placeholder="Tên vé"
+                          value={ticket.name}
+                          onChange={(e) =>
+                            handleTicketChange(
+                              showtimeIndex,
+                              ticketIndex,
+                              "name",
+                              e.target.value
+                            )
+                          }
+                          className="
+                            px-4
+                            py-3
+                            rounded-2xl
+                            bg-[#111827]
+                            border
+                            border-white/10
+                          "
+                        />
+
+                        <input
+                          type="number"
+                          placeholder="Giá vé"
+                          value={ticket.price}
+                          onChange={(e) =>
+                            handleTicketChange(
+                              showtimeIndex,
+                              ticketIndex,
+                              "price",
+                              e.target.value
+                            )
+                          }
+                          className="
+                            px-4
+                            py-3
+                            rounded-2xl
+                            bg-[#111827]
+                            border
+                            border-white/10
+                          "
+                        />
+
+                        <input
+                          type="number"
+                          placeholder="Số lượng vé"
+                          value={ticket.quantity}
+                          onChange={(e) =>
+                            handleTicketChange(
+                              showtimeIndex,
+                              ticketIndex,
+                              "quantity",
+                              e.target.value
+                            )
+                          }
+                          className="
+                            px-4
+                            py-3
+                            rounded-2xl
+                            bg-[#111827]
+                            border
+                            border-white/10
+                          "
+                        />
+
+                        <div />
+
+                        {/* SALE START */}
+                        <div>
+
+                          <label className="block mb-2 text-sm text-gray-300">
+
+                            Thời gian bắt đầu bán vé
+
+                          </label>
+
+                          <input
+                            type="datetime-local"
+                            value={ticket.sale_start}
+                            onChange={(e) =>
+                              handleTicketChange(
+                                showtimeIndex,
+                                ticketIndex,
+                                "sale_start",
+                                e.target.value
+                              )
+                            }
+                            className="
+                              w-full
+                              px-4
+                              py-3
+                              rounded-2xl
+                              bg-[#111827]
+                              border
+                              border-white/10
+                            "
+                          />
+
+                        </div>
+
+                        {/* SALE END */}
+                        <div>
+
+                          <label className="block mb-2 text-sm text-gray-300">
+
+                            Thời gian kết thúc bán vé
+
+                          </label>
+
+                          <input
+                            type="datetime-local"
+                            value={ticket.sale_end}
+                            onChange={(e) =>
+                              handleTicketChange(
+                                showtimeIndex,
+                                ticketIndex,
+                                "sale_end",
+                                e.target.value
+                              )
+                            }
+                            className="
+                              w-full
+                              px-4
+                              py-3
+                              rounded-2xl
+                              bg-[#111827]
+                              border
+                              border-white/10
+                            "
+                          />
+
+                        </div>
+
+                      </div>
+
+                    </div>
+
+                  )
+
+                )}
+
+                {/* ADD TICKET */}
+                <button
+                  onClick={() =>
+                    addTicket(
+                      showtimeIndex
+                    )
+                  }
+                  className="
+                    flex
+                    items-center
+                    gap-2
+                    px-5
+                    py-3
+                    rounded-2xl
+                    bg-sky-500
+                    hover:bg-sky-400
+                    text-black
+                    font-bold
+                  "
+                >
+
+                  <Ticket size={18} />
+
+                  Tạo loại vé
+
+                </button>
+
+              </div>
 
             </div>
 
-          )}
+          )
 
-          {/* BUTTON */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="
-              w-full
-              py-4
-              rounded-2xl
-              bg-sky-500
-              hover:bg-sky-400
-              text-black
-              font-bold
-              text-lg
-              transition
-              flex
-              items-center
-              justify-center
-              gap-2
-            "
-          >
+        )}
 
-            {loading
-              ? "Đang tạo..."
-              : "Tiếp tục setup vé"}
+      </div>
 
-            {!loading && (
-              <ChevronRight size={22} />
-            )}
+      {/* ACTIONS */}
+      <div className="flex gap-4 mt-10">
 
-          </button>
+        {/* ADD SHOWTIME */}
+        <button
+          onClick={addShowtime}
+          className="
+            flex
+            items-center
+            gap-2
+            px-6
+            py-4
+            rounded-2xl
+            bg-white/10
+            hover:bg-white/20
+            transition
+          "
+        >
 
-        </form>
+          <Plus size={18} />
+
+          Thêm suất diễn
+
+        </button>
+
+        {/* SUBMIT */}
+        <button
+          onClick={handleSubmit}
+          disabled={loading}
+          className="
+            flex
+            items-center
+            gap-2
+            px-8
+            py-4
+            rounded-2xl
+            bg-sky-500
+            hover:bg-sky-400
+            text-black
+            font-bold
+          "
+        >
+
+          <Clock3 size={18} />
+
+          {loading
+            ? "Đang xử lý..."
+            : "Tiếp tục bước 3"}
+
+        </button>
 
       </div>
 
@@ -730,3 +937,5 @@ export default function CreateEvent() {
   );
 
 }
+
+export default SetupTickets;
