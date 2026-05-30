@@ -11,6 +11,12 @@ import {
   ArrowLeft,
 } from "lucide-react";
 
+
+import DatePicker from "react-datepicker";
+
+import "react-datepicker/dist/react-datepicker.css";
+
+
 function SetupTickets() {
 
   const navigate =
@@ -37,8 +43,8 @@ function SetupTickets() {
     setShowtimes] =
     useState([
       {
-        start_time: "",
-        end_time: "",
+        start_time: null,
+end_time: null,
         tickets: [],
       },
     ]);
@@ -49,8 +55,8 @@ function SetupTickets() {
       setShowtimes([
         ...showtimes,
         {
-          start_time: "",
-          end_time: "",
+          start_time: null,
+          end_time: null,
           tickets: [],
         },
       ]);
@@ -108,8 +114,8 @@ function SetupTickets() {
         name: "",
         price: "",
         quantity: "",
-        sale_start: "",
-        sale_end: "",
+        sale_start: null,
+sale_end: null,
 
       });
 
@@ -360,12 +366,41 @@ function SetupTickets() {
 
       setLoading(true);
 
+      const formattedShowtimes =
+  showtimes.map(
+    (showtime) => ({
+
+      ...showtime,
+
+      start_time:
+        showtime.start_time?.toISOString(),
+
+      end_time:
+        showtime.end_time?.toISOString(),
+
+      tickets:
+        showtime.tickets.map(
+          (ticket) => ({
+
+            ...ticket,
+
+            sale_start:
+              ticket.sale_start?.toISOString(),
+
+            sale_end:
+              ticket.sale_end?.toISOString(),
+
+          })
+        ),
+
+    })
+  );
       navigate(
         "/organizer/confirm-event",
         {
           state: {
             eventData,
-            showtimes,
+             showtimes: formattedShowtimes,
           },
         }
       );
@@ -478,28 +513,31 @@ function SetupTickets() {
 
                   </label>
 
-                  <input
-                    type="datetime-local"
-                    value={
-                      showtime.start_time
-                    }
-                    onChange={(e) =>
-                      handleShowtimeChange(
-                        showtimeIndex,
-                        "start_time",
-                        e.target.value
-                      )
-                    }
-                    className="
-                      w-full
-                      px-4
-                      py-3
-                      rounded-2xl
-                      bg-[#111827]
-                      border
-                      border-white/10
-                    "
-                  />
+<DatePicker
+  selected={
+    showtime.start_time
+  }
+  onChange={(date) =>
+    handleShowtimeChange(
+      showtimeIndex,
+      "start_time",
+      date
+    )
+  }
+  showTimeSelect
+  dateFormat="dd/MM/yyyy HH:mm"
+  minDate={new Date()}
+  placeholderText="Chọn ngày giờ bắt đầu"
+  className="
+    w-full
+    px-4
+    py-3
+    rounded-2xl
+    bg-[#111827]
+    border
+    border-white/10
+  "
+/>
 
                 </div>
 
@@ -511,28 +549,33 @@ function SetupTickets() {
 
                   </label>
 
-                  <input
-                    type="datetime-local"
-                    value={
-                      showtime.end_time
-                    }
-                    onChange={(e) =>
-                      handleShowtimeChange(
-                        showtimeIndex,
-                        "end_time",
-                        e.target.value
-                      )
-                    }
-                    className="
-                      w-full
-                      px-4
-                      py-3
-                      rounded-2xl
-                      bg-[#111827]
-                      border
-                      border-white/10
-                    "
-                  />
+
+<DatePicker
+  selected={
+    showtime.end_time
+  }
+  onChange={(date) =>
+    handleShowtimeChange(
+      showtimeIndex,
+      "end_time",
+      date
+    )
+  }
+  showTimeSelect
+  dateFormat="dd/MM/yyyy HH:mm"
+  minDate={new Date()}
+  placeholderText="Chọn ngày giờ kết thúc"
+  className="
+    w-full
+    px-4
+    py-3
+    rounded-2xl
+    bg-[#111827]
+    border
+    border-white/10
+  "
+/>
+
 
                 </div>
 
@@ -701,27 +744,33 @@ function SetupTickets() {
 
                             </label>
 
-                            <input
-                              type="datetime-local"
-                              value={ticket.sale_start}
-                              onChange={(e) =>
-                                handleTicketChange(
-                                  showtimeIndex,
-                                  ticketIndex,
-                                  "sale_start",
-                                  e.target.value
-                                )
-                              }
-                              className="
-                                w-full
-                                px-4
-                                py-3
-                                rounded-xl
-                                bg-[#0B1120]
-                                border
-                                border-white/10
-                              "
-                            />
+        
+<DatePicker
+  selected={
+    ticket.sale_start
+  }
+  onChange={(date) =>
+    handleTicketChange(
+      showtimeIndex,
+      ticketIndex,
+      "sale_start",
+      date
+    )
+  }
+  showTimeSelect
+  dateFormat="dd/MM/yyyy HH:mm"
+  minDate={new Date()}
+  placeholderText="Bắt đầu bán vé"
+  className="
+    w-full
+    px-4
+    py-3
+    rounded-xl
+    bg-[#0B1120]
+    border
+    border-white/10
+  "
+/>
 
                           </div>
 
@@ -733,27 +782,33 @@ function SetupTickets() {
 
                             </label>
 
-                            <input
-                              type="datetime-local"
-                              value={ticket.sale_end}
-                              onChange={(e) =>
-                                handleTicketChange(
-                                  showtimeIndex,
-                                  ticketIndex,
-                                  "sale_end",
-                                  e.target.value
-                                )
-                              }
-                              className="
-                                w-full
-                                px-4
-                                py-3
-                                rounded-xl
-                                bg-[#0B1120]
-                                border
-                                border-white/10
-                              "
-                            />
+                
+<DatePicker
+  selected={
+    ticket.sale_end
+  }
+  onChange={(date) =>
+    handleTicketChange(
+      showtimeIndex,
+      ticketIndex,
+      "sale_end",
+      date
+    )
+  }
+  showTimeSelect
+  dateFormat="dd/MM/yyyy HH:mm"
+  minDate={new Date()}
+  placeholderText="Kết thúc bán vé"
+  className="
+    w-full
+    px-4
+    py-3
+    rounded-xl
+    bg-[#0B1120]
+    border
+    border-white/10
+  "
+/>
 
                           </div>
 
