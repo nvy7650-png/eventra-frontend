@@ -1,16 +1,14 @@
-import {
-  useState,
-} from "react";
 
+import { useState } from "react";
 import {
   useNavigate,
-  useParams,
+  useLocation,
 } from "react-router-dom";
 
 import {
   Plus,
   Trash2,
-  Ticket,
+  ArrowLeft,
 } from "lucide-react";
 
 function SetupTickets() {
@@ -18,55 +16,46 @@ function SetupTickets() {
   const navigate =
     useNavigate();
 
-  const { id } =
-    useParams();
+  const location =
+    useLocation();
 
-  const [loading, setLoading] =
+  const {
+    eventData,
+  } = location.state || {};
+
+  if (!eventData) {
+
+    return null;
+
+  }
+
+  const [loading,
+    setLoading] =
     useState(false);
 
-  const [showtimes, setShowtimes] =
+  const [showtimes,
+    setShowtimes] =
     useState([
-
       {
-
         start_time: "",
-
         end_time: "",
-
         tickets: [],
-
       },
-
     ]);
-
-  // ============================
-  // ADD SHOWTIME
-  // ============================
 
   const addShowtime =
     () => {
 
       setShowtimes([
-
         ...showtimes,
-
         {
-
           start_time: "",
-
           end_time: "",
-
           tickets: [],
-
         },
-
       ]);
 
     };
-
-  // ============================
-  // REMOVE SHOWTIME
-  // ============================
 
   const removeShowtime =
     (index) => {
@@ -74,15 +63,16 @@ function SetupTickets() {
       const updated =
         [...showtimes];
 
-      updated.splice(index, 1);
+      updated.splice(
+        index,
+        1
+      );
 
-      setShowtimes(updated);
+      setShowtimes(
+        updated
+      );
 
     };
-
-  // ============================
-  // HANDLE SHOWTIME
-  // ============================
 
   const handleShowtimeChange =
     (
@@ -97,16 +87,16 @@ function SetupTickets() {
       updated[index][field] =
         value;
 
-      setShowtimes(updated);
+      setShowtimes(
+        updated
+      );
 
     };
 
-  // ============================
-  // ADD TICKET
-  // ============================
-
   const addTicket =
-    (showtimeIndex) => {
+    (
+      showtimeIndex
+    ) => {
 
       const updated =
         [...showtimes];
@@ -116,24 +106,18 @@ function SetupTickets() {
       ].tickets.push({
 
         name: "",
-
         price: "",
-
         quantity: "",
-
         sale_start: "",
-
         sale_end: "",
 
       });
 
-      setShowtimes(updated);
+      setShowtimes(
+        updated
+      );
 
     };
-
-  // ============================
-  // REMOVE TICKET
-  // ============================
 
   const removeTicket =
     (
@@ -151,13 +135,11 @@ function SetupTickets() {
         1
       );
 
-      setShowtimes(updated);
+      setShowtimes(
+        updated
+      );
 
     };
-
-  // ============================
-  // HANDLE TICKET
-  // ============================
 
   const handleTicketChange =
     (
@@ -176,16 +158,14 @@ function SetupTickets() {
         ticketIndex
       ][field] = value;
 
-      setShowtimes(updated);
+      setShowtimes(
+        updated
+      );
 
     };
 
-  // ============================
-  // SUBMIT
-  // ============================
-
   const handleSubmit =
-    async () => {
+    () => {
 
       const now =
         new Date();
@@ -209,74 +189,55 @@ function SetupTickets() {
             showtime.end_time
           );
 
-        // EMPTY
         if (
-
           !showtime.start_time ||
-
           !showtime.end_time
-
         ) {
 
           alert(
-
             `Suất diễn #${i + 1}: Vui lòng nhập đầy đủ thời gian`
-
           );
 
           return;
 
         }
 
-        // EVENT START > NOW
         if (
           startTime <= now
         ) {
 
           alert(
-
             `Suất diễn #${i + 1}: Thời gian bắt đầu phải sau hiện tại`
-
           );
 
           return;
 
         }
 
-        // EVENT END > START
         if (
           endTime <= startTime
         ) {
 
           alert(
-
             `Suất diễn #${i + 1}: Thời gian kết thúc phải sau thời gian bắt đầu`
-
           );
 
           return;
 
         }
 
-        // NO TICKET
         if (
           showtime.tickets
             .length === 0
         ) {
 
           alert(
-
             `Suất diễn #${i + 1}: Phải có ít nhất 1 loại vé`
-
           );
 
           return;
 
         }
-
-        // ============================
-        // TICKETS
-        // ============================
 
         for (
           let j = 0;
@@ -299,32 +260,22 @@ function SetupTickets() {
               ticket.sale_end
             );
 
-          // EMPTY
           if (
-
             !ticket.name ||
-
             !ticket.price ||
-
             !ticket.quantity ||
-
             !ticket.sale_start ||
-
             !ticket.sale_end
-
           ) {
 
             alert(
-
               `Loại vé #${j + 1}: Vui lòng nhập đầy đủ thông tin`
-
             );
 
             return;
 
           }
 
-          // PRICE
           if (
             Number(
               ticket.price
@@ -332,16 +283,13 @@ function SetupTickets() {
           ) {
 
             alert(
-
               `Loại vé #${j + 1}: Giá vé phải lớn hơn 0`
-
             );
 
             return;
 
           }
 
-          // QUANTITY
           if (
             Number(
               ticket.quantity
@@ -349,69 +297,57 @@ function SetupTickets() {
           ) {
 
             alert(
-
               `Loại vé #${j + 1}: Số lượng vé phải lớn hơn 0`
-
             );
 
             return;
 
           }
 
-          // SALE START > NOW
           if (
             saleStart <= now
           ) {
 
             alert(
-
               `Loại vé #${j + 1}: Thời gian bắt đầu bán vé phải sau hiện tại`
-
             );
 
             return;
 
           }
 
-          // SALE END > SALE START
           if (
             saleEnd <= saleStart
           ) {
 
             alert(
-
               `Loại vé #${j + 1}: Thời gian kết thúc bán vé phải sau thời gian bắt đầu`
-
             );
 
             return;
 
           }
 
-          // SALE START < EVENT START
           if (
-            saleStart >= startTime
+            saleStart >=
+            startTime
           ) {
 
             alert(
-
               `Loại vé #${j + 1}: Thời gian bắt đầu bán vé phải trước thời gian bắt đầu sự kiện`
-
             );
 
             return;
 
           }
 
-          // SALE END < EVENT START
           if (
-            saleEnd >= startTime
+            saleEnd >=
+            startTime
           ) {
 
             alert(
-
               `Loại vé #${j + 1}: Hạn cuối bán vé phải trước thời gian bắt đầu sự kiện`
-
             );
 
             return;
@@ -424,84 +360,45 @@ function SetupTickets() {
 
       setLoading(true);
 
-      try {
-
-        const res =
-          await fetch(
-
-            `${import.meta.env.VITE_API_URL}/api/events/${id}/tickets`,
-
-            {
-
-              method: "POST",
-
-              headers: {
-
-                "Content-Type":
-                  "application/json",
-
-              },
-
-              body:
-                JSON.stringify({
-
-                  showtimes,
-
-                }),
-
-            }
-
-          );
-
-        const data =
-          await res.json();
-
-        if (!res.ok) {
-
-          alert(
-
-            data.message ||
-            "Lỗi setup vé"
-
-          );
-
-          setLoading(false);
-
-          return;
-
+      navigate(
+        "/organizer/confirm-event",
+        {
+          state: {
+            eventData,
+            showtimes,
+          },
         }
-
-        alert(
-          "Setup vé thành công"
-        );
-
-        // STEP 3
-        navigate(
-
-          `/organizer/event/${id}/payment`
-
-        );
-
-      } catch (err) {
-
-        console.log(err);
-
-        alert(
-          "Lỗi server"
-        );
-
-      }
+      );
 
       setLoading(false);
 
     };
-
   return (
 
     <div className="min-h-screen bg-[#050816] text-white p-10">
 
       {/* HEADER */}
       <div className="mb-10">
+
+        <button
+          onClick={() =>
+            navigate(-1)
+          }
+          className="
+            flex
+            items-center
+            gap-2
+            text-gray-400
+            hover:text-white
+            mb-6
+          "
+        >
+
+          <ArrowLeft size={18} />
+
+          Quay lại
+
+        </button>
 
         <h1 className="text-4xl font-black">
 
@@ -511,17 +408,15 @@ function SetupTickets() {
 
         <p className="text-gray-400 mt-2">
 
-          Bước 2/3
+          Bước 2 / 3
 
         </p>
 
       </div>
 
-      {/* SHOWTIMES */}
-      <div className="space-y-10">
+      <div className="space-y-8">
 
         {showtimes.map(
-
           (
             showtime,
             showtimeIndex
@@ -551,6 +446,7 @@ function SetupTickets() {
                 {showtimes.length > 1 && (
 
                   <button
+                    type="button"
                     onClick={() =>
                       removeShowtime(
                         showtimeIndex
@@ -643,195 +539,233 @@ function SetupTickets() {
               </div>
 
               {/* TICKETS */}
-              <div className="space-y-5">
+              <div>
 
-                {showtime.tickets.map(
+                <div className="flex items-center justify-between mb-5">
 
-                  (
-                    ticket,
-                    ticketIndex
-                  ) => (
+                  <h3 className="text-xl font-bold">
 
-                    <div
-                      key={ticketIndex}
-                      className="
-                        bg-black/30
-                        border
-                        border-white/10
-                        rounded-2xl
-                        p-6
-                      "
-                    >
+                    Loại vé
 
-                      <div className="flex justify-between mb-5">
+                  </h3>
 
-                        <h3 className="font-bold">
+                  <button
+                    type="button"
+                    onClick={() =>
+                      addTicket(
+                        showtimeIndex
+                      )
+                    }
+                    className="
+                      flex
+                      items-center
+                      gap-2
+                      px-4
+                      py-2
+                      rounded-xl
+                      bg-sky-500
+                      text-black
+                      font-semibold
+                    "
+                  >
 
-                          Loại vé #
-                          {ticketIndex + 1}
+                    <Plus size={18} />
 
-                        </h3>
+                    Thêm vé
 
-                        <button
-                          onClick={() =>
-                            removeTicket(
-                              showtimeIndex,
-                              ticketIndex
-                            )
-                          }
-                        >
+                  </button>
 
-                          <Trash2 size={18} />
+                </div>
 
-                        </button>
+                <div className="space-y-5">
+
+                  {showtime.tickets.map(
+
+                    (
+                      ticket,
+                      ticketIndex
+                    ) => (
+
+                      <div
+                        key={ticketIndex}
+                        className="
+                          border
+                          border-white/10
+                          rounded-2xl
+                          p-5
+                          bg-[#111827]
+                        "
+                      >
+
+                        <div className="flex justify-between mb-4">
+
+                          <h4 className="font-bold">
+
+                            Vé #
+                            {ticketIndex + 1}
+
+                          </h4>
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              removeTicket(
+                                showtimeIndex,
+                                ticketIndex
+                              )
+                            }
+                          >
+
+                            <Trash2
+                              size={18}
+                              className="text-red-400"
+                            />
+
+                          </button>
+
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-4">
+
+                          <input
+                            type="text"
+                            placeholder="Tên vé"
+                            value={ticket.name}
+                            onChange={(e) =>
+                              handleTicketChange(
+                                showtimeIndex,
+                                ticketIndex,
+                                "name",
+                                e.target.value
+                              )
+                            }
+                            className="
+                              px-4
+                              py-3
+                              rounded-xl
+                              bg-[#0B1120]
+                              border
+                              border-white/10
+                            "
+                          />
+
+                          <input
+                            type="number"
+                            placeholder="Giá vé"
+                            value={ticket.price}
+                            onChange={(e) =>
+                              handleTicketChange(
+                                showtimeIndex,
+                                ticketIndex,
+                                "price",
+                                e.target.value
+                              )
+                            }
+                            className="
+                              px-4
+                              py-3
+                              rounded-xl
+                              bg-[#0B1120]
+                              border
+                              border-white/10
+                            "
+                          />
+
+                          <input
+                            type="number"
+                            placeholder="Số lượng vé"
+                            value={ticket.quantity}
+                            onChange={(e) =>
+                              handleTicketChange(
+                                showtimeIndex,
+                                ticketIndex,
+                                "quantity",
+                                e.target.value
+                              )
+                            }
+                            className="
+                              px-4
+                              py-3
+                              rounded-xl
+                              bg-[#0B1120]
+                              border
+                              border-white/10
+                            "
+                          />
+    
+                          <div>
+
+                            <label className="block mb-2">
+
+                              Bắt đầu bán vé
+
+                            </label>
+
+                            <input
+                              type="datetime-local"
+                              value={ticket.sale_start}
+                              onChange={(e) =>
+                                handleTicketChange(
+                                  showtimeIndex,
+                                  ticketIndex,
+                                  "sale_start",
+                                  e.target.value
+                                )
+                              }
+                              className="
+                                w-full
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-[#0B1120]
+                                border
+                                border-white/10
+                              "
+                            />
+
+                          </div>
+
+                          <div>
+
+                            <label className="block mb-2">
+
+                              Kết thúc bán vé
+
+                            </label>
+
+                            <input
+                              type="datetime-local"
+                              value={ticket.sale_end}
+                              onChange={(e) =>
+                                handleTicketChange(
+                                  showtimeIndex,
+                                  ticketIndex,
+                                  "sale_end",
+                                  e.target.value
+                                )
+                              }
+                              className="
+                                w-full
+                                px-4
+                                py-3
+                                rounded-xl
+                                bg-[#0B1120]
+                                border
+                                border-white/10
+                              "
+                            />
+
+                          </div>
+
+                        </div>
 
                       </div>
 
-                      <div className="grid md:grid-cols-2 gap-5">
-
-                        <input
-                          type="text"
-                          placeholder="Tên vé"
-                          value={ticket.name}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "name",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Giá vé"
-                          value={ticket.price}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "price",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Số lượng vé"
-                          value={ticket.quantity}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "quantity",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                        <div />
-
-                        <input
-                          type="datetime-local"
-                          value={ticket.sale_start}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "sale_start",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                        <input
-                          type="datetime-local"
-                          value={ticket.sale_end}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "sale_end",
-                              e.target.value
-                            )
-                          }
-                          className="
-                            px-4
-                            py-3
-                            rounded-2xl
-                            bg-[#111827]
-                            border
-                            border-white/10
-                          "
-                        />
-
-                      </div>
-
-                    </div>
-
-                  )
-
-                )}
-
-                {/* ADD TICKET */}
-                <button
-                  onClick={() =>
-                    addTicket(
-                      showtimeIndex
                     )
-                  }
-                  className="
-                    flex
-                    items-center
-                    gap-2
-                    px-5
-                    py-3
-                    rounded-2xl
-                    bg-sky-500
-                    text-black
-                    font-bold
-                  "
-                >
 
-                  <Plus size={18} />
+                  )}
 
-                  Tạo loại vé
-
-                </button>
+                </div>
 
               </div>
 
@@ -844,38 +778,50 @@ function SetupTickets() {
       </div>
 
       {/* ACTIONS */}
-      <div className="flex gap-4 mt-10">
+      <div className="flex gap-4 mt-8">
 
         <button
+          type="button"
           onClick={addShowtime}
           className="
+            flex
+            items-center
+            gap-2
             px-6
             py-4
             rounded-2xl
             bg-white/10
+            hover:bg-white/20
+            transition
           "
         >
+
+          <Plus size={20} />
 
           Thêm suất diễn
 
         </button>
 
         <button
-          onClick={handleSubmit}
+          type="button"
           disabled={loading}
+          onClick={handleSubmit}
           className="
-            px-8
+            flex-1
             py-4
             rounded-2xl
             bg-sky-500
+            hover:bg-sky-400
             text-black
             font-bold
+            text-lg
+            transition
           "
         >
 
           {loading
             ? "Đang xử lý..."
-            : "Tiếp tục bước 3"}
+            : "Tiếp tục"}
 
         </button>
 
@@ -888,3 +834,4 @@ function SetupTickets() {
 }
 
 export default SetupTickets;
+

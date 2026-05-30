@@ -1,3 +1,4 @@
+```jsx
 import {
   BrowserRouter,
   Routes,
@@ -23,25 +24,19 @@ import CreateEvent from "./pages/CreateEvent";
 
 import SetupTickets from "./pages/SetupTickets";
 
-import OrganizerPayment from "./pages/OrganizerPayment";
+import ConfirmEvent from "./pages/ConfirmEvent";
 
 function App() {
 
-  // GET USER
   const user = JSON.parse(
     localStorage.getItem("user")
   );
-
-  // ============================
-  // PROTECTED ROUTE
-  // ============================
 
   const ProtectedRoute = ({
     children,
     role,
   }) => {
 
-    // NOT LOGIN
     if (!user) {
 
       return (
@@ -53,7 +48,6 @@ function App() {
 
     }
 
-    // WRONG ROLE
     if (
       role &&
       user.role !== role
@@ -132,7 +126,7 @@ function App() {
           }
         />
 
-        {/* CREATE EVENT */}
+        {/* STEP 1 */}
         <Route
           path="/organizer/create-event"
           element={
@@ -148,7 +142,7 @@ function App() {
 
         {/* STEP 2 */}
         <Route
-          path="/organizer/event/:id/tickets"
+          path="/organizer/event/setup-tickets"
           element={
 
             <ProtectedRoute role="ORGANIZER">
@@ -162,19 +156,19 @@ function App() {
 
         {/* STEP 3 */}
         <Route
-          path="/organizer/event/:id/payment"
+          path="/organizer/confirm-event"
           element={
 
             <ProtectedRoute role="ORGANIZER">
 
-              <OrganizerPayment />
+              <ConfirmEvent />
 
             </ProtectedRoute>
 
           }
         />
 
-        {/* ADMIN DASHBOARD */}
+        {/* ADMIN */}
         <Route
           path="/admin/dashboard"
           element={
@@ -208,3 +202,4 @@ function App() {
 }
 
 export default App;
+```

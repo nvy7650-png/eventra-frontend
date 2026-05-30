@@ -7,6 +7,7 @@ import {
 import {
   ImagePlus,
   ChevronRight,
+  ArrowLeft,
 } from "lucide-react";
 
 import {
@@ -15,7 +16,8 @@ import {
 
 export default function CreateEvent() {
 
-  const navigate = useNavigate();
+  const navigate =
+    useNavigate();
 
   const fileInputRef =
     useRef(null);
@@ -40,10 +42,14 @@ export default function CreateEvent() {
     useState({
 
       title: "",
+
       description: "",
+
       location: "",
 
       category_id: "",
+
+      seat_mode: "AUTO",
 
       image_file: null,
 
@@ -62,6 +68,7 @@ export default function CreateEvent() {
   // ============================
   // GET CATEGORIES
   // ============================
+
   useEffect(() => {
 
     fetch(
@@ -86,72 +93,46 @@ export default function CreateEvent() {
 
   }, []);
 
+  
+
   // ============================
   // HANDLE CHANGE
   // ============================
-  const handleChange = (e) => {
 
-    setFormData({
+  const handleChange =
+    (e) => {
 
-      ...formData,
+      setFormData({
 
-      [e.target.name]:
-        e.target.value,
+        ...formData,
 
-    });
+        [e.target.name]:
+          e.target.value,
 
-  };
+      });
+
+    };
 
   // ============================
   // HANDLE IMAGE
   // ============================
-  const handleImageChange = (e) => {
 
-    const file =
-      e.target.files[0];
+  const handleImageChange =
+    (e) => {
 
-    if (!file) return;
+      const file =
+        e.target.files[0];
 
-    // LIMIT SIZE
-    if (
-      file.size >
-      5 * 1024 * 1024
-    ) {
+      if (!file) return;
 
-      setMessage(
-        "Ảnh tối đa 5MB"
-      );
-
-      fileInputRef.current.value =
-        "";
-
-      return;
-
-    }
-
-    const image =
-      new Image();
-
-    image.src =
-      URL.createObjectURL(file);
-
-    image.onload = () => {
-
-      // CHECK SIZE
+      // LIMIT SIZE
       if (
-
-        image.width !==
-          REQUIRED_WIDTH ||
-
-        image.height !==
-          REQUIRED_HEIGHT
-
+        file.size >
+        5 * 1024 * 1024
       ) {
 
         setMessage(
-
-          `Banner phải đúng ${REQUIRED_WIDTH}x${REQUIRED_HEIGHT}px`
-
+          "Ảnh tối đa 5MB"
         );
 
         fileInputRef.current.value =
@@ -161,26 +142,59 @@ export default function CreateEvent() {
 
       }
 
-      setMessage("");
+      const image =
+        new Image();
 
-      setFormData({
+      image.src =
+        URL.createObjectURL(file);
 
-        ...formData,
+      image.onload = () => {
 
-        image_file: file,
+        // CHECK SIZE
+        if (
 
-        image_preview:
-          URL.createObjectURL(file),
+          image.width !==
+            REQUIRED_WIDTH ||
 
-      });
+          image.height !==
+            REQUIRED_HEIGHT
+
+        ) {
+
+          setMessage(
+
+            `Banner phải đúng ${REQUIRED_WIDTH}x${REQUIRED_HEIGHT}px`
+
+          );
+
+          fileInputRef.current.value =
+            "";
+
+          return;
+
+        }
+
+        setMessage("");
+
+        setFormData({
+
+          ...formData,
+
+          image_file: file,
+
+          image_preview:
+            URL.createObjectURL(file),
+
+        });
+
+      };
 
     };
 
-  };
+  // ============================
+  // SUBMIT
+  // ============================
 
-  // ============================
-  // CREATE EVENT
-  // ============================
   const handleSubmit =
     async (e) => {
 
@@ -200,101 +214,68 @@ export default function CreateEvent() {
         return;
 
       }
+if (!formData.category_id) {
+
+  setMessage(
+    "Vui lòng chọn danh mục"
+  );
+
+  return;
+
+}
+
+if (!formData.seat_mode) {
+
+  setMessage(
+    "Vui lòng chọn hình thức bán vé"
+  );
+
+  return;
+
+}
+
 
       setLoading(true);
 
-      try {
+      // STEP 2
+      navigate(
 
-        const submitData =
-          new FormData();
+        "/organizer/event/setup-tickets",
 
-        submitData.append(
-          "organizer_id",
-          user.id
-        );
+        {
 
-        submitData.append(
-          "category_id",
-          formData.category_id
-        );
+          state: {
 
-        submitData.append(
-          "title",
-          formData.title
-        );
+            eventData: {
 
-        submitData.append(
-          "description",
-          formData.description
-        );
+              organizer_id:
+                user.id,
 
-        submitData.append(
-          "location",
-          formData.location
-        );
+              category_id:
+                formData.category_id,
 
-        submitData.append(
-          "seat_mode",
-          "MANUAL"
-        );
+              title:
+                formData.title,
 
-        // IMAGE
-        submitData.append(
-          "image",
-          formData.image_file
-        );
+              description:
+                formData.description,
 
-        const res =
-          await fetch(
+              location:
+                formData.location,
 
-            `${import.meta.env.VITE_API_URL}/api/events`,
+              seat_mode:
+                formData.seat_mode,
 
-            {
+              image:
+                formData.image_file,
 
-              method: "POST",
+            },
 
-              body: submitData,
-
-            }
-
-          );
-
-        const data =
-          await res.json();
-
-        // FAIL
-        if (!res.ok) {
-
-          setMessage(
-
-            data.message ||
-
-            "Tạo sự kiện thất bại"
-
-          );
-
-          setLoading(false);
-
-          return;
+          },
 
         }
 
-        // SUCCESS
-        navigate(
-
-          `/organizer/event/${data.event_id}/tickets`
-
-        );
-
-      } catch (err) {
-
-        console.log(err);
-
-        setMessage(
-          "Không thể kết nối server"
-        );
-
-      }
+      );
 
       setLoading(false);
 
@@ -334,6 +315,31 @@ export default function CreateEvent() {
             bg-[#081120]
           "
         >
+
+          {/* BACK */}
+          <button
+            onClick={() =>
+              navigate(
+                "/organizer/dashboard"
+              )
+            }
+            className="
+              flex
+              items-center
+              gap-2
+              text-gray-400
+              hover:text-white
+              mb-6
+            "
+          >
+
+            <ArrowLeft
+              size={18}
+            />
+
+            Quay lại dashboard
+
+          </button>
 
           {/* STEP */}
           <div
@@ -392,7 +398,9 @@ export default function CreateEvent() {
           </div>
 
           <p className="text-gray-400 mt-4">
+
             Thiết lập thông tin cơ bản cho sự kiện
+
           </p>
 
         </div>
@@ -568,6 +576,98 @@ export default function CreateEvent() {
             </select>
 
           </div>
+          {/* SEAT MODE */}
+<div>
+
+  <label
+    className="
+      text-sm
+      text-gray-400
+      block
+      mb-2
+    "
+  >
+    Hình thức bán vé *
+  </label>
+
+  <div className="grid md:grid-cols-2 gap-4">
+
+    <label
+      className={`
+        rounded-2xl
+        border
+        p-5
+        cursor-pointer
+        transition
+        ${
+          formData.seat_mode === "AUTO"
+            ? "border-sky-400 bg-sky-500/10"
+            : "border-white/10 bg-[#111827]"
+        }
+      `}
+    >
+
+      <input
+        type="radio"
+        name="seat_mode"
+        value="AUTO"
+        checked={
+          formData.seat_mode === "AUTO"
+        }
+        onChange={handleChange}
+        className="hidden"
+      />
+
+      <h3 className="text-lg font-bold">
+        AUTO
+      </h3>
+
+      <p className="text-gray-400 mt-2">
+        Vé tự do, khách mua theo số lượng.
+      </p>
+
+    </label>
+
+    <label
+      className={`
+        rounded-2xl
+        border
+        p-5
+        cursor-pointer
+        transition
+        ${
+          formData.seat_mode === "MANUAL"
+            ? "border-sky-400 bg-sky-500/10"
+            : "border-white/10 bg-[#111827]"
+        }
+      `}
+    >
+
+      <input
+        type="radio"
+        name="seat_mode"
+        value="MANUAL"
+        checked={
+          formData.seat_mode === "MANUAL"
+        }
+        onChange={handleChange}
+        className="hidden"
+      />
+
+      <h3 className="text-lg font-bold">
+        MANUAL
+      </h3>
+
+      <p className="text-gray-400 mt-2">
+        Có sơ đồ ghế, khách tự chọn ghế.
+      </p>
+
+    </label>
+
+  </div>
+
+</div>
+
 
           {/* BANNER */}
           <div>
@@ -712,7 +812,7 @@ export default function CreateEvent() {
           >
 
             {loading
-              ? "Đang tạo..."
+              ? "Đang xử lý..."
               : "Tiếp tục setup vé"}
 
             {!loading && (

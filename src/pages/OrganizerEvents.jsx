@@ -1,3 +1,4 @@
+
 import {
   useEffect,
   useState,
@@ -8,7 +9,6 @@ import {
 } from "react-router-dom";
 
 import {
-  ChevronRight,
   Plus,
   LayoutDashboard,
 } from "lucide-react";
@@ -21,40 +21,28 @@ export default function OrganizerEvents() {
     localStorage.getItem("user")
   );
 
-  const [events,
-    setEvents] =
+  const [events, setEvents] =
     useState([]);
 
-  const [loading,
-    setLoading] =
+  const [loading, setLoading] =
     useState(true);
-
-  // ============================
-  // GET EVENTS
-  // ============================
 
   useEffect(() => {
 
     fetch(
-
       `${import.meta.env.VITE_API_URL}/api/events/organizer/${user.id}`
-
     )
-
       .then((res) => res.json())
-
       .then((data) => {
 
         setEvents(data);
 
       })
-
       .catch((err) => {
 
         console.log(err);
 
       })
-
       .finally(() => {
 
         setLoading(false);
@@ -63,62 +51,119 @@ export default function OrganizerEvents() {
 
   }, []);
 
-  // ============================
-  // STATUS COLOR
-  // ============================
+  const getStatusColor =
+    (status) => {
 
-  const getStatusColor = (
-    status
-  ) => {
+      switch (status) {
 
-    if (
-      status ===
-      "APPROVED"
-    ) {
+        case "APPROVED":
 
-      return
-        "bg-green-500/20 text-green-400";
+          return "bg-green-500/20 text-green-400";
 
-    }
+        case "PENDING":
 
-    if (
-      status ===
-      "PENDING"
-    ) {
+          return "bg-yellow-500/20 text-yellow-400";
 
-      return
-        "bg-yellow-500/20 text-yellow-400";
+        case "CANCELLED":
 
-    }
+          return "bg-red-500/20 text-red-400";
 
-    if (
-      status ===
-      "CANCELLED"
-    ) {
+        default:
 
-      return
-        "bg-red-500/20 text-red-400";
+          return "bg-gray-500/20 text-gray-300";
 
-    }
+      }
 
-    if (
-      status ===
-      "DRAFT"
-    ) {
+    };
 
-      return
-        "bg-sky-500/20 text-sky-400";
+  const getStatusText =
+    (status) => {
 
-    }
+      switch (status) {
 
-    return
-      "bg-gray-500/20 text-gray-300";
+        case "APPROVED":
 
-  };
+          return "Đã duyệt";
 
-  // ============================
-  // LOADING
-  // ============================
+        case "PENDING":
+
+          return "Chờ duyệt";
+
+        case "CANCELLED":
+
+          return "Đã hủy";
+
+        default:
+
+          return status;
+
+      }
+
+    };
+
+  const handleCancel =
+    async (id) => {
+
+      const confirmDelete =
+        window.confirm(
+          "Bạn có chắc muốn hủy sự kiện này?"
+        );
+
+      if (!confirmDelete)
+        return;
+
+      try {
+
+        const res =
+          await fetch(
+
+            `${import.meta.env.VITE_API_URL}/api/events/${id}/cancel`,
+
+            {
+              method: "PUT",
+            }
+
+          );
+
+        if (!res.ok) {
+
+          alert(
+            "Không thể hủy sự kiện"
+          );
+
+          return;
+
+        }
+
+        setEvents(
+
+          events.map(
+            (event) =>
+
+              event.id === id
+
+                ? {
+                    ...event,
+                    status:
+                      "CANCELLED",
+                  }
+
+                : event
+          )
+
+        );
+
+      } catch (err) {
+
+        console.log(err);
+
+        alert(
+          "Lỗi server"
+        );
+
+      }
+
+    };
 
   if (loading) {
 
@@ -189,23 +234,18 @@ export default function OrganizerEvents() {
                 mt-2
               "
             >
-              Quản lý tất cả sự kiện
-              organizer đã tạo
+              Quản lý tất cả sự kiện đã tạo
             </p>
 
           </div>
 
-          {/* ACTIONS */}
           <div className="flex gap-4">
 
-            {/* DASHBOARD */}
             <button
               onClick={() =>
-
                 navigate(
                   "/organizer/dashboard"
                 )
-
               }
               className="
                 flex
@@ -230,14 +270,11 @@ export default function OrganizerEvents() {
 
             </button>
 
-            {/* CREATE */}
             <button
               onClick={() =>
-
                 navigate(
                   "/organizer/create-event"
                 )
-
               }
               className="
                 flex
@@ -322,14 +359,9 @@ export default function OrganizerEvents() {
                 "
               >
 
-                {/* IMAGE */}
                 <img
-                  src={
-                    `${import.meta.env.VITE_API_URL}${event.image_url}`
-                  }
-                  alt={
-                    event.title
-                  }
+                  src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
+                  alt={event.title}
                   className="
                     w-full
                     h-56
@@ -337,10 +369,8 @@ export default function OrganizerEvents() {
                   "
                 />
 
-                {/* CONTENT */}
                 <div className="p-6">
 
-                  {/* STATUS */}
                   <div
                     className={`
                       inline-flex
@@ -350,17 +380,16 @@ export default function OrganizerEvents() {
                       text-sm
                       font-semibold
                       mb-4
-                      ${getStatusColor(
-                        event.status
-                      )}
+                      ${getStatusColor(event.status)}
                     `}
                   >
 
-                    {event.status}
+                    {getStatusText(
+                      event.status
+                    )}
 
                   </div>
 
-                  {/* TITLE */}
                   <h2
                     className="
                       text-2xl
@@ -370,64 +399,33 @@ export default function OrganizerEvents() {
                     {event.title}
                   </h2>
 
-                  {/* CATEGORY */}
                   <p
                     className="
                       text-gray-400
                       mt-2
                     "
                   >
-                    {
-                      event.category_name
-                    }
+                    {event.category_name}
                   </p>
 
-                  {/* LOCATION */}
                   <p
                     className="
                       text-gray-500
                       mt-1
                     "
                   >
-                    {
-                      event.location
-                    }
+                    {event.location}
                   </p>
 
-                  {/* ACTION */}
-                  <div className="mt-6">
+                  <div className="flex gap-3 mt-6">
 
                     <button
-                      onClick={() => {
-
-                        // DRAFT
-                        if (
-                          event.status ===
-                          "DRAFT"
-                        ) {
-
-                          navigate(
-
-                            `/organizer/event/${event.id}/tickets`
-
-                          );
-
-                          return;
-
-                        }
-
-                        // PENDING / APPROVED
-                        navigate(
-
-                          `/organizer/event/${event.id}/payment`
-
-                        );
-
-                      }}
+                      onClick={() =>
+                        alert(
+                          "Trang chi tiết sẽ làm sau"
+                        )
+                      }
                       className="
-                        flex
-                        items-center
-                        gap-2
                         px-5
                         py-3
                         rounded-2xl
@@ -438,18 +436,34 @@ export default function OrganizerEvents() {
                       "
                     >
 
-                      {event.status ===
-                      "DRAFT"
-
-                        ? "Tiếp tục setup"
-
-                        : "Xem chi tiết"}
-
-                      <ChevronRight
-                        size={18}
-                      />
+                      Xem chi tiết
 
                     </button>
+
+                    {event.status !==
+                      "CANCELLED" && (
+
+                      <button
+                        onClick={() =>
+                          handleCancel(
+                            event.id
+                          )
+                        }
+                        className="
+                          px-5
+                          py-3
+                          rounded-2xl
+                          bg-red-500
+                          hover:bg-red-400
+                          font-bold
+                        "
+                      >
+
+                        Hủy sự kiện
+
+                      </button>
+
+                    )}
 
                   </div>
 
