@@ -50,6 +50,8 @@ const [zones,
       price: "",
       rows: "",
       seatsPerRow: "",
+       sale_start: null,
+  sale_end: null,
     },
   ]);
 
@@ -212,6 +214,8 @@ const addZone =
         price: "",
         rows: "",
         seatsPerRow: "",
+            sale_start: null,   
+            sale_end: null,
       },
     ]);
 
@@ -1024,6 +1028,35 @@ return (
                           }
                           className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10"
                         />
+
+                        <label>Bắt đầu bán vé</label>
+
+<DatePicker
+  selected={zone.sale_start}
+  onChange={(date) =>
+    handleZoneChange(
+      index,
+      "sale_start",
+      date
+    )
+  }
+  showTimeSelect
+  dateFormat="dd/MM/yyyy HH:mm"
+/>
+<label>Kết thúc bán vé</label>
+
+<DatePicker
+  selected={zone.sale_end}
+  onChange={(date) =>
+    handleZoneChange(
+      index,
+      "sale_end",
+      date
+    )
+  }
+  showTimeSelect
+  dateFormat="dd/MM/yyyy HH:mm"
+/>
 
                       </div>
 
