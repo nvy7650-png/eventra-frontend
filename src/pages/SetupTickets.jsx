@@ -29,11 +29,27 @@ function SetupTickets() {
     eventData,
   } = location.state || {};
 
-  if (!eventData) {
+const isManual =
+  eventData?.seat_mode ===
+  "MANUAL";
 
-    return null;
+const [zones,
+  setZones] =
+  useState([
+    {
+      name: "VIP",
+      price: "",
+      rows: "",
+      seatsPerRow: "",
+    },
+  ]);
 
-  }
+if (!eventData) {
+
+  return null;
+
+}
+
 
   const [loading,
     setLoading] =
@@ -45,7 +61,15 @@ function SetupTickets() {
       {
         start_time: null,
 end_time: null,
-        tickets: [],
+        tickets: [
+  {
+    name: "",
+    price: "",
+    quantity: "",
+    sale_start: null,
+    sale_end: null,
+  },
+],
       },
     ]);
 
@@ -57,7 +81,15 @@ end_time: null,
         {
           start_time: null,
           end_time: null,
-          tickets: [],
+         tickets: [
+  {
+    name: "",
+    price: "",
+    quantity: "",
+    sale_start: null,
+    sale_end: null,
+  },
+],
         },
       ]);
 
@@ -148,28 +180,78 @@ sale_end: null,
     };
 
   const handleTicketChange =
-    (
-      showtimeIndex,
-      ticketIndex,
-      field,
-      value
-    ) => {
+(
+  showtimeIndex,
+  ticketIndex,
+  field,
+  value
+) => {
 
-      const updated =
-        [...showtimes];
+  const updated =
+    [...showtimes];
 
-      updated[
-        showtimeIndex
-      ].tickets[
-        ticketIndex
-      ][field] = value;
+  updated[
+    showtimeIndex
+  ].tickets[
+    ticketIndex
+  ][field] = value;
 
-      setShowtimes(
-        updated
-      );
+  setShowtimes(
+    updated
+  );
 
-    };
+};
 
+const addZone =
+  () => {
+
+    setZones([
+      ...zones,
+      {
+        name: "",
+        price: "",
+        rows: "",
+        seatsPerRow: "",
+      },
+    ]);
+
+  };
+
+const removeZone =
+  (index) => {
+
+    const updated =
+      [...zones];
+
+    updated.splice(
+      index,
+      1
+    );
+
+    setZones(
+      updated
+    );
+
+  };
+
+const handleZoneChange =
+  (
+    index,
+    field,
+    value
+  ) => {
+
+    const updated =
+      [...zones];
+
+    updated[index][field] =
+      value;
+
+    setZones(
+      updated
+    );
+
+  };
   const handleSubmit =
     () => {
 
@@ -398,10 +480,14 @@ sale_end: null,
       navigate(
         "/organizer/confirm-event",
         {
-          state: {
-            eventData,
-             showtimes: formattedShowtimes,
-          },
+        
+state: {
+  eventData,
+  showtimes:
+    formattedShowtimes,
+  zones,
+},
+
         }
       );
 
@@ -832,6 +918,196 @@ sale_end: null,
 
       </div>
 
+{isManual && (
+
+  <div
+    className="
+      bg-[#0B1120]
+      border
+      border-white/10
+      rounded-3xl
+      p-8
+    "
+  >
+
+    <div className="flex items-center justify-between mb-6">
+
+      <h2 className="text-2xl font-bold">
+
+        Khu vực ghế
+
+      </h2>
+
+      <button
+        type="button"
+        onClick={addZone}
+        className="
+          px-4
+          py-2
+          rounded-xl
+          bg-sky-500
+          text-black
+          font-semibold
+        "
+      >
+
+        + Thêm khu vực
+
+      </button>
+
+    </div>
+
+    <div className="space-y-5">
+
+      {zones.map(
+        (
+          zone,
+          index
+        ) => (
+
+          <div
+            key={index}
+            className="
+              bg-[#111827]
+              rounded-2xl
+              p-5
+            "
+          >
+
+            <div className="flex justify-between mb-4">
+
+              <h3 className="font-bold">
+
+                Khu vực #
+                {index + 1}
+
+              </h3>
+
+              {zones.length > 1 && (
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    removeZone(
+                      index
+                    )
+                  }
+                >
+
+                  <Trash2
+                    size={18}
+                    className="text-red-400"
+                  />
+
+                </button>
+
+              )}
+
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-4">
+
+              <input
+                type="text"
+                placeholder="Tên khu vực (VIP)"
+                value={zone.name}
+                onChange={(e) =>
+                  handleZoneChange(
+                    index,
+                    "name",
+                    e.target.value
+                  )
+                }
+                className="
+                  px-4
+                  py-3
+                  rounded-xl
+                  bg-[#0B1120]
+                  border
+                  border-white/10
+                "
+              />
+
+              <input
+                type="number"
+                placeholder="Giá vé"
+                value={zone.price}
+                onChange={(e) =>
+                  handleZoneChange(
+                    index,
+                    "price",
+                    e.target.value
+                  )
+                }
+                className="
+                  px-4
+                  py-3
+                  rounded-xl
+                  bg-[#0B1120]
+                  border
+                  border-white/10
+                "
+              />
+
+              <input
+                type="number"
+                placeholder="Số hàng"
+                value={zone.rows}
+                onChange={(e) =>
+                  handleZoneChange(
+                    index,
+                    "rows",
+                    e.target.value
+                  )
+                }
+                className="
+                  px-4
+                  py-3
+                  rounded-xl
+                  bg-[#0B1120]
+                  border
+                  border-white/10
+                "
+              />
+
+              <input
+                type="number"
+                placeholder="Ghế mỗi hàng"
+                value={
+                  zone.seatsPerRow
+                }
+                onChange={(e) =>
+                  handleZoneChange(
+                    index,
+                    "seatsPerRow",
+                    e.target.value
+                  )
+                }
+                className="
+                  px-4
+                  py-3
+                  rounded-xl
+                  bg-[#0B1120]
+                  border
+                  border-white/10
+                "
+              />
+
+            </div>
+
+          </div>
+
+        )
+
+      )}
+
+    </div>
+
+  </div>
+
+)}
+
+
       {/* ACTIONS */}
       <div className="flex gap-4 mt-8">
 
@@ -885,7 +1161,6 @@ sale_end: null,
     </div>
 
   );
-
 }
 
 export default SetupTickets;
