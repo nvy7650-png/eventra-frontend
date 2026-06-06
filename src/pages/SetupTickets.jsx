@@ -319,29 +319,31 @@ const handleSubmit =
 
       }
 
-      if (
-        showtime.tickets
-          .length === 0
-      ) {
+if (!isManual) {
 
-        alert(
-          `Suất diễn #${i + 1}: Phải có ít nhất 1 loại vé`
-        );
+  if (
+    showtime.tickets
+      .length === 0
+  ) {
 
-        return;
+    alert(
+      `Suất diễn #${i + 1}: Phải có ít nhất 1 loại vé`
+    );
 
-      }
+    return;
 
-      for (
-        let j = 0;
-        j <
-        showtime.tickets
-          .length;
-        j++
-      ) {
+  }
 
-        const ticket =
-          showtime.tickets[j];
+  for (
+    let j = 0;
+    j <
+    showtime.tickets
+      .length;
+    j++
+  ) {
+
+    const ticket =
+      showtime.tickets[j];
 
         const saleStart =
           new Date(
@@ -434,22 +436,56 @@ const handleSubmit =
 
           }
 
-          if (
-            saleEnd >=
-            startTime
-          ) {
 
-            alert(
-              `Loại vé #${j + 1}: Hạn cuối bán vé phải trước thời gian bắt đầu sự kiện`
-            );
+    if (
+      saleEnd >=
+      startTime
+    ) {
 
-            return;
+      alert(
+        `Loại vé #${j + 1}: Hạn cuối bán vé phải trước thời gian bắt đầu sự kiện`
+      );
 
-          }
+      return;
 
-        }
+    }
 
-      }
+  }
+
+}
+    }
+
+
+      if (isManual) {
+
+  for (
+    let i = 0;
+    i < zones.length;
+    i++
+  ) {
+
+    const zone =
+      zones[i];
+
+    if (
+      !zone.name ||
+      !zone.price ||
+      !zone.rows ||
+      !zone.seatsPerRow ||
+      !zone.sale_start ||
+      !zone.sale_end
+    ) {
+
+      alert(
+        `Khu vực #${i + 1}: Vui lòng nhập đầy đủ thông tin`
+      );
+
+      return;
+    }
+
+  }
+
+}
 
       setLoading(true);
 
@@ -482,21 +518,30 @@ const handleSubmit =
 
           })
         );
+        const formattedZones =
+  zones.map(
+    (zone) => ({
+      ...zone,
+
+      sale_start:
+        zone.sale_start?.toISOString(),
+
+      sale_end:
+        zone.sale_end?.toISOString(),
+    })
+  );
 
       navigate(
         "/organizer/confirm-event",
         {
 
           state: {
-
-            eventData,
-
-            showtimes:
-              formattedShowtimes,
-
-            zones,
-
-          },
+  eventData,
+  showtimes:
+    formattedShowtimes,
+  zones:
+    formattedZones,
+},
 
         }
       );
@@ -1029,34 +1074,67 @@ return (
                           className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10"
                         />
 
-                        <label>Bắt đầu bán vé</label>
+                       <div>
 
-<DatePicker
-  selected={zone.sale_start}
-  onChange={(date) =>
-    handleZoneChange(
-      index,
-      "sale_start",
-      date
-    )
-  }
-  showTimeSelect
-  dateFormat="dd/MM/yyyy HH:mm"
-/>
-<label>Kết thúc bán vé</label>
+  <label className="block mb-2">
+    Bắt đầu bán vé
+  </label>
 
-<DatePicker
-  selected={zone.sale_end}
-  onChange={(date) =>
-    handleZoneChange(
-      index,
-      "sale_end",
-      date
-    )
-  }
-  showTimeSelect
-  dateFormat="dd/MM/yyyy HH:mm"
-/>
+  <DatePicker
+    selected={zone.sale_start}
+    onChange={(date) =>
+      handleZoneChange(
+        index,
+        "sale_start",
+        date
+      )
+    }
+    showTimeSelect
+    dateFormat="dd/MM/yyyy HH:mm"
+    minDate={new Date()}
+    className="
+      w-full
+      px-4
+      py-3
+      rounded-xl
+      bg-[#0B1120]
+      border
+      border-white/10
+    "
+  />
+
+</div>
+
+<div>
+
+  <label className="block mb-2">
+    Kết thúc bán vé
+  </label>
+
+  <DatePicker
+    selected={zone.sale_end}
+    onChange={(date) =>
+      handleZoneChange(
+        index,
+        "sale_end",
+        date
+      )
+    }
+    showTimeSelect
+    dateFormat="dd/MM/yyyy HH:mm"
+    minDate={new Date()}
+    className="
+      w-full
+      px-4
+      py-3
+      rounded-xl
+      bg-[#0B1120]
+      border
+      border-white/10
+    "
+  />
+
+</div>
 
                       </div>
 
