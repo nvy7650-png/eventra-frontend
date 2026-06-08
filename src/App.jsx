@@ -1,4 +1,3 @@
-
 import {
   BrowserRouter,
   Routes,
@@ -17,6 +16,10 @@ import OrganizerRegister from "./pages/OrganizerRegister";
 import OrganizerDashboard from "./pages/OrganizerDashboard";
 
 import OrganizerEvents from "./pages/OrganizerEvents";
+
+import OrganizerEventDetail from "./pages/OrganizerEventDetail";
+
+import EditEvent from "./pages/EditEvent";
 
 import AdminDashboard from "./pages/AdminDashboard";
 
@@ -126,6 +129,34 @@ function App() {
           }
         />
 
+        {/* ORGANIZER EVENT DETAIL */}
+        <Route
+          path="/organizer/event/:id"
+          element={
+
+            <ProtectedRoute role="ORGANIZER">
+
+              <OrganizerEventDetail />
+
+            </ProtectedRoute>
+
+          }
+        />
+
+        {/* EDIT EVENT */}
+        <Route
+          path="/organizer/event/edit/:id"
+          element={
+
+            <ProtectedRoute role="ORGANIZER">
+
+              <EditEvent />
+
+            </ProtectedRoute>
+
+          }
+        />
+
         {/* STEP 1 */}
         <Route
           path="/organizer/create-event"
@@ -202,4 +233,3 @@ function App() {
 }
 
 export default App;
-

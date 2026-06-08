@@ -421,8 +421,8 @@ export default function OrganizerEvents() {
 
                     <button
                       onClick={() =>
-                        alert(
-                          "Trang chi tiết sẽ làm sau"
+                        navigate(
+                          `/organizer/event/${event.id}`
                         )
                       }
                       className="
@@ -440,30 +440,7 @@ export default function OrganizerEvents() {
 
                     </button>
 
-                    {event.status !==
-                      "CANCELLED" && (
 
-                      <button
-                        onClick={() =>
-                          handleCancel(
-                            event.id
-                          )
-                        }
-                        className="
-                          px-5
-                          py-3
-                          rounded-2xl
-                          bg-red-500
-                          hover:bg-red-400
-                          font-bold
-                        "
-                      >
-
-                        Hủy sự kiện
-
-                      </button>
-
-                    )}
 
                   </div>
 
