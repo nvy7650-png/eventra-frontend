@@ -42,25 +42,18 @@ export default function ConfirmEvent() {
 
   }
 
-  const totalTickets =
-    showtimes.reduce(
-      (sum, showtime) =>
-
+  // totalTickets removed (ticket_types deprecated)
+  const totalCapacity =
+    zones.reduce((sum, zone) => {
+      if (zone.zone_type === "STANDING") {
+        return sum + Number(zone.capacity || 0);
+      }
+      // seating
+      return (
         sum +
-
-        showtime.tickets.reduce(
-          (ticketSum, ticket) =>
-
-            ticketSum +
-            Number(
-              ticket.quantity || 0
-            ),
-
-          0
-        ),
-
-      0
-    );
+        Number(zone.rows || 0) * Number(zone.seatsPerRow || 0)
+      );
+    }, 0);
 
   const totalSeats =
     zones.reduce(
@@ -125,6 +118,9 @@ export default function ConfirmEvent() {
           "image",
           eventData.image
         );
+
+        console.log("SHOWTIMES SENT:");
+        console.log(showtimes);
 
         submitData.append(
           "showtimes",
@@ -382,7 +378,7 @@ export default function ConfirmEvent() {
               >
                 {isManual
                   ? totalSeats
-                  : totalTickets}
+                  : totalCapacity}
               </h3>
 
               <p className="text-gray-400">
