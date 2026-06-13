@@ -13,6 +13,9 @@ import {
   LayoutDashboard,
 } from "lucide-react";
 
+import OrganizerSidebar
+  from "../components/OrganizerSidebar";
+
 export default function OrganizerEvents() {
 
   const navigate = useNavigate();
@@ -190,22 +193,28 @@ export default function OrganizerEvents() {
 
   return (
 
-    <div
-      className="
-        min-h-screen
-        bg-[#050816]
-        text-white
-        px-6
-        py-10
-      "
-    >
+    <div className="min-h-screen flex bg-[#050816]">
+
+      <OrganizerSidebar />
 
       <div
-        className="
-          max-w-7xl
-          mx-auto
-        "
+        className="flex-1"
       >
+
+        <div
+          className="
+            text-white
+            px-6
+            py-10
+          "
+        >
+
+          <div
+            className="
+              max-w-7xl
+              mx-auto
+            "
+          >
 
         {/* HEADER */}
         <div
@@ -448,6 +457,10 @@ export default function OrganizerEvents() {
 
             )
           )}
+
+        </div>
+
+          </div>
 
         </div>
 
