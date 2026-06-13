@@ -440,8 +440,6 @@ export default function OrganizerEvents() {
 
                     </button>
 
-
-
                   </div>
 
                 </div>
