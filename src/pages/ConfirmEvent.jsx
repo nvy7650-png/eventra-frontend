@@ -26,6 +26,7 @@ export default function ConfirmEvent() {
   const {
     eventData,
     showtimes,
+    zones,
   } = location.state || {};
 
   const [loading,
@@ -60,6 +61,25 @@ export default function ConfirmEvent() {
 
       0
     );
+
+  const totalSeats =
+    zones.reduce(
+      (sum, zone) =>
+
+        sum +
+        Number(
+          zone.rows || 0
+        ) *
+        Number(
+          zone.seatsPerRow || 0
+        ),
+
+      0
+    );
+
+  const isManual =
+    eventData.seat_mode ===
+    "MANUAL";
 
   const handleSubmit =
     async () => {
@@ -110,6 +130,13 @@ export default function ConfirmEvent() {
           "showtimes",
           JSON.stringify(
             showtimes
+          )
+        );
+
+        submitData.append(
+          "zones",
+          JSON.stringify(
+            zones
           )
         );
 
@@ -353,11 +380,15 @@ export default function ConfirmEvent() {
                   mt-3
                 "
               >
-                {totalTickets}
+                {isManual
+                  ? totalSeats
+                  : totalTickets}
               </h3>
 
               <p className="text-gray-400">
-                Tổng số vé
+                {isManual
+                  ? "Tổng số ghế"
+                  : "Tổng số vé"}
               </p>
 
             </div>

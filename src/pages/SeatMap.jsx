@@ -1,86 +1,104 @@
-import { useState } from "react";
+import {
+  useEffect,
+  useState,
+} from "react";
 
-const seatsData = [
-  // ROW A
-  { id: "A1", row: "A", status: "available" },
-  { id: "A2", row: "A", status: "sold" },
-  { id: "A3", row: "A", status: "available" },
-  { id: "A4", row: "A", status: "available" },
-  { id: "A5", row: "A", status: "sold" },
-
-  // ROW B
-  { id: "B1", row: "B", status: "available" },
-  { id: "B2", row: "B", status: "available" },
-  { id: "B3", row: "B", status: "sold" },
-  { id: "B4", row: "B", status: "available" },
-  { id: "B5", row: "B", status: "available" },
-  { id: "B6", row: "B", status: "available" },
-
-  // ROW C
-  { id: "C1", row: "C", status: "available" },
-  { id: "C2", row: "C", status: "available" },
-  { id: "C3", row: "C", status: "available" },
-  { id: "C4", row: "C", status: "sold" },
-  { id: "C5", row: "C", status: "available" },
-  { id: "C6", row: "C", status: "available" },
-  { id: "C7", row: "C", status: "available" },
-
-  // ROW D
-  { id: "D1", row: "D", status: "available" },
-  { id: "D2", row: "D", status: "available" },
-  { id: "D3", row: "D", status: "available" },
-  { id: "D4", row: "D", status: "available" },
-  { id: "D5", row: "D", status: "sold" },
-  { id: "D6", row: "D", status: "available" },
-  { id: "D7", row: "D", status: "available" },
-  { id: "D8", row: "D", status: "available" },
-];
+import {
+  useParams,
+} from "react-router-dom";
 
 export default function SeatMap() {
 
+  const { eventId } =
+    useParams();
+
+  const [event, setEvent] =
+    useState(null);
+
+  const [zones, setZones] =
+    useState([]);
+  const [seats, setSeats] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+
   const [selectedSeats, setSelectedSeats] = useState([]);
 
-  const groupedSeats = seatsData.reduce((acc, seat) => {
+  useEffect(() => {
+    fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}/seatmap`)
+      .then((res) => res.json())
+      .then((data) => {
+        setEvent(data.event);
+        setZones(data.zones || []);
+        setSeats(data.seats || []);
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, [eventId]);
+  // Build groupedSeats by zone_id -> row_label -> seats (use backend fields directly)
+  const groupedSeats = seats.reduce((acc, seat) => {
+    const zoneId = seat.zone_id ?? "default";
+    if (!acc[zoneId]) acc[zoneId] = {};
 
-    if (!acc[seat.row]) {
-      acc[seat.row] = [];
-    }
+    // Use backend `row_label` directly (do not set fallbacks)
+    const rowLabel = seat.row_label;
+    if (!acc[zoneId][rowLabel]) acc[zoneId][rowLabel] = [];
 
-    acc[seat.row].push(seat);
+    acc[zoneId][rowLabel].push(seat);
 
     return acc;
-
   }, {});
 
+
   const handleSelectSeat = (seat) => {
+    // Use DB primary key `seat.id` for selection state (selectedSeats stores DB ids)
+    if (!seat) return;
 
-    if (seat.status === "sold") return;
+    // Backend statuses are uppercase: AVAILABLE, SOLD, RESERVED
+    if (seat.status === "SOLD") return;
 
-    if (selectedSeats.includes(seat.id)) {
-
-      setSelectedSeats(
-        selectedSeats.filter((s) => s !== seat.id)
-      );
-
+    const id = seat.id;
+    if (selectedSeats.includes(id)) {
+      setSelectedSeats(selectedSeats.filter((s) => s !== id));
     } else {
-
-      setSelectedSeats([...selectedSeats, seat.id]);
-
+      setSelectedSeats([...selectedSeats, id]);
     }
   };
 
   const getSeatColor = (seat) => {
-
-    if (seat.status === "sold") {
+    // Backend statuses are uppercase: AVAILABLE, SOLD, RESERVED
+    if (seat.status === "SOLD") {
       return "bg-red-500 cursor-not-allowed";
+    }
+
+    if (seat.status === "RESERVED") {
+      return "bg-yellow-500 cursor-not-allowed";
     }
 
     if (selectedSeats.includes(seat.id)) {
       return "bg-sky-400 text-black scale-110";
     }
 
+    // Treat AVAILABLE (or any other) as available
     return "bg-green-500 hover:bg-green-400";
   };
+
+  if (loading) {
+
+    return (
+
+      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+
+        Đang tải sơ đồ ghế...
+
+      </div>
+
+    );
+
+  }
 
   return (
     <div className="min-h-screen bg-gray-950 text-white">
