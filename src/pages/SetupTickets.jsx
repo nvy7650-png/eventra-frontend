@@ -474,8 +474,6 @@ return (
 
                     <input type="number" placeholder="Giá vé" value={zone.price} onChange={(e) => handleZoneChange(index, "price", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
 
-                    <input type="number" placeholder="Số hàng" value={zone.rows} onChange={(e) => handleZoneChange(index, "rows", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
-
                     {/* Zone Type selector only for AUTO */}
                     {!isManual ? (
                       <div className="flex items-center gap-4">
@@ -489,10 +487,14 @@ return (
                       </div>
                     ) : null}
 
-                    {/* Conditional: seating shows seatsPerRow, standing shows capacity. For MANUAL, seating only. */}
+                    {/* Conditional: seating shows rows + seatsPerRow, standing shows capacity. For MANUAL, seating only. */}
                     {(isManual || zone.zone_type === "SEATING") ? (
 
-                      <input type="number" placeholder="Ghế mỗi hàng" value={zone.seatsPerRow} onChange={(e) => handleZoneChange(index, "seatsPerRow", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+                      <>
+                        <input type="number" placeholder="Số hàng" value={zone.rows} onChange={(e) => handleZoneChange(index, "rows", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+
+                        <input type="number" placeholder="Ghế mỗi hàng" value={zone.seatsPerRow} onChange={(e) => handleZoneChange(index, "seatsPerRow", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+                      </>
 
                     ) : (
 
