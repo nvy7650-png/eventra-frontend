@@ -194,8 +194,7 @@ const handleSubmit =
     }
 
   };
-}
- 
+
   if (loading) {
 
     return (
@@ -327,3 +326,4 @@ const handleSubmit =
     </div>
 
   );
+}
