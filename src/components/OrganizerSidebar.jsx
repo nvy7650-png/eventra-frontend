@@ -102,7 +102,7 @@ export default function OrganizerSidebar() {
 
     <div
       className="
-        w-72
+        w-80
         min-h-screen
         bg-[#081224]
         border-r
@@ -113,13 +113,15 @@ export default function OrganizerSidebar() {
     >
 
       {/* LOGO */}
-      <div className="p-6">
+      <div className="px-6 pt-7 pb-6">
 
         <h1
           className="
-            text-5xl
+            text-4xl
             font-black
             text-sky-500
+            tracking-tight
+            leading-none
           "
         >
 
@@ -130,7 +132,8 @@ export default function OrganizerSidebar() {
         <p
           className="
             text-gray-400
-            mt-2
+            mt-3
+            text-sm
           "
         >
 
@@ -148,18 +151,18 @@ export default function OrganizerSidebar() {
             bg-white/5
             border
             border-white/10
-            rounded-3xl
-            p-5
+            rounded-2xl
+            p-4
             flex
             items-center
-            gap-4
+            gap-3
           "
         >
 
           <div
             className="
-              w-14
-              h-14
+              w-12
+              h-12
               rounded-full
               bg-sky-500
               flex
@@ -167,7 +170,7 @@ export default function OrganizerSidebar() {
               justify-center
               text-black
               font-black
-              text-xl
+              text-lg
             "
           >
 
@@ -180,7 +183,7 @@ export default function OrganizerSidebar() {
             <h3
               className="
                 font-bold
-                text-lg
+                text-base
               "
             >
 
@@ -191,6 +194,7 @@ export default function OrganizerSidebar() {
             <p
               className="
                 text-gray-400
+                text-sm
               "
             >
 
