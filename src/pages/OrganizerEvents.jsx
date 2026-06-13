@@ -253,35 +253,6 @@ export default function OrganizerEvents() {
             <button
               onClick={() =>
                 navigate(
-                  "/organizer/dashboard"
-                )
-              }
-              className="
-                flex
-                items-center
-                gap-2
-                px-6
-                py-4
-                rounded-2xl
-                bg-white/10
-                hover:bg-white/20
-                border
-                border-white/10
-                font-semibold
-              "
-            >
-
-              <LayoutDashboard
-                size={20}
-              />
-
-              Dashboard
-
-            </button>
-
-            <button
-              onClick={() =>
-                navigate(
                   "/organizer/create-event"
                 )
               }
