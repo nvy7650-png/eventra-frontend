@@ -48,8 +48,10 @@ const [zones,
     {
       name: "VIP",
       price: "",
+      zone_type: "SEATING",
       rows: "",
       seatsPerRow: "",
+      capacity: "",
        sale_start: null,
   sale_end: null,
     },
@@ -212,8 +214,10 @@ const addZone =
       {
         name: "",
         price: "",
+        zone_type: "SEATING",
         rows: "",
         seatsPerRow: "",
+        capacity: "",
             sale_start: null,   
             sale_end: null,
       },
@@ -456,36 +460,41 @@ if (!isManual) {
     }
 
 
-      if (isManual) {
+      // Validate zones for both MANUAL and AUTO
+      for (let i = 0; i < zones.length; i++) {
 
-  for (
-    let i = 0;
-    i < zones.length;
-    i++
-  ) {
+        const zone = zones[i];
 
-    const zone =
-      zones[i];
+        if (!zone.name || !zone.price || !zone.sale_start || !zone.sale_end) {
 
-    if (
-      !zone.name ||
-      !zone.price ||
-      !zone.rows ||
-      !zone.seatsPerRow ||
-      !zone.sale_start ||
-      !zone.sale_end
-    ) {
+          alert(`Khu vực #${i + 1}: Vui lòng nhập đầy đủ thông tin`);
 
-      alert(
-        `Khu vực #${i + 1}: Vui lòng nhập đầy đủ thông tin`
-      );
+          return;
 
-      return;
-    }
+        }
 
-  }
+        if (isManual) {
+          // MANUAL forces seating
+          if (!zone.rows || !zone.seatsPerRow) {
+            alert(`Khu vực #${i + 1}: Vui lòng nhập số hàng và ghế mỗi hàng cho khu vực ngồi`);
+            return;
+          }
+        } else {
+          // AUTO: validate based on zone_type
+          if (zone.zone_type === "SEATING") {
+            if (!zone.rows || !zone.seatsPerRow) {
+              alert(`Khu vực #${i + 1}: Vui lòng nhập số hàng và ghế mỗi hàng cho khu vực ngồi`);
+              return;
+            }
+          } else if (zone.zone_type === "STANDING") {
+            if (!zone.capacity) {
+              alert(`Khu vực #${i + 1}: Vui lòng nhập sức chứa cho khu vực đứng`);
+              return;
+            }
+          }
+        }
 
-}
+      }
 
       setLoading(true);
 
@@ -518,18 +527,12 @@ if (!isManual) {
 
           })
         );
-        const formattedZones =
-  zones.map(
-    (zone) => ({
-      ...zone,
-
-      sale_start:
-        zone.sale_start?.toISOString(),
-
-      sale_end:
-        zone.sale_end?.toISOString(),
-    })
-  );
+        const formattedZones = zones.map((zone) => ({
+          ...zone,
+          zone_type: isManual ? "SEATING" : zone.zone_type,
+          sale_start: zone.sale_start?.toISOString(),
+          sale_end: zone.sale_end?.toISOString(),
+        }));
 
       navigate(
         "/organizer/confirm-event",
@@ -721,434 +724,151 @@ return (
 
           {/* TICKETS / ZONES */}
 
-          {!isManual ? (
-
+          {/* TICKETS (AUTO) */}
+          {!isManual && (
             <div>
 
               <div className="flex items-center justify-between mb-5">
 
-                <h3 className="text-xl font-bold">
-
-                  Loại vé
-
-                </h3>
+                <h3 className="text-xl font-bold">Loại vé</h3>
 
                 <button
                   type="button"
-                  onClick={() =>
-                    addTicket(
-                      showtimeIndex
-                    )
-                  }
-                  className="
-                    flex
-                    items-center
-                    gap-2
-                    px-4
-                    py-2
-                    rounded-xl
-                    bg-sky-500
-                    text-black
-                    font-semibold
-                  "
+                  onClick={() => addTicket(showtimeIndex)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500 text-black font-semibold"
                 >
-
-                  <Plus size={18} />
-
-                  Thêm vé
-
+                  <Plus size={18} /> Thêm vé
                 </button>
 
               </div>
 
               <div className="space-y-5">
 
-                {showtime.tickets.map(
-                  (
-                    ticket,
-                    ticketIndex
-                  ) => (
+                {showtime.tickets.map((ticket, ticketIndex) => (
 
-                    <div
-                      key={ticketIndex}
-                      className="
-                        border
-                        border-white/10
-                        rounded-2xl
-                        p-5
-                        bg-[#111827]
-                      "
-                    >
+                  <div key={ticketIndex} className="border border-white/10 rounded-2xl p-5 bg-[#111827]">
 
-                      <div className="flex justify-between mb-4">
+                    <div className="flex justify-between mb-4">
 
-                        <h4 className="font-bold">
+                      <h4 className="font-bold">Vé #{ticketIndex + 1}</h4>
 
-                          Vé #{ticketIndex + 1}
+                      <button type="button" onClick={() => removeTicket(showtimeIndex, ticketIndex)}>
+                        <Trash2 size={18} className="text-red-400" />
+                      </button>
 
-                        </h4>
+                    </div>
 
-                        <button
-                          type="button"
-                          onClick={() =>
-                            removeTicket(
-                              showtimeIndex,
-                              ticketIndex
-                            )
-                          }
-                        >
+                    <div className="grid md:grid-cols-2 gap-4">
 
-                          <Trash2
-                            size={18}
-                            className="text-red-400"
-                          />
+                      <input type="text" placeholder="Tên vé" value={ticket.name} onChange={(e) => handleTicketChange(showtimeIndex, ticketIndex, "name", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
 
-                        </button>
+                      <input type="number" placeholder="Giá vé" value={ticket.price} onChange={(e) => handleTicketChange(showtimeIndex, ticketIndex, "price", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
 
+                      <input type="number" placeholder="Số lượng vé" value={ticket.quantity} onChange={(e) => handleTicketChange(showtimeIndex, ticketIndex, "quantity", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+
+                      <div>
+                        <label className="block mb-2">Bắt đầu bán vé</label>
+                        <DatePicker selected={ticket.sale_start} onChange={(date) => handleTicketChange(showtimeIndex, ticketIndex, "sale_start", date)} showTimeSelect dateFormat="dd/MM/yyyy HH:mm" minDate={new Date()} className="w-full px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
                       </div>
 
-
-                      <div className="grid md:grid-cols-2 gap-4">
-
-                        <input
-                          type="text"
-                          placeholder="Tên vé"
-                          value={ticket.name}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "name",
-                              e.target.value
-                            )
-                          }
-                          className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10"
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Giá vé"
-                          value={ticket.price}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "price",
-                              e.target.value
-                            )
-                          }
-                          className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10"
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Số lượng vé"
-                          value={ticket.quantity}
-                          onChange={(e) =>
-                            handleTicketChange(
-                              showtimeIndex,
-                              ticketIndex,
-                              "quantity",
-                              e.target.value
-                            )
-                          }
-                          className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10"
-                        />
-
-                        <div>
-
-                          <label className="block mb-2">
-                            Bắt đầu bán vé
-                          </label>
-
-                          <DatePicker
-                            selected={ticket.sale_start}
-                            onChange={(date) =>
-                              handleTicketChange(
-                                showtimeIndex,
-                                ticketIndex,
-                                "sale_start",
-                                date
-                              )
-                            }
-                            showTimeSelect
-                            dateFormat="dd/MM/yyyy HH:mm"
-                            minDate={new Date()}
-                            className="
-                              w-full
-                              px-4
-                              py-3
-                              rounded-xl
-                              bg-[#0B1120]
-                              border
-                              border-white/10
-                            "
-                          />
-
-                        </div>
-
-                        <div>
-
-                          <label className="block mb-2">
-                            Kết thúc bán vé
-                          </label>
-
-                          <DatePicker
-                            selected={ticket.sale_end}
-                            onChange={(date) =>
-                              handleTicketChange(
-                                showtimeIndex,
-                                ticketIndex,
-                                "sale_end",
-                                date
-                              )
-                            }
-                            showTimeSelect
-                            dateFormat="dd/MM/yyyy HH:mm"
-                            minDate={new Date()}
-                            className="
-                              w-full
-                              px-4
-                              py-3
-                              rounded-xl
-                              bg-[#0B1120]
-                              border
-                              border-white/10
-                            "
-                          />
-
-                        </div>
-
+                      <div>
+                        <label className="block mb-2">Kết thúc bán vé</label>
+                        <DatePicker selected={ticket.sale_end} onChange={(date) => handleTicketChange(showtimeIndex, ticketIndex, "sale_end", date)} showTimeSelect dateFormat="dd/MM/yyyy HH:mm" minDate={new Date()} className="w-full px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
                       </div>
 
                     </div>
 
-                  )
+                  </div>
 
-                )}
-
-              </div>
-
-            </div>
-
-          ) : (
-
-            <div>
-
-              <div className="flex items-center justify-between mb-5">
-
-                <h3 className="text-xl font-bold">
-
-                  Loại vé & Khu vực ghế
-
-                </h3>
-
-                <button
-                  type="button"
-                  onClick={addZone}
-                  className="
-                    flex
-                    items-center
-                    gap-2
-                    px-4
-                    py-2
-                    rounded-xl
-                    bg-sky-500
-                    text-black
-                    font-semibold
-                  "
-                >
-
-                  <Plus size={18} />
-
-                  Thêm khu vực
-
-                </button>
-
-              </div>
-
-              <div className="space-y-5">
-
-                {zones.map(
-                  (
-                    zone,
-                    index
-                  ) => (
-
-                    <div
-                      key={index}
-                      className="
-                        border
-                        border-white/10
-                        rounded-2xl
-                        p-5
-                        bg-[#111827]
-                      "
-                    >
-
-                      <div className="flex justify-between mb-4">
-
-                        <h4 className="font-bold">
-
-                          Khu vực #{index + 1}
-
-                        </h4>
-
-                        {zones.length > 1 && (
-
-                          <button
-                            type="button"
-                            onClick={() =>
-                              removeZone(
-                                index
-                              )
-                            }
-                          >
-
-                            <Trash2
-                              size={18}
-                              className="text-red-400"
-                            />
-
-                          </button>
-
-                        )}
-
-                      </div>
-
-                      <div className="grid md:grid-cols-2 gap-4">
-
-                        <input
-                          type="text"
-                          placeholder="Tên khu vực (VIP)"
-                          value={zone.name}
-                          onChange={(e) =>
-                            handleZoneChange(
-                              index,
-                              "name",
-                              e.target.value
-                            )
-                          }
-                          className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10"
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Giá vé"
-                          value={zone.price}
-                          onChange={(e) =>
-                            handleZoneChange(
-                              index,
-                              "price",
-                              e.target.value
-                            )
-                          }
-                          className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10"
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Số hàng"
-                          value={zone.rows}
-                          onChange={(e) =>
-                            handleZoneChange(
-                              index,
-                              "rows",
-                              e.target.value
-                            )
-                          }
-                          className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10"
-                        />
-
-                        <input
-                          type="number"
-                          placeholder="Ghế mỗi hàng"
-                          value={zone.seatsPerRow}
-                          onChange={(e) =>
-                            handleZoneChange(
-                              index,
-                              "seatsPerRow",
-                              e.target.value
-                            )
-                          }
-                          className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10"
-                        />
-
-                       <div>
-
-  <label className="block mb-2">
-    Bắt đầu bán vé
-  </label>
-
-  <DatePicker
-    selected={zone.sale_start}
-    onChange={(date) =>
-      handleZoneChange(
-        index,
-        "sale_start",
-        date
-      )
-    }
-    showTimeSelect
-    dateFormat="dd/MM/yyyy HH:mm"
-    minDate={new Date()}
-    className="
-      w-full
-      px-4
-      py-3
-      rounded-xl
-      bg-[#0B1120]
-      border
-      border-white/10
-    "
-  />
-
-</div>
-
-<div>
-
-  <label className="block mb-2">
-    Kết thúc bán vé
-  </label>
-
-  <DatePicker
-    selected={zone.sale_end}
-    onChange={(date) =>
-      handleZoneChange(
-        index,
-        "sale_end",
-        date
-      )
-    }
-    showTimeSelect
-    dateFormat="dd/MM/yyyy HH:mm"
-    minDate={new Date()}
-    className="
-      w-full
-      px-4
-      py-3
-      rounded-xl
-      bg-[#0B1120]
-      border
-      border-white/10
-    "
-  />
-
-</div>
-
-                      </div>
-
-                    </div>
-
-                  )
-
-                )}
+                ))}
 
               </div>
 
             </div>
-
           )}
+
+          {/* ZONES (AUTO and MANUAL) */}
+          <div>
+
+            <div className="flex items-center justify-between mb-5">
+
+              <h3 className="text-xl font-bold">Khu vực</h3>
+
+              <button type="button" onClick={addZone} className="flex items-center gap-2 px-4 py-2 rounded-xl bg-sky-500 text-black font-semibold">
+                <Plus size={18} /> Thêm khu vực
+              </button>
+
+            </div>
+
+            <div className="space-y-5">
+
+              {zones.map((zone, index) => (
+
+                <div key={index} className="border border-white/10 rounded-2xl p-5 bg-[#111827]">
+
+                  <div className="flex justify-between mb-4">
+
+                    <h4 className="font-bold">Khu vực #{index + 1}</h4>
+
+                    {zones.length > 1 && (
+                      <button type="button" onClick={() => removeZone(index)}>
+                        <Trash2 size={18} className="text-red-400" />
+                      </button>
+                    )}
+
+                  </div>
+
+                  <div className="grid md:grid-cols-2 gap-4">
+
+                    <input type="text" placeholder="Tên khu vực (VIP)" value={zone.name} onChange={(e) => handleZoneChange(index, "name", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+
+                    <input type="number" placeholder="Giá vé" value={zone.price} onChange={(e) => handleZoneChange(index, "price", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+
+                    <input type="number" placeholder="Số hàng" value={zone.rows} onChange={(e) => handleZoneChange(index, "rows", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+
+                    {/* Zone Type selector only for AUTO */}
+                    {!isManual ? (
+                      <div className="flex items-center gap-4">
+                        <div className="text-sm text-gray-300">Zone Type</div>
+                        <label className="inline-flex items-center gap-2">
+                          <input type="radio" name={`zone_type_${index}`} value="SEATING" checked={zone.zone_type === "SEATING"} onChange={() => handleZoneChange(index, "zone_type", "SEATING")} /> Seating
+                        </label>
+                        <label className="inline-flex items-center gap-2">
+                          <input type="radio" name={`zone_type_${index}`} value="STANDING" checked={zone.zone_type === "STANDING"} onChange={() => handleZoneChange(index, "zone_type", "STANDING")} /> Standing
+                        </label>
+                      </div>
+                    ) : null}
+
+                    {/* Conditional: seating shows seatsPerRow, standing shows capacity. For MANUAL, seating only. */}
+                    {(isManual || zone.zone_type === "SEATING") ? (
+
+                      <input type="number" placeholder="Ghế mỗi hàng" value={zone.seatsPerRow} onChange={(e) => handleZoneChange(index, "seatsPerRow", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+
+                    ) : (
+
+                      <input type="number" placeholder="Sức chứa (capacity)" value={zone.capacity} onChange={(e) => handleZoneChange(index, "capacity", e.target.value)} className="px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+
+                    )}
+
+                    <div>
+                      <label className="block mb-2">Bắt đầu bán vé</label>
+                      <DatePicker selected={zone.sale_start} onChange={(date) => handleZoneChange(index, "sale_start", date)} showTimeSelect dateFormat="dd/MM/yyyy HH:mm" minDate={new Date()} className="w-full px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+                    </div>
+
+                    <div>
+                      <label className="block mb-2">Kết thúc bán vé</label>
+                      <DatePicker selected={zone.sale_end} onChange={(date) => handleZoneChange(index, "sale_end", date)} showTimeSelect dateFormat="dd/MM/yyyy HH:mm" minDate={new Date()} className="w-full px-4 py-3 rounded-xl bg-[#0B1120] border border-white/10" />
+                    </div>
+
+                  </div>
+
+                </div>
+
+              ))}
+
+            </div>
+
+          </div>
        </div>
 
       )
