@@ -29,6 +29,9 @@ import SetupTickets from "./pages/SetupTickets";
 
 import ConfirmEvent from "./pages/ConfirmEvent";
 
+import OrganizerTickets from "./pages/OrganizerTickets";
+import OrganizerTicketDetail from "./pages/OrganizerTicketDetail";
+
 function App() {
 
   const user = JSON.parse(
@@ -74,6 +77,24 @@ function App() {
     <BrowserRouter>
 
       <Routes>
+
+        <Route
+  path="/organizer/tickets"
+  element={
+    <ProtectedRoute role="ORGANIZER">
+      <OrganizerTickets />
+    </ProtectedRoute>
+  }
+/>
+
+        <Route
+          path="/organizer/tickets/:eventId"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+              <OrganizerTicketDetail />
+            </ProtectedRoute>
+          }
+        />
 
         {/* HOME */}
         <Route
