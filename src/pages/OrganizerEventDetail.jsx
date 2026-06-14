@@ -23,6 +23,9 @@ export default function OrganizerEventDetail() {
     setEvent] =
     useState(null);
 
+  const [showtimes, setShowtimes] = useState([]);
+  const [zones, setZones] = useState([]);
+
   const [loading,
     setLoading] =
     useState(true);
@@ -37,7 +40,9 @@ export default function OrganizerEventDetail() {
       )
       .then((data) => {
 
-        setEvent(data);
+        setEvent(data.event || null);
+        setShowtimes(data.showtimes || []);
+        setZones(data.zones || []);
 
       })
       .catch((err) => {
@@ -345,6 +350,155 @@ export default function OrganizerEventDetail() {
                 {event.description}
 
               </p>
+
+            </div>
+
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-6 mt-6">
+
+            <div
+              className="
+                bg-[#0B1120]
+                border
+                border-white/10
+                rounded-3xl
+                p-6
+              "
+            >
+
+              <h2
+                className="
+                  text-xl
+                  font-bold
+                  mb-5
+                "
+              >
+
+                Suất diễn
+
+              </h2>
+
+              <div className="space-y-4">
+
+                {showtimes.length === 0 ? (
+
+                  <p className="text-gray-400">Không có suất diễn</p>
+
+                ) : (
+
+                  showtimes.map((st) => (
+
+                    <div key={st.id || st.start_time}>
+
+                      <p className="text-gray-400">Bắt đầu</p>
+
+                      <p>{st.start_time}</p>
+
+                      <p className="text-gray-400 mt-2">Kết thúc</p>
+
+                      <p>{st.end_time}</p>
+
+                    </div>
+
+                  ))
+
+                )}
+
+              </div>
+
+            </div>
+
+            <div
+              className="
+                bg-[#0B1120]
+                border
+                border-white/10
+                rounded-3xl
+                p-6
+              "
+            >
+
+              <h2
+                className="
+                  text-xl
+                  font-bold
+                  mb-5
+                "
+              >
+
+                Khu vực & thời gian bán vé
+
+              </h2>
+
+              <div className="space-y-4">
+
+                {zones.length === 0 ? (
+
+                  <p className="text-gray-400">Không có khu vực</p>
+
+                ) : (
+
+
+                  zones.map((zone) => (
+
+                    <div key={zone.id || zone.name}>
+
+                      <p className="text-gray-400">Tên</p>
+
+                      <p>{zone.name}</p>
+
+                      <p className="text-gray-400 mt-2">Giá</p>
+
+                      <p>{zone.price}</p>
+
+                      <p className="text-gray-400 mt-2">Loại</p>
+
+                      <p>{zone.zone_type}</p>
+
+                      {zone.zone_type === "STANDING" && (
+
+                        <>
+
+                          <p className="text-gray-400 mt-2">Sức chứa</p>
+
+                          <p>{zone.capacity}</p>
+
+                        </>
+
+                      )}
+
+                      {zone.zone_type === "SEATING" && (
+
+                        <>
+
+                          <p className="text-gray-400 mt-2">Số hàng</p>
+
+                          <p>{zone.total_rows}</p>
+
+                          <p className="text-gray-400 mt-2">Ghế mỗi hàng</p>
+
+                          <p>{zone.seats_per_row}</p>
+
+                        </>
+
+                      )}
+
+                      <p className="text-gray-400 mt-2">Bắt đầu bán</p>
+
+                      <p>{zone.sale_start ? new Date(zone.sale_start).toLocaleString("vi-VN") : zone.sale_start}</p>
+
+                      <p className="text-gray-400 mt-2">Kết thúc bán</p>
+
+                      <p>{zone.sale_end ? new Date(zone.sale_end).toLocaleString("vi-VN") : zone.sale_end}</p>
+
+                    </div>
+
+                  ))
+
+                )}
+
+              </div>
 
             </div>
 

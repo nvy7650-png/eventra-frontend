@@ -37,6 +37,8 @@ export default function AdminDashboard() {
 
     });
 
+  const [events, setEvents] = useState([]);
+
   const [loading, setLoading] =
     useState(true);
 
@@ -64,6 +66,24 @@ export default function AdminDashboard() {
       .finally(() => {
 
         setLoading(false);
+
+      });
+
+  }, []);
+
+  // GET ALL EVENTS FOR ADMIN
+  useEffect(() => {
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/events/admin/all`)
+      .then((res) => res.json())
+      .then((data) => {
+
+        setEvents(data || []);
+
+      })
+      .catch((err) => {
+
+        console.log(err);
 
       });
 
@@ -538,6 +558,186 @@ export default function AdminDashboard() {
                 {Number(stats.revenue)
                   .toLocaleString("vi-VN")}đ
               </h2>
+
+            </div>
+
+          </div>
+
+          {/* EVENT MANAGEMENT */}
+          <div className="mt-8 bg-[#0B1120] border border-white/10 rounded-3xl p-6">
+
+            <h2 className="text-xl font-bold mb-4">Quản lý sự kiện</h2>
+
+            <div className="overflow-x-auto">
+
+              <table className="min-w-full text-sm text-left">
+
+                <thead>
+
+                  <tr className="text-gray-400">
+
+                    <th className="px-4 py-2">ID</th>
+
+                    <th className="px-4 py-2">Tên sự kiện</th>
+
+                    <th className="px-4 py-2">Danh mục</th>
+
+                    <th className="px-4 py-2">Trạng thái</th>
+
+                    <th className="px-4 py-2">Hành động</th>
+
+                  </tr>
+
+                </thead>
+
+                <tbody>
+
+                  {events.map((event) => (
+
+                    <tr key={event.id} className="border-t border-white/5">
+
+                      <td className="px-4 py-3 align-top">{event.id}</td>
+
+                      <td className="px-4 py-3 align-top">{event.title}</td>
+
+                      <td className="px-4 py-3 align-top">{event.category_name}</td>
+
+                      <td className="px-4 py-3 align-top">{event.status}</td>
+
+                      <td className="px-4 py-3 align-top">
+
+                        <div className="flex gap-2">
+
+                          {event.status === "PENDING" && (
+
+                            <button
+                              onClick={async () => {
+
+                                try {
+
+                                  const res = await fetch(
+
+                                    `${import.meta.env.VITE_API_URL}/api/events/${event.id}/approve`,
+
+                                    { method: "PUT" }
+
+                                  );
+
+                                  if (!res.ok) {
+
+                                    alert("Không thể duyệt sự kiện");
+
+                                    return;
+
+                                  }
+
+                                  setEvents((prev) =>
+
+                                    prev.map((e) =>
+
+                                      e.id === event.id
+
+                                        ? { ...e, status: "APPROVED" }
+
+                                        : e
+
+                                    )
+
+                                  );
+
+                                } catch (err) {
+
+                                  console.log(err);
+
+                                  alert("Lỗi server");
+
+                                }
+
+                              }}
+
+                              className="px-3 py-2 rounded-2xl bg-green-500 font-semibold text-black"
+
+                            >
+
+                              Duyệt
+
+                            </button>
+
+                          )}
+
+                          {event.status !== "CANCELLED" && (
+
+                            <button
+
+                              onClick={async () => {
+
+                                const confirmed = window.confirm("Bạn có chắc muốn hủy sự kiện này?");
+
+                                if (!confirmed) return;
+
+                                try {
+
+                                  const res = await fetch(
+
+                                    `${import.meta.env.VITE_API_URL}/api/events/${event.id}/cancel`,
+
+                                    { method: "PUT" }
+
+                                  );
+
+                                  if (!res.ok) {
+
+                                    alert("Không thể hủy sự kiện");
+
+                                    return;
+
+                                  }
+
+                                  setEvents((prev) =>
+
+                                    prev.map((e) =>
+
+                                      e.id === event.id
+
+                                        ? { ...e, status: "CANCELLED" }
+
+                                        : e
+
+                                    )
+
+                                  );
+
+                                } catch (err) {
+
+                                  console.log(err);
+
+                                  alert("Lỗi server");
+
+                                }
+
+                              }}
+
+                              className="px-3 py-2 rounded-2xl bg-red-500 font-semibold"
+
+                            >
+
+                              Hủy
+
+                            </button>
+
+                          )}
+
+                        </div>
+
+                      </td>
+
+                    </tr>
+
+                  ))}
+
+                </tbody>
+
+              </table>
 
             </div>
 

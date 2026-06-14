@@ -54,21 +54,24 @@ useEffect(() => {
     .then((res) =>
       res.json()
     )
+
     .then((data) => {
+
+      const event = data.event || {};
 
       setFormData({
 
         title:
-          data.title || "",
+          event.title || "",
 
         description:
-          data.description || "",
+          event.description || "",
 
         location:
-          data.location || "",
+          event.location || "",
 
         category_id:
-          data.category_id || "",
+          event.category_id || "",
 
       });
 
