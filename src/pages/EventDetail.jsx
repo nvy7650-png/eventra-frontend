@@ -50,23 +50,25 @@ export default function EventDetail() {
     const saleStart = zone.sale_start ? new Date(zone.sale_start) : null;
     const saleEnd = zone.sale_end ? new Date(zone.sale_end) : null;
 
-    // Rule 1: sold out
-    if (typeof zone.remaining === "number" && zone.remaining <= 0) {
-      return { disabled: true, text: "Hết vé" };
-    }
-
-    // Rule 2: not started
+    // Priority order:
+    // 1) Not started
     if (saleStart && now < saleStart) {
-      return { disabled: true, text: "Chưa mở bán" };
+      return { disabled: true, text: "Chưa mở bán", color: "gray" };
     }
 
-    // Rule 3: sale finished
+    // 2) Sale finished
     if (saleEnd && now > saleEnd) {
-      return { disabled: true, text: "Đã kết thúc" };
+      return { disabled: true, text: "Đã kết thúc", color: "red" };
     }
 
-    // Otherwise available
-    return { disabled: false, text: "Mua vé" };
+    // 3) Sold out (only when sale window is active)
+    const inSaleWindow = (!saleStart || now >= saleStart) && (!saleEnd || now <= saleEnd);
+    if (inSaleWindow && typeof zone.remaining === "number" && zone.remaining <= 0) {
+      return { disabled: true, text: "Hết vé", color: "red" };
+    }
+
+    // 4) Available
+    return { disabled: false, text: "Mua vé", color: "green" };
   };
 
   return (
@@ -102,21 +104,29 @@ export default function EventDetail() {
               {showtimes.length === 0 ? (
                 <p className="text-gray-400">Không có suất diễn</p>
               ) : (
-                showtimes.map((st) => (
-                  <div key={st.id || st.start_time}>
-                    <p className="text-gray-400">Bắt đầu</p>
-                    <p>{st.start_time}</p>
-                    <p className="text-gray-400 mt-2">Kết thúc</p>
-                    <p>{st.end_time}</p>
-                  </div>
-                ))
+                <div className="flex flex-wrap gap-3">
+                  {showtimes.map((st) => {
+                    const start = st.start_time ? new Date(st.start_time) : null;
+                    const end = st.end_time ? new Date(st.end_time) : null;
+                    const dateText = start ? start.toLocaleDateString("vi-VN") : "";
+                    const startTime = start ? start.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "";
+                    const endTime = end ? end.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "";
+
+                    return (
+                      <div key={st.id || st.start_time} className="bg-[#081018] p-3 rounded-lg w-44">
+                        <div className="text-sm">📅 {dateText}</div>
+                        <div className="text-sm mt-1">🕒 {startTime} - {endTime}</div>
+                      </div>
+                    );
+                  })}
+                </div>
               )}
             </div>
           </div>
 
           <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-6">
             <h2 className="text-xl font-bold mb-4">Khu vực</h2>
-            <div className="space-y-4">
+            <div className="grid gap-4">
               {zones.length === 0 ? (
                 <p className="text-gray-400">Không có khu vực</p>
               ) : (
@@ -125,20 +135,23 @@ export default function EventDetail() {
                   const price = Number(zone.price || 0);
                   const formattedPrice = new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
 
+                  // button color classes
+                  const btnClass = btn.disabled
+                    ? (btn.color === "red" ? "bg-red-500 text-black" : "bg-gray-700 text-gray-400")
+                    : "bg-green-500 text-black";
+
                   return (
-                    <div key={zone.id || zone.name} className="flex items-center justify-between py-3 border-b border-white/5">
+                    <div key={zone.id || zone.name} className="bg-[#081018] border border-white/5 rounded-2xl p-4 flex flex-col lg:flex-row items-start lg:items-center justify-between">
                       <div className="flex-1">
-                        <div className="font-semibold">{zone.name}</div>
+                        <div className="font-semibold text-lg">{zone.name}</div>
+                        <div className="text-gray-300 mt-1">{formattedPrice}</div>
                       </div>
 
-                      <div className="flex items-center gap-4">
-                        <div className="text-gray-300">{formattedPrice}</div>
+                      <div className="mt-3 lg:mt-0 lg:ml-4">
                         <button
-                          onClick={() => {
-                            if (!btn.disabled) navigate(`/event/${event.id}/seatmap?zone=${zone.id}`);
-                          }}
+                          onClick={() => { if (!btn.disabled) navigate(`/event/${event.id}/seatmap?zone=${zone.id}`); }}
                           disabled={btn.disabled}
-                          className={`px-4 py-2 rounded-2xl font-semibold ${btn.disabled ? 'bg-gray-700 text-gray-400' : 'bg-sky-500 text-black'}`}
+                          className={`px-4 py-2 rounded-2xl font-semibold ${btnClass}`}
                         >
                           {btn.text}
                         </button>
