@@ -47,25 +47,25 @@ export default function EventDetail() {
   const now = new Date();
 
   const getZoneButton = (zone) => {
-    if (event.status !== "APPROVED") {
-      return { disabled: true, text: "Chưa được mở bán" };
-    }
-
     const saleStart = zone.sale_start ? new Date(zone.sale_start) : null;
     const saleEnd = zone.sale_end ? new Date(zone.sale_end) : null;
 
+    // Rule 1: sold out
+    if (typeof zone.remaining === "number" && zone.remaining <= 0) {
+      return { disabled: true, text: "Hết vé" };
+    }
+
+    // Rule 2: not started
     if (saleStart && now < saleStart) {
       return { disabled: true, text: "Chưa mở bán" };
     }
 
+    // Rule 3: sale finished
     if (saleEnd && now > saleEnd) {
-      return { disabled: true, text: "Ngừng bán" };
+      return { disabled: true, text: "Đã kết thúc" };
     }
 
-    if (typeof zone.remaining === "number" && zone.remaining <= 0) {
-      return { disabled: true, text: "Đã bán hết" };
-    }
-
+    // Otherwise available
     return { disabled: false, text: "Mua vé" };
   };
 
@@ -122,42 +122,23 @@ export default function EventDetail() {
               ) : (
                 zones.map((zone) => {
                   const btn = getZoneButton(zone);
+                  const price = Number(zone.price || 0);
+                  const formattedPrice = new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
+
                   return (
-                    <div key={zone.id || zone.name} className="pb-4 border-b border-white/5">
-                      <p className="text-gray-400">Tên</p>
-                      <p>{zone.name}</p>
-                      <p className="text-gray-400 mt-2">Giá</p>
-                      <p>{zone.price}</p>
-                      <p className="text-gray-400 mt-2">Loại</p>
-                      <p>{zone.zone_type}</p>
-                      <p className="text-gray-400 mt-2">Đã bán</p>
-                      <p>{zone.sold_count ?? 0}</p>
-                      <p className="text-gray-400 mt-2">Còn lại</p>
-                      <p>{zone.remaining ?? 0}</p>
+                    <div key={zone.id || zone.name} className="flex items-center justify-between py-3 border-b border-white/5">
+                      <div className="flex-1">
+                        <div className="font-semibold">{zone.name}</div>
+                      </div>
 
-                      {zone.zone_type === "STANDING" && (
-                        <>
-                          <p className="text-gray-400 mt-2">Sức chứa</p>
-                          <p>{zone.capacity}</p>
-                        </>
-                      )}
-
-                      {zone.zone_type === "SEATING" && (
-                        <>
-                          <p className="text-gray-400 mt-2">Số hàng</p>
-                          <p>{zone.total_rows}</p>
-                          <p className="text-gray-400 mt-2">Ghế mỗi hàng</p>
-                          <p>{zone.seats_per_row}</p>
-                        </>
-                      )}
-
-                      <div className="mt-4">
+                      <div className="flex items-center gap-4">
+                        <div className="text-gray-300">{formattedPrice}</div>
                         <button
                           onClick={() => {
-                            if (!btn.disabled) navigate(`/events/${event.id}/seatmap`);
+                            if (!btn.disabled) navigate(`/event/${event.id}/seatmap?zone=${zone.id}`);
                           }}
                           disabled={btn.disabled}
-                          className={`w-full py-2 rounded-2xl font-semibold ${btn.disabled ? 'bg-gray-700 text-gray-400' : 'bg-sky-500 text-black'}`}
+                          className={`px-4 py-2 rounded-2xl font-semibold ${btn.disabled ? 'bg-gray-700 text-gray-400' : 'bg-sky-500 text-black'}`}
                         >
                           {btn.text}
                         </button>
