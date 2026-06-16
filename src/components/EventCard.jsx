@@ -1,7 +1,11 @@
+import { useNavigate } from "react-router-dom";
+
 export default function EventCard({
   event,
   small,
 }) {
+
+  const navigate = useNavigate();
 
   // FORMAT DATE
   const formattedDate =
@@ -182,6 +186,7 @@ export default function EventCard({
             hover:text-black
             transition
           "
+          onClick={() => navigate(`/event/${event.id}`)}
         >
           Xem chi tiết
         </button>

@@ -19,6 +19,8 @@ import OrganizerEvents from "./pages/OrganizerEvents";
 
 import OrganizerEventDetail from "./pages/OrganizerEventDetail";
 
+import EventDetail from "./pages/EventDetail";
+
 import EditEvent from "./pages/EditEvent";
 
 import AdminDashboard from "./pages/AdminDashboard";
@@ -100,6 +102,11 @@ function App() {
         <Route
           path="/"
           element={<Home />}
+        />
+
+        <Route
+          path="/event/:id"
+          element={<EventDetail />}
         />
 
         {/* LOGIN */}
