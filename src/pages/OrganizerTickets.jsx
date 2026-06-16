@@ -19,7 +19,8 @@ export default function OrganizerTickets() {
     fetch(`${import.meta.env.VITE_API_URL}/api/tickets/organizer/${user.id}`)
       .then((res) => res.json())
       .then((data) => {
-        setEvents(data || []);
+        console.log("TICKET DATA", data);
+        setEvents(Array.isArray(data) ? data : []);
       })
       .catch((err) => {
         console.log(err);
