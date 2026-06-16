@@ -34,12 +34,14 @@ export default function SeatMap() {
   }, [searchParams]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}/seatmap`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}/seats`)
       .then((res) => res.json())
       .then((data) => {
-        setEvent(data.event);
-        setZones(data.zones || []);
-        setSeats(data.seats || []);
+        const normalized = (Array.isArray(data) ? data : []).map((seat) => ({
+          ...seat,
+          id: seat.seat_id ?? seat.id,
+        }));
+        setSeats(normalized);
       })
       .catch((err) => {
         console.log(err);
@@ -58,6 +60,8 @@ export default function SeatMap() {
     fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`)
       .then((res) => res.json())
       .then((data) => {
+        setEvent(data.event || null);
+        setZones(data.zones || []);
         const match = (data.showtimes || []).find(
           (st) => String(st.id) === String(showtimeId)
         );
@@ -68,8 +72,25 @@ export default function SeatMap() {
         setShowtime(null);
       });
   }, [eventId, showtimeId]);
+
+  const getCurrentUser = () =>
+    JSON.parse(localStorage.getItem("user") || "null");
+
+  const isSeatHeldByCurrentUser = (seat) => {
+    const user = getCurrentUser();
+    if (seat.hold_user_id != null && user?.id != null) {
+      return String(seat.hold_user_id) === String(user.id);
+    }
+    return selectedSeats.includes(seat.id);
+  };
+
+  const visibleSeats = seats.filter((seat) => {
+    if (seat.hold_status !== "ACTIVE") return true;
+    return isSeatHeldByCurrentUser(seat);
+  });
+
   // Build groupedSeats by zone_id -> row_label -> seats (use backend fields directly)
-  const groupedSeats = seats.reduce((acc, seat) => {
+  const groupedSeats = visibleSeats.reduce((acc, seat) => {
     const zoneId = seat.zone_id ?? "default";
     if (!acc[zoneId]) acc[zoneId] = {};
 
@@ -147,18 +168,17 @@ export default function SeatMap() {
   };
 
   const getSeatColor = (seat) => {
-    // Seat color rules (manual seat mode):
-    // SOLD -> bg-gray-500 (disabled)
-    if (seat.status === "SOLD") {
-      return "bg-gray-500 cursor-not-allowed text-white";
-    }
-
-    // Selected by current user -> bg-black, text-white
+    // Selected by current user -> black
     if (selectedSeats.includes(seat.id)) {
       return "bg-black text-white";
     }
 
-    // Otherwise available -> bg-green-500, text-white
+    // Sold -> gray
+    if (seat.status === "SOLD") {
+      return "bg-gray-500 cursor-not-allowed text-white";
+    }
+
+    // Available -> green
     return "bg-green-500 text-white hover:bg-green-400";
   };
 
