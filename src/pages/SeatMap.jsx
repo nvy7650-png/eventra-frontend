@@ -14,12 +14,18 @@ export default function SeatMap() {
     useParams();
 
   const [searchParams] = useSearchParams();
+  const zoneId = searchParams.get("zone");
 
   const [event, setEvent] =
     useState(null);
 
   const [zones, setZones] =
     useState([]);
+  const selectedZone =
+  zones.find(
+    (z) =>
+      String(z.id) === String(zoneId)
+  ) || null;
   const [seats, setSeats] = useState([]);
 
   const [showtimeId, setShowtimeId] = useState(null);
@@ -90,7 +96,13 @@ export default function SeatMap() {
   });
 
   // Build groupedSeats by zone_id -> row_label -> seats (use backend fields directly)
-  const groupedSeats = visibleSeats.reduce((acc, seat) => {
+  const filteredSeats =
+  seats.filter(
+    (seat) =>
+      String(seat.zone_id) ===
+      String(zoneId)
+  );
+  const groupedSeats = filteredSeats.reduce((acc, seat) => {
     const zoneId = seat.zone_id ?? "default";
     if (!acc[zoneId]) acc[zoneId] = {};
 
@@ -145,8 +157,20 @@ export default function SeatMap() {
     }
   };
 
+  const totalPrice =
+  selectedSeats.length *
+  Number(selectedZone?.price || 0);
+
   const formatShowtime = () => {
     if (!showtime) {
+      const showtimeDate = showtime?.start_time
+        ? new Date(showtime.start_time)
+        .toLocaleDateString("vi-VN")
+        : "";
+      const showtimeTime = showtime?.start_time
+        ? new Date(showtime.start_time)
+        .toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
+        : "";
       return showtimeId ? `#${showtimeId}` : "";
     }
 
@@ -205,21 +229,21 @@ export default function SeatMap() {
         <div className="max-w-7xl mx-auto px-6 py-8">
 
           <h1 className="text-4xl font-bold text-sky-400 mb-3">
-            SKYWAVE SUMMER MUSIC FESTIVAL 2026
+            {event?.title}
           </h1>
 
           <div className="flex flex-wrap gap-6 text-gray-400 text-sm">
 
             <span>
-              📍 Công viên bờ sông Sài Gòn
+              {event?.location}
             </span>
 
             <span>
-              📅 20/07/2026
+              {showtimeDate}
             </span>
 
             <span>
-              🕒 18:00
+              {showtimeTime}
             </span>
 
           </div>
@@ -260,7 +284,7 @@ export default function SeatMap() {
           <div className="text-center mb-12">
 
             <h2 className="text-3xl font-bold">
-              VIP SEATING ZONE
+              {selectedZone?.name}
             </h2>
 
             <p className="text-gray-400 mt-2">
@@ -303,7 +327,7 @@ export default function SeatMap() {
                   return (
 
                     <button
-                      key={seat.id}
+                      key={seat.seat_code}
                       onClick={() => handleSelectSeat(seat)}
                       disabled={seat.status === 'SOLD'}
                       className={`
@@ -322,7 +346,7 @@ export default function SeatMap() {
                         transform: `translateY(${curveOffset}px)`,
                       }}
                     >
-                      {seat.id}
+                      {seat.seat_code}
                     </button>
 
                   );
@@ -443,7 +467,7 @@ export default function SeatMap() {
               </span>
 
               <span className="text-2xl font-bold text-sky-400">
-                {(selectedSeats.length * 300000).toLocaleString()}đ
+                {totalPrice.toLocaleString("vi-VN")}đ
               </span>
 
             </div>
