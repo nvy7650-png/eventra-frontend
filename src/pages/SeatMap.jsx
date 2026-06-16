@@ -161,6 +161,24 @@ export default function SeatMap() {
   selectedSeats.length *
   Number(selectedZone?.price || 0);
 
+  const showtimeDate =
+  showtime?.start_time
+    ? new Date(showtime.start_time)
+        .toLocaleDateString("vi-VN")
+    : "";
+
+const showtimeTime =
+  showtime?.start_time
+    ? new Date(showtime.start_time)
+        .toLocaleTimeString(
+          "vi-VN",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        )
+    : "";
+
   const formatShowtime = () => {
     if (!showtime) {
       const showtimeDate = showtime?.start_time
@@ -307,55 +325,95 @@ export default function SeatMap() {
           {/* CURVED SEATMAP */}
           <div className="space-y-10">
 
-            {Object.entries(groupedSeats).map(([row, seats], rowIndex) => (
+           {Object.entries(groupedSeats).map(
+  ([zoneId, rows]) => (
 
-              <div
-                key={row}
-                className="flex justify-center gap-4"
-                style={{
-                  transform: `scale(${1 - rowIndex * 0.04})`,
-                }}
-              >
+    <div
+      key={zoneId}
+      className="mb-16"
+    >
 
-                {seats.map((seat, seatIndex) => {
+      <h3 className="text-center text-xl font-bold mb-8 text-sky-400">
+        {
+          zones.find(
+            (z) =>
+              String(z.id) ===
+              String(zoneId)
+          )?.name
+        }
+      </h3>
 
-                  const middle = (seats.length - 1) / 2;
+      {Object.entries(rows).map(
+        ([rowLabel, seats], rowIndex) => (
 
-                  const curveOffset =
-                    Math.pow(seatIndex - middle, 2) * 6;
+          <div
+            key={rowLabel}
+            className="flex justify-center gap-4 mb-6"
+            style={{
+              transform: `scale(${1 - rowIndex * 0.04})`,
+            }}
+          >
 
-                  return (
+            {seats.map(
+              (seat, seatIndex) => {
 
-                    <button
-                      key={seat.seat_code}
-                      onClick={() => handleSelectSeat(seat)}
-                      disabled={seat.status === 'SOLD'}
-                      className={`
-                        w-14
-                        h-14
-                        rounded-full
-                        font-semibold
-                        transition
-                        duration-200
-                        shadow-xl
-                        border-2
-                        border-gray-900
-                        ${getSeatColor(seat)}
-                      `}
-                      style={{
-                        transform: `translateY(${curveOffset}px)`,
-                      }}
-                    >
-                      {seat.seat_code}
-                    </button>
+                const middle =
+                  (seats.length - 1) / 2;
 
-                  );
-                })}
+                const curveOffset =
+                  Math.pow(
+                    seatIndex - middle,
+                    2
+                  ) * 6;
 
-              </div>
+                return (
 
-            ))}
+                  <button
+                    key={seat.id}
+                    onClick={() =>
+                      handleSelectSeat(
+                        seat
+                      )
+                    }
+                    disabled={
+                      seat.status ===
+                      "SOLD"
+                    }
+                    className={`
+                      w-14
+                      h-14
+                      rounded-full
+                      font-semibold
+                      transition
+                      duration-200
+                      shadow-xl
+                      border-2
+                      border-gray-900
+                      ${getSeatColor(
+                        seat
+                      )}
+                    `}
+                    style={{
+                      transform: `translateY(${curveOffset}px)`,
+                    }}
+                  >
+                    {seat.seat_code}
+                  </button>
 
+                );
+
+              }
+            )}
+
+          </div>
+
+        )
+      )}
+
+    </div>
+
+  )
+)}
           </div>
 
           {/* LEGEND */}
@@ -383,7 +441,7 @@ export default function SeatMap() {
 
             <div className="flex items-center gap-3">
 
-              <div className="w-5 h-5 rounded bg-red-500"></div>
+              <div className="w-5 h-5 rounded bg-gray-500"></div>
 
               <span className="text-sm text-gray-300">
                 Sold
@@ -434,7 +492,9 @@ export default function SeatMap() {
                       font-semibold
                     "
                   >
-                    {seat}
+                    {
+                      seat.find((s)=> s.id === seat)?.seat_code || seat
+                    }
                   </div>
 
                 ))}
