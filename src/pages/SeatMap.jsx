@@ -67,23 +67,22 @@ export default function SeatMap() {
       setSelectedSeats([...selectedSeats, id]);
     }
   };
+  };
 
   const getSeatColor = (seat) => {
-    // Backend statuses are uppercase: AVAILABLE, SOLD, RESERVED
+    // Seat color rules (manual seat mode):
+    // SOLD -> bg-gray-500 (disabled)
     if (seat.status === "SOLD") {
-      return "bg-red-500 cursor-not-allowed";
+      return "bg-gray-500 cursor-not-allowed text-white";
     }
 
-    if (seat.status === "RESERVED") {
-      return "bg-yellow-500 cursor-not-allowed";
-    }
-
+    // Selected by current user -> bg-black, text-white
     if (selectedSeats.includes(seat.id)) {
-      return "bg-sky-400 text-black scale-110";
+      return "bg-black text-white";
     }
 
-    // Treat AVAILABLE (or any other) as available
-    return "bg-green-500 hover:bg-green-400";
+    // Otherwise available -> bg-green-500, text-white
+    return "bg-green-500 text-white hover:bg-green-400";
   };
 
   if (loading) {
@@ -198,6 +197,7 @@ export default function SeatMap() {
                     <button
                       key={seat.id}
                       onClick={() => handleSelectSeat(seat)}
+                      disabled={seat.status === 'SOLD'}
                       className={`
                         w-14
                         h-14
@@ -241,7 +241,7 @@ export default function SeatMap() {
 
             <div className="flex items-center gap-3">
 
-              <div className="w-5 h-5 rounded bg-sky-400"></div>
+              <div className="w-5 h-5 rounded bg-black"></div>
 
               <span className="text-sm text-gray-300">
                 Selected
@@ -270,22 +270,7 @@ export default function SeatMap() {
             Thông tin đặt vé
           </h2>
 
-          {/* TIMER */}
-          <div className="
-            bg-yellow-500/10
-            border
-            border-yellow-500
-            text-yellow-400
-            rounded-xl
-            px-4
-            py-3
-            mb-6
-            text-sm
-          ">
-
-            ⏳ Giữ ghế trong: 09:32
-
-          </div>
+          {/* (removed hold timer UI) */}
 
           {/* SELECTED SEATS */}
           <div className="mb-6">
@@ -380,4 +365,3 @@ export default function SeatMap() {
 
     </div>
   );
-}
