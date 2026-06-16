@@ -10,6 +10,7 @@ export default function EventDetail() {
   const [event, setEvent] = useState(null);
   const [showtimes, setShowtimes] = useState([]);
   const [zones, setZones] = useState([]);
+  const [selectedShowtime, setSelectedShowtime] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -111,12 +112,22 @@ export default function EventDetail() {
                     const dateText = start ? start.toLocaleDateString("vi-VN") : "";
                     const startTime = start ? start.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "";
                     const endTime = end ? end.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" }) : "";
+                    const isSelected = selectedShowtime?.id === st.id;
 
                     return (
-                      <div key={st.id || st.start_time} className="bg-[#081018] p-3 rounded-lg w-44">
+                      <button
+                        key={st.id || st.start_time}
+                        type="button"
+                        onClick={() => setSelectedShowtime(st)}
+                        className={`p-3 rounded-lg w-44 text-left transition border ${
+                          isSelected
+                            ? "bg-sky-500/10 border-sky-400"
+                            : "bg-[#081018] border-white/5 hover:border-white/20"
+                        }`}
+                      >
                         <div className="text-sm">📅 {dateText}</div>
                         <div className="text-sm mt-1">🕒 {startTime} - {endTime}</div>
-                      </div>
+                      </button>
                     );
                   })}
                 </div>
@@ -132,11 +143,12 @@ export default function EventDetail() {
               ) : (
                 zones.map((zone) => {
                   const btn = getZoneButton(zone);
+                  const isDisabled = btn.disabled || !selectedShowtime;
                   const price = Number(zone.price || 0);
                   const formattedPrice = new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(price);
 
                   // button color classes
-                  const btnClass = btn.disabled
+                  const btnClass = isDisabled
                     ? (btn.color === "red" ? "bg-red-500 text-black" : "bg-gray-700 text-gray-400")
                     : "bg-green-500 text-black";
 
@@ -149,8 +161,14 @@ export default function EventDetail() {
 
                       <div className="mt-3 lg:mt-0 lg:ml-4">
                         <button
-                          onClick={() => { if (!btn.disabled) navigate(`/event/${event.id}/seatmap?zone=${zone.id}`); }}
-                          disabled={btn.disabled}
+                          onClick={() => {
+                            if (!isDisabled && selectedShowtime) {
+                              navigate(
+                                `/event/${event.id}/seatmap?zone=${zone.id}&showtime=${selectedShowtime.id}`
+                              );
+                            }
+                          }}
+                          disabled={isDisabled}
                           className={`px-4 py-2 rounded-2xl font-semibold ${btnClass}`}
                         >
                           {btn.text}

@@ -5,12 +5,15 @@ import {
 
 import {
   useParams,
+  useSearchParams,
 } from "react-router-dom";
 
 export default function SeatMap() {
 
   const { eventId } =
     useParams();
+
+  const [searchParams] = useSearchParams();
 
   const [event, setEvent] =
     useState(null);
@@ -19,9 +22,16 @@ export default function SeatMap() {
     useState([]);
   const [seats, setSeats] = useState([]);
 
+  const [showtimeId, setShowtimeId] = useState(null);
+  const [showtime, setShowtime] = useState(null);
+
   const [loading, setLoading] = useState(true);
 
   const [selectedSeats, setSelectedSeats] = useState([]);
+
+  useEffect(() => {
+    setShowtimeId(searchParams.get("showtime"));
+  }, [searchParams]);
 
   useEffect(() => {
     fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}/seatmap`)
@@ -38,6 +48,26 @@ export default function SeatMap() {
         setLoading(false);
       });
   }, [eventId]);
+
+  useEffect(() => {
+    if (!eventId || !showtimeId) {
+      setShowtime(null);
+      return;
+    }
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`)
+      .then((res) => res.json())
+      .then((data) => {
+        const match = (data.showtimes || []).find(
+          (st) => String(st.id) === String(showtimeId)
+        );
+        setShowtime(match || null);
+      })
+      .catch((err) => {
+        console.log(err);
+        setShowtime(null);
+      });
+  }, [eventId, showtimeId]);
   // Build groupedSeats by zone_id -> row_label -> seats (use backend fields directly)
   const groupedSeats = seats.reduce((acc, seat) => {
     const zoneId = seat.zone_id ?? "default";
@@ -53,7 +83,7 @@ export default function SeatMap() {
   }, {});
 
 
-  const handleSelectSeat = (seat) => {
+  const handleSelectSeat = async (seat) => {
     // Use DB primary key `seat.id` for selection state (selectedSeats stores DB ids)
     if (!seat) return;
 
@@ -63,10 +93,57 @@ export default function SeatMap() {
     const id = seat.id;
     if (selectedSeats.includes(id)) {
       setSelectedSeats(selectedSeats.filter((s) => s !== id));
-    } else {
-      setSelectedSeats([...selectedSeats, id]);
+      return;
+    }
+
+    const user = JSON.parse(localStorage.getItem("user") || "null");
+
+    try {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/holds`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          user_id: user?.id,
+          event_id: eventId,
+          showtime_id: showtimeId,
+          zone_id: seat.zone_id,
+          seat_id: seat.id,
+        }),
+      });
+
+      if (res.status === 409) {
+        alert("Ghế này đang được người khác giữ");
+        return;
+      }
+
+      if (!res.ok) return;
+
+      setSelectedSeats((prev) => [...prev, id]);
+    } catch (err) {
+      console.log(err);
     }
   };
+
+  const formatShowtime = () => {
+    if (!showtime) {
+      return showtimeId ? `#${showtimeId}` : "";
+    }
+
+    const start = showtime.start_time ? new Date(showtime.start_time) : null;
+    const end = showtime.end_time ? new Date(showtime.end_time) : null;
+    const dateText = start ? start.toLocaleDateString("vi-VN") : "";
+    const startTime = start
+      ? start.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
+      : "";
+    const endTime = end
+      ? end.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
+      : "";
+
+    if (dateText && startTime && endTime) {
+      return `${dateText} · ${startTime} - ${endTime}`;
+    }
+
+    return `#${showtimeId}`;
   };
 
   const getSeatColor = (seat) => {
@@ -171,6 +248,17 @@ export default function SeatMap() {
             </p>
 
           </div>
+
+          {showtimeId && (
+            <div className="text-center mb-12">
+              <p className="text-sm text-gray-400 uppercase tracking-wide mb-2">
+                Suất diễn đã chọn
+              </p>
+              <p className="text-lg font-semibold text-sky-400">
+                {formatShowtime()}
+              </p>
+            </div>
+          )}
 
           {/* CURVED SEATMAP */}
           <div className="space-y-10">
@@ -365,3 +453,4 @@ export default function SeatMap() {
 
     </div>
   );
+}
