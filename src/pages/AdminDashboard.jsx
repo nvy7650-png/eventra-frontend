@@ -8,14 +8,6 @@ import {
 } from "react-router-dom";
 
 import {
-  LayoutDashboard,
-  Users,
-  CalendarDays,
-  Receipt,
-  FolderKanban,
-  Wallet,
-  Settings,
-  LogOut,
   ChevronRight,
 } from "lucide-react";
 
@@ -24,10 +16,6 @@ import AdminSidebar from "../components/AdminSidebar";
 export default function AdminDashboard() {
 
   const navigate = useNavigate();
-
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
 
   const [stats, setStats] =
     useState({
@@ -91,16 +79,6 @@ export default function AdminDashboard() {
 
   }, []);
 
-  // LOGOUT
-  const handleLogout = () => {
-
-    localStorage.removeItem("user");
-
-    navigate("/");
-
-    window.location.reload();
-
-  };
 
   // LOADING
   if (loading) {
@@ -425,16 +403,48 @@ export default function AdminDashboard() {
       <div className="flex gap-3 mt-6">
 
         <button
-          className="
-            px-4 py-2
-            rounded-2xl
-            bg-sky-500
-            text-black
-            font-semibold
-          "
-        >
-          Chi tiết
-        </button>
+  onClick={() =>
+    navigate(`/admin/events/${event.id}`)
+  }
+  className="
+    px-4 py-2
+    rounded-2xl
+    bg-sky-500
+    text-black
+    font-semibold
+  "
+>
+  Chi tiết
+</button>
+{event.status === "PENDING" && (
+
+  <button
+    className="
+      px-4 py-2
+      rounded-2xl
+      bg-green-500
+      text-black
+      font-semibold
+    "
+  >
+    Duyệt
+  </button>
+
+)}
+{event.status !== "CANCELLED" && (
+
+  <button
+    className="
+      px-4 py-2
+      rounded-2xl
+      bg-red-500
+      font-semibold
+    "
+  >
+    Hủy
+  </button>
+
+)}
 
       </div>
 
