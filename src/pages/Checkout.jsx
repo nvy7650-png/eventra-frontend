@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 export default function Checkout() {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const [loading, setLoading] = useState(false);
 
   const {
     event,
@@ -12,6 +15,79 @@ export default function Checkout() {
     seats,
     totalPrice,
   } = location.state || {};
+
+  const handleCreateOrder = async () => {
+
+  if (loading) return;
+
+  const user = JSON.parse(
+    localStorage.getItem("user") || "null"
+  );
+
+  if (!user) {
+    alert("Vui lòng đăng nhập");
+    return;
+  }
+
+  try {
+
+    setLoading(true);
+
+    const items = seats.map((seat) => ({
+      showtime_id: showtime.id,
+      zone_id: zone.id,
+      seat_id: seat.id,
+      quantity: 1,
+      price: Number(zone.price),
+    }));
+
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/orders`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user.id,
+          event_id: event.id,
+          showtime_id: showtime.id,
+          items,
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+
+      alert(
+        data.message ||
+        "Tạo đơn hàng thất bại"
+      );
+
+      return;
+    }
+
+    alert(
+      `Tạo đơn thành công. Order #${data.order_id}`
+    );
+
+    console.log(data);
+
+  } catch (err) {
+
+    console.log(err);
+
+    alert("Lỗi kết nối server");
+
+  } finally {
+
+    setLoading(false);
+
+  }
+
+};
 
   if (!event) {
     return (
@@ -114,20 +190,24 @@ export default function Checkout() {
             >
               Quay lại
             </button>
-
-            <button
-              className="
-                flex-1
-                py-4
-                rounded-2xl
-                bg-sky-500
-                text-black
-                font-bold
-                hover:bg-sky-400
-              "
-            >
-              Xác nhận đặt vé
-            </button>
+<button
+  onClick={handleCreateOrder}
+  disabled={loading}
+  className="
+    flex-1
+    py-4
+    rounded-2xl
+    bg-sky-500
+    text-black
+    font-bold
+    hover:bg-sky-400
+    disabled:opacity-50
+  "
+>
+  {loading
+    ? "Đang tạo đơn..."
+    : "Xác nhận đặt vé"}
+</button>
 
           </div>
 
