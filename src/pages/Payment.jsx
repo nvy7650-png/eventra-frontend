@@ -120,6 +120,46 @@ export default function Payment() {
 
           <div className="text-3xl font-bold text-sky-400">
             {Number(order.total_price).toLocaleString("vi-VN")}đ
+
+            <button
+  onClick={async () => {
+
+    try {
+
+      const res = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/orders/${order.id}/pay`,
+        {
+          method: "POST",
+        }
+      );
+
+      const data = await res.json();
+
+      alert(data.message);
+
+      console.log(data);
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Lỗi server");
+
+    }
+
+  }}
+  className="
+    mt-6
+    px-6
+    py-3
+    rounded-xl
+    bg-green-500
+    text-black
+    font-bold
+  "
+>
+  Thanh toán demo
+</button>
           </div>
 
         </div>
