@@ -547,125 +547,75 @@ const formatShowtime = () => {
 
             </div>
 
-            {/* BUTTON */}
-            <button
- onClick={async () => {
+           <button
+  onClick={async () => {
 
-  if (selectedSeats.length === 0) {
-    alert("Vui lòng chọn ghế");
-    return;
-  }
-
-  const user = JSON.parse(
-    localStorage.getItem("user") || "null"
-  );
-
-  try {
-
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/holds/bulk`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-        body: JSON.stringify({
-          user_id: user?.id,
-          event_id: event.id,
-          showtime_id: showtime.id,
-          zone_id: selectedZone.id,
-          seat_ids: selectedSeats,
-        }),
-      }
-    );
-
-    const data =
-      await res.json();
-
-    if (!res.ok) {
-
-      alert(
-        data.message ||
-        "Ghế đang được thanh toán"
-      );
-
+    if (selectedSeats.length === 0) {
+      alert("Vui lòng chọn ghế");
       return;
     }
 
     const user = JSON.parse(
-  localStorage.getItem("user")
-);
+      localStorage.getItem("user") || "null"
+    );
 
-try {
+    try {
 
-  const holdRes = await fetch(
-    `${import.meta.env.VITE_API_URL}/api/holds/bulk`,
-    {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        user_id: user.id,
-        event_id: event.id,
-        showtime_id: showtime.id,
-        zone_id: selectedZone.id,
-        seat_ids: selectedSeats,
-      }),
+      const holdRes = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/holds/bulk`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            user_id: user?.id,
+            event_id: event.id,
+            showtime_id: showtime.id,
+            zone_id: selectedZone.id,
+            seat_ids: selectedSeats,
+          }),
+        }
+      );
+
+      const data = await holdRes.json();
+
+      if (!holdRes.ok) {
+
+        alert(
+          data.message ||
+          "Ghế đang được thanh toán"
+        );
+
+        return;
+      }
+
+      navigate("/checkout", {
+        state: {
+          event,
+          showtime,
+          zone: selectedZone,
+          seats: seats.filter(
+            (seat) =>
+              selectedSeats.includes(
+                seat.id
+              )
+          ),
+          totalPrice,
+        },
+      });
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert(
+        "Lỗi kết nối server"
+      );
+
     }
-  );
 
-  if (holdRes.status === 409) {
-
-    const data = await holdRes.json();
-
-    alert(
-      data.message ||
-      "Ghế đang được thanh toán"
-    );
-
-    return;
-  }
-
-  if (!holdRes.ok) {
-
-    alert("Không thể giữ ghế");
-
-    return;
-  }
-
-  navigate("/checkout", {
-    state: {
-      event,
-      showtime,
-      zone: selectedZone,
-      seats: seats.filter((seat) =>
-        selectedSeats.includes(seat.id)
-      ),
-      totalPrice,
-    },
-  });
-
-} catch (err) {
-
-  console.log(err);
-
-  alert("Lỗi hệ thống");
-
-}
-
-  } catch (err) {
-
-    console.log(err);
-
-    alert(
-      "Lỗi kết nối server"
-    );
-
-  }
-
-}}
+  }}
   className="
     w-full
     py-4
