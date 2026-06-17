@@ -547,7 +547,9 @@ const formatShowtime = () => {
 
             </div>
 
-            onClick={async () => {
+            {/* BUTTON */}
+            <button
+ onClick={async () => {
 
   if (selectedSeats.length === 0) {
     alert("Vui lòng chọn ghế");
@@ -619,6 +621,20 @@ const formatShowtime = () => {
   }
 
 }}
+  className="
+    w-full
+    py-4
+    rounded-2xl
+    bg-sky-500
+    text-black
+    font-bold
+    text-lg
+    hover:bg-sky-400
+    transition
+  "
+>
+  Thanh toán
+</button>
 
           </div>
 
