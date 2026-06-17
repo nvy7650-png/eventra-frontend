@@ -1,23 +1,74 @@
-import {
-  useLocation,
-  useParams,
-} from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 
 export default function Payment() {
 
-  const { orderId } =
-    useParams();
+  const { orderId } = useParams();
 
-  const location =
-    useLocation();
+  const [loading, setLoading] = useState(true);
+  const [order, setOrder] = useState(null);
 
-  const {
-    event,
-    showtime,
-    zone,
-    seats,
-    totalPrice,
-  } = location.state || {};
+  useEffect(() => {
+
+    const fetchOrder = async () => {
+
+      try {
+
+        const res = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/orders/${orderId}`
+        );
+
+        const data = await res.json();
+
+        if (!res.ok) {
+
+          alert(
+            data.message ||
+            "Không tải được đơn hàng"
+          );
+
+          return;
+        }
+
+        setOrder(data);
+
+      } catch (err) {
+
+        console.log(err);
+
+        alert("Lỗi kết nối server");
+
+      } finally {
+
+        setLoading(false);
+
+      }
+
+    };
+
+    fetchOrder();
+
+  }, [orderId]);
+
+  if (loading) {
+
+    return (
+      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+        Đang tải đơn hàng...
+      </div>
+    );
+
+  }
+
+  if (!order) {
+
+    return (
+      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
+        Không tìm thấy đơn hàng
+      </div>
+    );
+
+  }
 
   return (
 
@@ -32,19 +83,21 @@ export default function Payment() {
           </h1>
 
           <div className="mb-4">
-            Order #{orderId}
+            Order #{order.id}
           </div>
 
           <div className="mb-4">
-            {event?.title}
+            {order.event?.title}
           </div>
 
           <div className="mb-4">
-            {zone?.name}
+            {order.zone?.name}
           </div>
 
           <div className="mb-6">
-            {seats?.map((seat) => (
+
+            {order.seats?.map((seat) => (
+
               <span
                 key={seat.id}
                 className="
@@ -60,11 +113,13 @@ export default function Payment() {
               >
                 {seat.seat_code}
               </span>
+
             ))}
+
           </div>
 
           <div className="text-3xl font-bold text-sky-400">
-            {Number(totalPrice).toLocaleString("vi-VN")}đ
+            {Number(order.total_price).toLocaleString("vi-VN")}đ
           </div>
 
         </div>
