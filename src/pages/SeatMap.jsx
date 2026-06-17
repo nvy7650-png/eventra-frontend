@@ -328,51 +328,60 @@ const showtimeTime =
             </div>
           )}
 
-          {/* CURVED SEATMAP */}
-          <div className="space-y-10">
+          {/* SEAT MAP */}
 
-           {Object.entries(groupedSeats).map(
-  ([zoneId, rows]) => (
+<div className="space-y-12">
 
-    <div
-      key={zoneId}
-      className="mb-16"
-    >
+  {Object.entries(groupedSeats).map(
+    ([zoneId, rows]) => (
 
-      <h3 className="text-center text-xl font-bold mb-8 text-sky-400">
-        {
-          zones.find(
-            (z) =>
-              String(z.id) ===
-              String(zoneId)
-          )?.name
-        }
-      </h3>
+      <div
+        key={zoneId}
+        className="mb-10"
+      >
 
-      {Object.entries(rows).map(
-        ([rowLabel, seats], rowIndex) => (
+        <h3 className="text-center text-xl font-bold mb-8 text-sky-400">
+          {
+            zones.find(
+              (z) =>
+                String(z.id) ===
+                String(zoneId)
+            )?.name
+          }
+        </h3>
 
-          <div
-            key={rowLabel}
-            className="flex justify-center gap-4 mb-6"
-            style={{
-              transform: `scale(${1 - rowIndex * 0.04})`,
-            }}
-          >
+        {Object.entries(rows).map(
+          ([rowLabel, rowSeats]) => (
 
-            {seats.map(
-              (seat, seatIndex) => {
+            <div
+              key={rowLabel}
+              className="
+                flex
+                justify-center
+                items-center
+                gap-2
+                mb-3
+              "
+            >
 
-                const middle =
-                  (seats.length - 1) / 2;
+              <div
+                className="
+                  w-10
+                  text-center
+                  text-sky-400
+                  font-bold
+                "
+              >
+                {rowLabel}
+              </div>
 
-                const curveOffset =
-                  Math.pow(
-                    seatIndex - middle,
-                    2
-                  ) * 6;
-
-                return (
+              {rowSeats
+                .sort(
+                  (a, b) =>
+                    a.seat_number -
+                    b.seat_number
+                )
+                .map((seat) => (
 
                   <button
                     key={seat.id}
@@ -386,41 +395,35 @@ const showtimeTime =
                       "SOLD"
                     }
                     className={`
-                      w-14
-                      h-14
-                      rounded-full
+                      w-10
+                      h-10
+                      rounded-lg
+                      text-xs
                       font-semibold
                       transition
-                      duration-200
-                      shadow-xl
-                      border-2
-                      border-gray-900
+                      border
+                      border-black/20
                       ${getSeatColor(
                         seat
                       )}
                     `}
-                    style={{
-                      transform: `translateY(${curveOffset}px)`,
-                    }}
                   >
-                    {seat.seat_code}
+                    {seat.seat_number}
                   </button>
 
-                );
+                ))}
 
-              }
-            )}
+            </div>
 
-          </div>
+          )
+        )}
 
-        )
-      )}
+      </div>
 
-    </div>
+    )
+  )}
 
-  )
-)}
-          </div>
+</div>
 
           {/* LEGEND */}
           <div className="flex flex-wrap justify-center gap-8 mt-16">
