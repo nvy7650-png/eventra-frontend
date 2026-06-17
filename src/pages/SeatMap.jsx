@@ -60,7 +60,7 @@ export default function SeatMap() {
       .finally(() => {
         setLoading(false);
       });
-  }, [eventId]);
+  }, [showtimeId]);
 
   useEffect(() => {
     if (!eventId || !showtimeId) {
@@ -498,7 +498,7 @@ const showtimeTime =
                     "
                   >
                     {
-                      seat.find((s)=> s.id === seat)?.seat_code || seat
+                      seats.find((s) => s.id === seat)?.seat_code || seat
                     }
                   </div>
 
