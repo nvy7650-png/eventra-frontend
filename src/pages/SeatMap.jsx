@@ -593,22 +593,67 @@ const formatShowtime = () => {
       return;
     }
 
-    navigate("/checkout", {
-      state: {
-        event,
-        showtime,
-        zone: selectedZone,
+    const user = JSON.parse(
+  localStorage.getItem("user")
+);
 
-        seats: seats.filter(
-          (seat) =>
-            selectedSeats.includes(
-              seat.id
-            )
-        ),
+try {
 
-        totalPrice,
+  const holdRes = await fetch(
+    `${import.meta.env.VITE_API_URL}/api/holds/bulk`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    });
+      body: JSON.stringify({
+        user_id: user.id,
+        event_id: event.id,
+        showtime_id: showtime.id,
+        zone_id: selectedZone.id,
+        seat_ids: selectedSeats,
+      }),
+    }
+  );
+
+  if (holdRes.status === 409) {
+
+    const data = await holdRes.json();
+
+    alert(
+      data.message ||
+      "Ghế đang được thanh toán"
+    );
+
+    return;
+  }
+
+  if (!holdRes.ok) {
+
+    alert("Không thể giữ ghế");
+
+    return;
+  }
+
+  navigate("/checkout", {
+    state: {
+      event,
+      showtime,
+      zone: selectedZone,
+      seats: seats.filter((seat) =>
+        selectedSeats.includes(seat.id)
+      ),
+      totalPrice,
+    },
+  });
+
+} catch (err) {
+
+  console.log(err);
+
+  alert("Lỗi hệ thống");
+
+}
 
   } catch (err) {
 
