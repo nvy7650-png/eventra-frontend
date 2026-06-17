@@ -158,90 +158,101 @@ export default function OrganizerEventDetail() {
 
         <div className="p-10">
 
-          <img
-            src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
-            alt={event.title}
-            className="
-              w-full
-              h-[350px]
-              object-cover
-              rounded-3xl
-            "
-          />
+          <div className="relative overflow-hidden rounded-3xl">
 
-          <div className="mt-8 flex justify-between items-start">
+            <img
+              src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
+              alt={event.title}
+              className="
+                w-full
+                h-[420px]
+                object-cover
+              "
+            />
 
-            <div>
-
-              <h1
+              <div
                 className="
-                  text-4xl
-                  font-black
+                  absolute
+                  inset-0
+                  bg-gradient-to-t
+                  from-black
+                  via-black/40
+                  to-transparent
                 "
-              >
+              />
 
-                {event.title}
+   <div
+    className="
+      absolute
+      bottom-0
+      left-0
+      right-0
+      p-8
+      flex
+      justify-between
+      items-end
+    "
+  >
 
-              </h1>
+    <div>
 
-              <p className="text-gray-400 mt-3">
+      <p className="text-sky-400 font-semibold mb-2">
+        {event.category_name}
+      </p>
 
-                {event.category_name}
+      <h1 className="text-5xl font-black">
+        {event.title}
+      </h1>
 
-              </p>
+    </div>
 
-            </div>
+    <div className="flex gap-3">
 
-            <div className="flex gap-3">
+      {event.status !== "CANCELLED" && (
 
-              {event.status !==
-                "CANCELLED" && (
+        <button
+          onClick={() =>
+            navigate(
+              `/organizer/event/edit/${event.id}`
+            )
+          }
+          className="
+            px-6
+            py-3
+            rounded-2xl
+            bg-yellow-500
+            text-black
+            font-bold
+          "
+        >
+          Sửa
+        </button>
 
-                <button
-                  onClick={() =>
-                    navigate(
-                      `/organizer/event/edit/${event.id}`
-                    )
-                  }
-                  className="
-                    px-6
-                    py-3
-                    rounded-2xl
-                    bg-yellow-500
-                    text-black
-                    font-bold
-                  "
-                >
+      )}
 
-                  Sửa
+      {event.status === "PENDING" && (
 
-                </button>
+        <button
+          onClick={handleCancel}
+          className="
+            px-6
+            py-3
+            rounded-2xl
+            bg-red-500
+            font-bold
+          "
+        >
+          Hủy
+        </button>
 
-              )}
+      )}
 
-              {event.status ===
-                "PENDING" && (
+    </div>
 
-                <button
-                  onClick={
-                    handleCancel
-                  }
-                  className="
-                    px-6
-                    py-3
-                    rounded-2xl
-                    bg-red-500
-                    font-bold
-                  "
-                >
+  </div>
 
-                  Hủy
+</div>
 
-                </button>
-
-              )}
-
-            </div>
 
           </div>
 
@@ -269,57 +280,39 @@ export default function OrganizerEventDetail() {
 
               </h2>
 
-              <div className="space-y-4">
+              <div className="grid grid-cols-3 gap-4">
 
-                <div>
+  <div className="bg-[#081018] rounded-2xl p-4">
+    <p className="text-gray-400 text-sm">
+      Trạng thái
+    </p>
 
-                  <p className="text-gray-400">
+    <p className="font-bold mt-2">
+      {event.status}
+    </p>
+  </div>
 
-                    Trạng thái
+  <div className="bg-[#081018] rounded-2xl p-4">
+    <p className="text-gray-400 text-sm">
+      Danh mục
+    </p>
 
-                  </p>
+    <p className="font-bold mt-2">
+      {event.category_name}
+    </p>
+  </div>
 
-                  <p>
+  <div className="bg-[#081018] rounded-2xl p-4">
+    <p className="text-gray-400 text-sm">
+      Địa điểm
+    </p>
 
-                    {event.status}
+    <p className="font-bold mt-2">
+      {event.location}
+    </p>
+  </div>
 
-                  </p>
-
-                </div>
-
-                <div>
-
-                  <p className="text-gray-400">
-
-                    Địa điểm
-
-                  </p>
-
-                  <p>
-
-                    {event.location}
-
-                  </p>
-
-                </div>
-
-                <div>
-
-                  <p className="text-gray-400">
-
-                    Danh mục
-
-                  </p>
-
-                  <p>
-
-                    {event.category_name}
-
-                  </p>
-
-                </div>
-
-              </div>
+</div>
 
             </div>
 
@@ -507,8 +500,6 @@ export default function OrganizerEventDetail() {
         </div>
 
       </div>
-
-    </div>
 
   );
 
