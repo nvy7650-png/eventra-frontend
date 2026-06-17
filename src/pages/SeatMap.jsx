@@ -122,98 +122,125 @@ export default function SeatMap() {
   }, {});
 
 
-  const handleSelectSeat = async (seat) => {
-    // Use DB primary key `seat.id` for selection state (selectedSeats stores DB ids)
-    if (!seat) return;
+  const handleSelectSeat = (seat) => {
 
-    // Backend statuses are uppercase: AVAILABLE, SOLD, RESERVED
-    if (seat.status === "SOLD") return;
+  if (!seat) return;
 
-    const id = seat.id;
-    if (selectedSeats.includes(id)) {
-      setSelectedSeats(selectedSeats.filter((s) => s !== id));
-      return;
-    }
+  if (seat.status === "SOLD") {
+    return;
+  }
 
-    const user = JSON.parse(localStorage.getItem("user") || "null");
+  const id =
+    seat.showtime_seat_id ||
+    seat.id;
 
-    try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/holds`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          user_id: user?.id,
-          event_id: eventId,
-          showtime_id: showtimeId,
-          zone_id: seat.zone_id,
-          seat_id: seat.id,
-        }),
-      });
+  if (
+    selectedSeats.includes(id)
+  ) {
 
-      if (res.status === 409) {
-        alert("Ghế này đang được người khác giữ");
-        return;
-      }
+    setSelectedSeats(
+      selectedSeats.filter(
+        (seatId) =>
+          seatId !== id
+      )
+    );
 
-      if (!res.ok) return;
+    return;
+  }
 
-      setSelectedSeats((prev) => [...prev, id]);
-    } catch (err) {
-      console.log(err);
-    }
-  };
+  setSelectedSeats(
+    (prev) => [
+      ...prev,
+      id,
+    ]
+  );
 
-  const totalPrice =
+};
+
+const totalPrice =
   selectedSeats.length *
-  Number(selectedZone?.price || 0);
+  Number(
+    selectedZone?.price || 0
+  );
 
-  const showtimeDate =
+const showtimeDate =
   showtime?.start_time
-    ? new Date(showtime.start_time)
-        .toLocaleDateString("vi-VN")
+    ? new Date(
+        showtime.start_time
+      ).toLocaleDateString(
+        "vi-VN"
+      )
     : "";
 
 const showtimeTime =
   showtime?.start_time
-    ? new Date(showtime.start_time)
-        .toLocaleTimeString(
+    ? new Date(
+        showtime.start_time
+      ).toLocaleTimeString(
+        "vi-VN",
+        {
+          hour: "2-digit",
+          minute: "2-digit",
+        }
+      )
+    : "";
+
+const formatShowtime = () => {
+
+  if (!showtime) {
+    return showtimeId
+      ? `#${showtimeId}`
+      : "";
+  }
+
+  const start =
+    showtime.start_time
+      ? new Date(showtime.start_time)
+      : null;
+
+  const end =
+    showtime.end_time
+      ? new Date(showtime.end_time)
+      : null;
+
+  const dateText =
+    start
+      ? start.toLocaleDateString("vi-VN")
+      : "";
+
+  const startTime =
+    start
+      ? start.toLocaleTimeString(
           "vi-VN",
           {
             hour: "2-digit",
             minute: "2-digit",
           }
         )
-    : "";
-
-  const formatShowtime = () => {
-    if (!showtime) {
-      const showtimeDate = showtime?.start_time
-        ? new Date(showtime.start_time)
-        .toLocaleDateString("vi-VN")
-        : "";
-      const showtimeTime = showtime?.start_time
-        ? new Date(showtime.start_time)
-        .toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
-        : "";
-      return showtimeId ? `#${showtimeId}` : "";
-    }
-
-    const start = showtime.start_time ? new Date(showtime.start_time) : null;
-    const end = showtime.end_time ? new Date(showtime.end_time) : null;
-    const dateText = start ? start.toLocaleDateString("vi-VN") : "";
-    const startTime = start
-      ? start.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
-      : "";
-    const endTime = end
-      ? end.toLocaleTimeString("vi-VN", { hour: "2-digit", minute: "2-digit" })
       : "";
 
-    if (dateText && startTime && endTime) {
-      return `${dateText} · ${startTime} - ${endTime}`;
-    }
+  const endTime =
+    end
+      ? end.toLocaleTimeString(
+          "vi-VN",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        )
+      : "";
 
-    return `#${showtimeId}`;
-  };
+  if (
+    dateText &&
+    startTime &&
+    endTime
+  ) {
+    return `${dateText} · ${startTime} - ${endTime}`;
+  }
+
+  return `#${showtimeId}`;
+
+};
 
   const getSeatColor = (seat) => {
     // Selected by current user -> black
