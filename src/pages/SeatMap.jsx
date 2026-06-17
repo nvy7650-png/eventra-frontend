@@ -8,10 +8,18 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
+import {
+  useParams,
+  useSearchParams,
+  useNavigate,
+} from "react-router-dom";
+
 export default function SeatMap() {
 
   const { eventId } =
     useParams();
+
+  const navigate = useNavigate();
 
   const [searchParams] = useSearchParams();
   const zoneId = searchParams.get("zone");
@@ -545,20 +553,42 @@ const formatShowtime = () => {
 
             {/* BUTTON */}
             <button
-              className="
-                w-full
-                py-4
-                rounded-2xl
-                bg-sky-500
-                text-black
-                font-bold
-                text-lg
-                hover:bg-sky-400
-                transition
-              "
-            >
-              Thanh toán
-            </button>
+  onClick={() => {
+
+    if (selectedSeats.length === 0) {
+      alert("Vui lòng chọn ghế");
+      return;
+    }
+
+    navigate("/checkout", {
+      state: {
+        event,
+        showtime,
+        zone: selectedZone,
+
+        seats: seats.filter((seat) =>
+          selectedSeats.includes(seat.id)
+        ),
+
+        totalPrice,
+      },
+    });
+
+  }}
+  className="
+    w-full
+    py-4
+    rounded-2xl
+    bg-sky-500
+    text-black
+    font-bold
+    text-lg
+    hover:bg-sky-400
+    transition
+  "
+>
+  Thanh toán
+</button>
 
           </div>
 
