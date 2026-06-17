@@ -253,8 +253,7 @@ function App() {
           }
         />
 
-      </Routes>
-
+        
       {/* ADMIN DASHBOARD */}
 <Route
 path="/admin/dashboard"
@@ -268,6 +267,8 @@ path="/admin/events/:id"
 element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
 }
 />
+
+      </Routes>
 
 
     </BrowserRouter>
