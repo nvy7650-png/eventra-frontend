@@ -564,184 +564,57 @@ export default function AdminDashboard() {
           </div>
 
           {/* EVENT MANAGEMENT */}
-          <div className="mt-8 bg-[#0B1120] border border-white/10 rounded-3xl p-6">
+         <div className="grid lg:grid-cols-3 gap-6 mt-8">
 
-            <h2 className="text-xl font-bold mb-4">Quản lý sự kiện</h2>
+  <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-6">
 
-            <div className="overflow-x-auto">
+    <p className="text-gray-400 text-sm">
+      Chờ duyệt
+    </p>
 
-              <table className="min-w-full text-sm text-left">
+    <h2 className="text-4xl font-black text-yellow-400 mt-2">
+      {
+        events.filter(
+          e => e.status === "PENDING"
+        ).length
+      }
+    </h2>
 
-                <thead>
+  </div>
 
-                  <tr className="text-gray-400">
+  <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-6">
 
-                    <th className="px-4 py-2">ID</th>
+    <p className="text-gray-400 text-sm">
+      Đã duyệt
+    </p>
 
-                    <th className="px-4 py-2">Tên sự kiện</th>
+    <h2 className="text-4xl font-black text-green-400 mt-2">
+      {
+        events.filter(
+          e => e.status === "APPROVED"
+        ).length
+      }
+    </h2>
 
-                    <th className="px-4 py-2">Danh mục</th>
+  </div>
 
-                    <th className="px-4 py-2">Trạng thái</th>
+  <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-6">
 
-                    <th className="px-4 py-2">Hành động</th>
+    <p className="text-gray-400 text-sm">
+      Đã hủy
+    </p>
 
-                  </tr>
+    <h2 className="text-4xl font-black text-red-400 mt-2">
+      {
+        events.filter(
+          e => e.status === "CANCELLED"
+        ).length
+      }
+    </h2>
 
-                </thead>
+  </div>
 
-                <tbody>
-
-                  {events.map((event) => (
-
-                    <tr key={event.id} className="border-t border-white/5">
-
-                      <td className="px-4 py-3 align-top">{event.id}</td>
-
-                      <td className="px-4 py-3 align-top">{event.title}</td>
-
-                      <td className="px-4 py-3 align-top">{event.category_name}</td>
-
-                      <td className="px-4 py-3 align-top">{event.status}</td>
-
-                      <td className="px-4 py-3 align-top">
-
-                        <div className="flex gap-2">
-
-                          {event.status === "PENDING" && (
-
-                            <button
-                              onClick={async () => {
-
-                                try {
-
-                                  const res = await fetch(
-
-                                    `${import.meta.env.VITE_API_URL}/api/events/${event.id}/approve`,
-
-                                    { method: "PUT" }
-
-                                  );
-
-                                  if (!res.ok) {
-
-                                    alert("Không thể duyệt sự kiện");
-
-                                    return;
-
-                                  }
-
-                                  setEvents((prev) =>
-
-                                    prev.map((e) =>
-
-                                      e.id === event.id
-
-                                        ? { ...e, status: "APPROVED" }
-
-                                        : e
-
-                                    )
-
-                                  );
-
-                                } catch (err) {
-
-                                  console.log(err);
-
-                                  alert("Lỗi server");
-
-                                }
-
-                              }}
-
-                              className="px-3 py-2 rounded-2xl bg-green-500 font-semibold text-black"
-
-                            >
-
-                              Duyệt
-
-                            </button>
-
-                          )}
-
-                          {event.status !== "CANCELLED" && (
-
-                            <button
-
-                              onClick={async () => {
-
-                                const confirmed = window.confirm("Bạn có chắc muốn hủy sự kiện này?");
-
-                                if (!confirmed) return;
-
-                                try {
-
-                                  const res = await fetch(
-
-                                    `${import.meta.env.VITE_API_URL}/api/events/${event.id}/cancel`,
-
-                                    { method: "PUT" }
-
-                                  );
-
-                                  if (!res.ok) {
-
-                                    alert("Không thể hủy sự kiện");
-
-                                    return;
-
-                                  }
-
-                                  setEvents((prev) =>
-
-                                    prev.map((e) =>
-
-                                      e.id === event.id
-
-                                        ? { ...e, status: "CANCELLED" }
-
-                                        : e
-
-                                    )
-
-                                  );
-
-                                } catch (err) {
-
-                                  console.log(err);
-
-                                  alert("Lỗi server");
-
-                                }
-
-                              }}
-
-                              className="px-3 py-2 rounded-2xl bg-red-500 font-semibold"
-
-                            >
-
-                              Hủy
-
-                            </button>
-
-                          )}
-
-                        </div>
-
-                      </td>
-
-                    </tr>
-
-                  ))}
-
-                </tbody>
-
-              </table>
-
-            </div>
-
-          </div>
+</div>
 
           {/* EMPTY STATE */}
           <div
