@@ -547,54 +547,78 @@ const formatShowtime = () => {
 
             </div>
 
-            {/* BUTTON */}
-            <button
-  onClick={() => {
-
-  console.log("BUTTON CLICK");
-
-  console.log({
-    event,
-    showtime,
-    selectedZone,
-    selectedSeats,
-    totalPrice,
-  });
+            onClick={async () => {
 
   if (selectedSeats.length === 0) {
     alert("Vui lòng chọn ghế");
     return;
   }
 
-  navigate("/checkout", {
+  const user = JSON.parse(
+    localStorage.getItem("user") || "null"
+  );
+
+  try {
+
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/holds/bulk`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type":
+            "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user?.id,
+          event_id: event.id,
+          showtime_id: showtime.id,
+          zone_id: selectedZone.id,
+          seat_ids: selectedSeats,
+        }),
+      }
+    );
+
+    const data =
+      await res.json();
+
+    if (!res.ok) {
+
+      alert(
+        data.message ||
+        "Ghế đang được thanh toán"
+      );
+
+      return;
+    }
+
+    navigate("/checkout", {
       state: {
         event,
         showtime,
         zone: selectedZone,
 
-        seats: seats.filter((seat) =>
-          selectedSeats.includes(seat.id)
+        seats: seats.filter(
+          (seat) =>
+            selectedSeats.includes(
+              seat.id
+            )
         ),
 
         totalPrice,
       },
     });
 
-  }}
-  className="
-    w-full
-    py-4
-    rounded-2xl
-    bg-sky-500
-    text-black
-    font-bold
-    text-lg
-    hover:bg-sky-400
-    transition
-  "
->
-  Thanh toán
-</button>
+  } catch (err) {
+
+    console.log(err);
+
+    alert(
+      "Lỗi kết nối server"
+    );
+
+  }
+
+}}
 
           </div>
 
