@@ -31,6 +31,29 @@ export default function EditEvent() {
     setCategories] =
     useState([]);
 
+  const [showtimes, setShowtimes] = useState([]);
+
+
+
+  const handleShowtimeChange = (
+  index,
+  field,
+  value
+) => {
+
+  const updated = [...showtimes];
+
+  updated[index] = {
+    ...updated[index],
+    [field]: value,
+  };
+
+  setShowtimes(updated);
+
+};
+
+  const [zones, setZones] = useState([]);
+
   const [formData,
     setFormData] =
     useState({
@@ -58,6 +81,10 @@ useEffect(() => {
     .then((data) => {
 
       const event = data.event || {};
+
+        setShowtimes(data.showtimes || []);
+
+        setZones(data.zones || []);
 
       setFormData({
 
@@ -112,6 +139,23 @@ useEffect(() => {
 
 }, []);
 
+const handleZoneChange = (
+  index,
+  field,
+  value
+) => {
+
+  const updated = [...zones];
+
+  updated[index] = {
+    ...updated[index],
+    [field]: value,
+  };
+
+  setZones(updated);
+
+};
+
 const handleChange =
   (e) => {
 
@@ -151,10 +195,11 @@ const handleSubmit =
 
             },
 
-            body:
-              JSON.stringify(
-                formData
-              ),
+            body: JSON.stringify({
+  ...formData,
+  showtimes,
+  zones,
+}),
 
           }
 
@@ -303,11 +348,223 @@ const handleSubmit =
                 ))}
 
               </select>
-
             </div>
 
-            <div>
+              <div className="pt-6 border-t border-white/10">
 
+  <h2 className="text-xl font-bold mb-4">
+    Suất diễn
+  </h2>
+
+  <div className="space-y-4">
+
+    {showtimes.map((st, index) => (
+
+      <div
+        key={st.id}
+        className="
+          bg-[#111827]
+          border border-white/10
+          rounded-2xl
+          p-4
+        "
+      >
+
+        <div className="font-semibold mb-3">
+          Suất diễn #{index + 1}
+        </div>
+
+        <div className="grid md:grid-cols-2 gap-4">
+
+          <input
+            type="datetime-local"
+  value={
+    st.start_time?.slice(0,16) || ""
+  }
+  onChange={(e) =>
+    handleShowtimeChange(
+      index,
+      "start_time",
+      e.target.value
+    )
+  }
+            className="
+              px-4 py-3
+              rounded-xl
+              bg-[#0B1120]
+              border border-white/10
+            "
+          />
+
+          <input
+                type="datetime-local"
+                value={
+                  st.end_time
+                    ?.slice(0,16) || ""
+                }
+                onChange={(e) =>
+                  handleShowtimeChange(
+                    index,
+                    "end_time",
+                    e.target.value
+                  )
+                }
+
+            className="
+              px-4 py-3
+              rounded-xl
+              bg-[#0B1120]
+              border border-white/10
+            "
+          />
+
+        </div>
+
+      </div>
+
+    ))}
+
+  </div>
+<div className="pt-6 border-t border-white/10">
+
+  <h2 className="text-xl font-bold mb-4">
+    Hạng vé
+  </h2>
+
+  <div className="space-y-4">
+
+    {zones.map((zone, index) => (
+
+      <div
+        key={zone.id}
+        className="
+          bg-[#111827]
+          border border-white/10
+          rounded-2xl
+          p-5
+        "
+      >
+
+        <h3 className="font-bold text-lg mb-4">
+          {zone.name}
+        </h3>
+
+        <div className="grid md:grid-cols-2 gap-4">
+
+          <div>
+            <p className="text-xs text-gray-400 mb-1">
+              Giá vé
+            </p>
+
+            <input
+              value={zone.price}
+              onChange={(e) =>
+                handleZoneChange(
+                  index,
+                  "price",
+                  e.target.value
+                )
+              }
+              className="
+                w-full
+                px-4 py-3
+                rounded-xl
+                bg-[#0B1120]
+                border border-white/10
+              "
+            />
+          </div>
+
+          <div>
+            <p className="text-xs text-gray-400 mb-1">
+              Sức chứa
+            </p>
+
+            <input
+              value={zone.capacity || ""}
+              onChange={(e) =>
+    handleZoneChange(
+      index,
+      "capacity",
+      e.target.value
+    )
+  }
+              className="
+                w-full
+                px-4 py-3
+                rounded-xl
+                bg-[#0B1120]
+                border border-white/10
+              "
+            />
+          </div>
+
+        </div>
+        <div className="grid md:grid-cols-2 gap-4 mt-4">
+
+  <div>
+    <p className="text-xs text-gray-400 mb-1">
+      Bắt đầu bán
+    </p>
+
+    <input
+      type="datetime-local"
+      value={
+        zone.sale_start?.slice(0,16) || ""
+      }
+      onChange={(e) =>
+        handleZoneChange(
+          index,
+          "sale_start",
+          e.target.value
+        )
+      }
+      className="
+        w-full
+        px-4 py-3
+        rounded-xl
+        bg-[#0B1120]
+        border border-white/10
+      "
+    />
+  </div>
+
+  <div>
+    <p className="text-xs text-gray-400 mb-1">
+      Kết thúc bán
+    </p>
+
+    <input
+      type="datetime-local"
+      value={
+        zone.sale_end?.slice(0,16) || ""
+      }
+      onChange={(e) =>
+        handleZoneChange(
+          index,
+          "sale_end",
+          e.target.value
+        )
+      }
+      className="
+        w-full
+        px-4 py-3
+        rounded-xl
+        bg-[#0B1120]
+        border border-white/10
+      "
+    />
+  </div>
+
+</div>
+
+      </div>
+
+    ))}
+
+  </div>
+
+</div>
               <button
                 type="submit"
                 disabled={saving}
@@ -327,6 +584,7 @@ const handleSubmit =
       </div>
 
     </div>
+
 
   );
 }
