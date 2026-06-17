@@ -579,16 +579,20 @@ const formatShowtime = () => {
       );
 
       const data = await holdRes.json();
+if (!holdRes.ok) {
 
-      if (!holdRes.ok) {
+  alert(
+    "Một hoặc nhiều ghế đang được thanh toán.\nVui lòng chọn ghế khác."
+  );
 
-        alert(
-          data.message ||
-          "Ghế đang được thanh toán"
-        );
+  setSelectedSeats((prev) =>
+    prev.filter(
+      (id) => !(data.seats || []).includes(id)
+    )
+  );
 
-        return;
-      }
+  return;
+}
 
       navigate("/checkout", {
         state: {
