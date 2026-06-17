@@ -230,7 +230,7 @@ export default function HeroSection({
             <button
               onClick={() =>
                 navigate(
-                  `/events/${event.id}`
+                  `/event/${event.id}`
                 )
               }
               className="
