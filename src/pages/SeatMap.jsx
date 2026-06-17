@@ -40,7 +40,12 @@ export default function SeatMap() {
   }, [searchParams]);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}/seats`)
+
+  if (!showtimeId) return;
+
+  fetch(
+    `${import.meta.env.VITE_API_URL}/api/showtimes/${showtimeId}/seats`
+  )
       .then((res) => res.json())
       .then((data) => {
         const normalized = (Array.isArray(data) ? data : []).map((seat) => ({
