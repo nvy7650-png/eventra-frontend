@@ -44,7 +44,7 @@ export default function SeatMap() {
   if (!showtimeId) return;
 
   fetch(
-    `${import.meta.env.VITE_API_URL}/api/showtimes/${showtimeId}/seats`
+    `${import.meta.env.VITE_API_URL}/api/events/showtimes/${showtimeId}/seats`
   )
       .then((res) => res.json())
       .then((data) => {
