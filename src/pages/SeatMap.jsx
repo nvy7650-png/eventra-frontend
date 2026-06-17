@@ -71,6 +71,7 @@ export default function SeatMap() {
     fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`)
       .then((res) => res.json())
       .then((data) => {
+        console.log("SEATS:", data);
         setEvent(data.event || null);
         setZones(data.zones || []);
         const match = (data.showtimes || []).find(
