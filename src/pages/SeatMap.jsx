@@ -130,9 +130,7 @@ export default function SeatMap() {
     return;
   }
 
-  const id =
-    seat.showtime_seat_id ||
-    seat.id;
+  const id = seat.id;
 
   if (
     selectedSeats.includes(id)
@@ -331,29 +329,6 @@ const formatShowtime = () => {
 
           </div>
 
-          {/* ZONE */}
-          <div className="text-center mb-12">
-
-            <h2 className="text-3xl font-bold">
-              {selectedZone?.name}
-            </h2>
-
-            <p className="text-gray-400 mt-2">
-              Chọn ghế bạn muốn đặt
-            </p>
-
-          </div>
-
-          {showtimeId && (
-            <div className="text-center mb-12">
-              <p className="text-sm text-gray-400 uppercase tracking-wide mb-2">
-                Suất diễn đã chọn
-              </p>
-              <p className="text-lg font-semibold text-sky-400">
-                {formatShowtime()}
-              </p>
-            </div>
-          )}
 
           {/* SEAT MAP */}
 
