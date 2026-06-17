@@ -2,17 +2,16 @@ import { useNavigate } from "react-router-dom";
 
 export default function EventCard({
   event,
-  small,
+  small = false,
 }) {
 
   const navigate = useNavigate();
 
-  // FORMAT DATE
+  // FORMAT SHOWTIME
   const formattedDate =
-    event.start_date
-
+    event.first_showtime
       ? new Date(
-          event.start_date
+          event.first_showtime
         ).toLocaleString(
           "vi-VN",
           {
@@ -20,71 +19,67 @@ export default function EventCard({
             timeStyle: "short",
           }
         )
-
       : "Sắp cập nhật";
 
   // IMAGE URL
   const imageUrl =
     event.image_url
-
       ? `${import.meta.env.VITE_API_URL}${event.image_url}`
-
       : "/no-image.png";
 
   // STATUS
   const getStatus = () => {
 
-    if (
-      event.status ===
-      "APPROVED"
-    ) {
+    switch (event.status) {
 
-      return {
-        text: "Đang mở bán",
-        color:
-          "bg-green-500/20 text-green-400",
-      };
+      case "APPROVED":
+        return {
+          text: "Đang mở bán",
+          color:
+            "bg-green-500/20 text-green-400 border border-green-500/20",
+        };
+
+      case "PENDING":
+        return {
+          text: "Chờ duyệt",
+          color:
+            "bg-yellow-500/20 text-yellow-400 border border-yellow-500/20",
+        };
+
+      case "CANCELLED":
+        return {
+          text: "Đã hủy",
+          color:
+            "bg-red-500/20 text-red-400 border border-red-500/20",
+        };
+
+      default:
+        return {
+          text: event.status,
+          color:
+            "bg-gray-500/20 text-gray-400 border border-gray-500/20",
+        };
 
     }
-
-    if (
-      event.status ===
-      "PENDING"
-    ) {
-
-      return {
-        text: "Chờ duyệt",
-        color:
-          "bg-yellow-500/20 text-yellow-400",
-      };
-
-    }
-
-    return {
-      text: "Đã hủy",
-      color:
-        "bg-red-500/20 text-red-400",
-    };
 
   };
 
-  const status =
-    getStatus();
+  const status = getStatus();
 
   return (
 
     <div
       className="
         bg-[#0B1220]
-        border
-        border-white/10
+        border border-white/10
         rounded-3xl
         overflow-hidden
         hover:border-sky-400
         hover:-translate-y-1
-        transition
+        transition-all
         duration-300
-        cursor-pointer
+        flex
+        flex-col
       "
     >
 
@@ -92,11 +87,7 @@ export default function EventCard({
       <div
         className={`
           overflow-hidden
-          ${
-            small
-              ? "h-44"
-              : "h-60"
-          }
+          ${small ? "h-44" : "h-60"}
         `}
       >
 
@@ -116,12 +107,14 @@ export default function EventCard({
       </div>
 
       {/* CONTENT */}
-      <div className="p-5">
+      <div className="p-5 flex flex-col flex-1">
 
         {/* STATUS */}
         <div
           className={`
             inline-flex
+            items-center
+            w-fit
             px-3
             py-1
             rounded-full
@@ -131,9 +124,7 @@ export default function EventCard({
             ${status.color}
           `}
         >
-
           {status.text}
-
         </div>
 
         {/* TITLE */}
@@ -157,7 +148,7 @@ export default function EventCard({
             mt-3
           "
         >
-          {formattedDate}
+          📅 {formattedDate}
         </p>
 
         {/* LOCATION */}
@@ -165,17 +156,56 @@ export default function EventCard({
           className="
             text-gray-500
             text-sm
-            mt-1
+            mt-2
             line-clamp-1
           "
         >
-          {event.location}
+          📍 {event.location}
         </p>
+
+        {/* CATEGORY */}
+        {event.category_name && (
+
+          <p
+            className="
+              text-sky-400
+              text-sm
+              mt-2
+            "
+          >
+            🎵 {event.category_name}
+          </p>
+
+        )}
+
+        {/* PRICE */}
+        {event.min_price && (
+
+          <p
+            className="
+              text-green-400
+              font-bold
+              mt-4
+            "
+          >
+            Từ{" "}
+            {Number(
+              event.min_price
+            ).toLocaleString(
+              "vi-VN"
+            )}đ
+          </p>
+
+        )}
 
         {/* BUTTON */}
         <button
+          onClick={() =>
+            navigate(`/event/${event.id}`)
+          }
           className="
-            mt-5
+            mt-auto
+            pt-4
             w-full
             py-3
             rounded-2xl
@@ -186,7 +216,6 @@ export default function EventCard({
             hover:text-black
             transition
           "
-          onClick={() => navigate(`/event/${event.id}`)}
         >
           Xem chi tiết
         </button>
