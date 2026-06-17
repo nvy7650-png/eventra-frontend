@@ -69,9 +69,19 @@ export default function Checkout() {
       return;
     }
 
-    alert(
-      `Tạo đơn thành công. Order #${data.order_id}`
-    );
+    navigate(
+  `/payment/${data.order_id}`,
+  {
+    state: {
+      orderId: data.order_id,
+      event,
+      showtime,
+      zone,
+      seats,
+      totalPrice,
+    },
+  }
+);
 
     console.log(data);
 

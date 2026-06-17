@@ -36,6 +36,8 @@ import OrganizerTicketDetail from "./pages/OrganizerTicketDetail";
 import AdminEventDetail from "./pages/AdminEventDetail";
 import SeatMap from "./pages/SeatMap";
 import Checkout from "./pages/Checkout";
+import Payment from "./pages/Payment";
+
 
 function App() {
 
@@ -283,6 +285,11 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
 <Route
   path="/checkout"
   element={<Checkout />}
+/>
+
+<Route
+  path="/payment/:orderId"
+  element={<Payment />}
 />
 
       </Routes>
