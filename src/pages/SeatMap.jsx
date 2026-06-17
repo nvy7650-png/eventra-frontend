@@ -8,11 +8,6 @@ import {
   useSearchParams,
 } from "react-router-dom";
 
-import {
-  useParams,
-  useSearchParams,
-  useNavigate,
-} from "react-router-dom";
 
 export default function SeatMap() {
 
@@ -555,12 +550,22 @@ const formatShowtime = () => {
             <button
   onClick={() => {
 
-    if (selectedSeats.length === 0) {
-      alert("Vui lòng chọn ghế");
-      return;
-    }
+  console.log("BUTTON CLICK");
 
-    navigate("/checkout", {
+  console.log({
+    event,
+    showtime,
+    selectedZone,
+    selectedSeats,
+    totalPrice,
+  });
+
+  if (selectedSeats.length === 0) {
+    alert("Vui lòng chọn ghế");
+    return;
+  }
+
+  navigate("/checkout", {
       state: {
         event,
         showtime,
