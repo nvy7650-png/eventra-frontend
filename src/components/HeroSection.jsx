@@ -161,19 +161,6 @@ return (
 
         )}
 
-        <div
-          className={`
-            px-4
-            py-2
-            rounded-full
-            border
-            text-sm
-            font-semibold
-            ${status.color}
-          `}
-        >
-          {status.text}
-        </div>
 
       </div>
 
