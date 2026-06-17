@@ -237,6 +237,10 @@ if (!formData.seat_mode) {
 
       setLoading(true);
 
+      console.log(
+  "SEAT MODE SUBMIT:",
+  formData.seat_mode
+);
       // STEP 2
       navigate(
 
