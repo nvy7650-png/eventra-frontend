@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import QRCode from "react-qr-code";
 
 export default function MyTickets() {
 
@@ -84,6 +85,19 @@ export default function MyTickets() {
                 {" "}
                 {ticket.ticket_code}
               </div>
+
+              <div className="mt-4">
+
+  <div className="bg-white p-3 rounded-xl inline-block">
+
+    <QRCode
+      value={ticket.ticket_code}
+      size={140}
+    />
+
+  </div>
+
+</div>
 
               <div className="mb-2">
                 Trạng thái:
