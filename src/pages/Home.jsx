@@ -1,10 +1,10 @@
 import {
-  useEffect,
-  useState,
+useEffect,
+useState,
 } from "react";
 
 import {
-  useNavigate,
+useNavigate,
 } from "react-router-dom";
 
 import Navbar from "../components/Navbar";
@@ -15,350 +15,328 @@ import Footer from "../components/Footer";
 
 export default function Home() {
 
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
-  const [events, setEvents] =
-    useState([]);
+const [events, setEvents] = useState([]);
+const [latestEvents, setLatestEvents] = useState([]);
+const [upcomingEvents, setUpcomingEvents] = useState([]);
+const [loading, setLoading] = useState(true);
 
-  const [latestEvents, setLatestEvents] =
-    useState([]);
+useEffect(() => {
 
-  const [upcomingEvents, setUpcomingEvents] =
-    useState([]);
+fetch(
+  `${import.meta.env.VITE_API_URL}/api/events`
+)
+  .then((res) => res.json())
 
-  const [loading, setLoading] =
-    useState(true);
+  .then((data) => {
 
-  useEffect(() => {
+    const approvedEvents =
+      data.filter(
+        (event) =>
+          event.status === "APPROVED"
+      );
 
-    fetch(
-      `${import.meta.env.VITE_API_URL}/api/events`
-    )
-      .then((res) => res.json())
+    setEvents(approvedEvents);
 
-      .then((data) => {
+    const newest = [...approvedEvents]
 
-        // ALL EVENTS
-        setEvents(data);
+      .sort(
+        (a, b) =>
+          new Date(b.created_at) -
+          new Date(a.created_at)
+      )
 
-        // NEWEST EVENTS
-        const newest = [...data]
+      .slice(0, 6);
 
-          .sort(
-            (a, b) =>
-              new Date(b.created_at) -
-              new Date(a.created_at)
-          )
+    setLatestEvents(newest);
 
-          .slice(0, 4);
+    const upcoming = [...approvedEvents]
 
-        setLatestEvents(newest);
+      .filter(
+        (event) =>
+          event.first_showtime &&
+          new Date(
+            event.first_showtime
+          ) >= new Date()
+      )
 
-        // UPCOMING EVENTS
-        const upcoming = [...data]
+      .sort(
+        (a, b) =>
+          new Date(a.first_showtime) -
+          new Date(b.first_showtime)
+      )
 
-          .filter(
-            (event) =>
+      .slice(0, 6);
 
-              event.start_date &&
+    setUpcomingEvents(upcoming);
 
-              new Date(
-                event.start_date
-              ) >= new Date()
-          )
+  })
 
-          .sort(
-            (a, b) =>
+  .catch(console.log)
 
-              new Date(a.start_date) -
+  .finally(() => {
 
-              new Date(b.start_date)
-          )
+    setLoading(false);
 
-          .slice(0, 4);
+  });
 
-        setUpcomingEvents(upcoming);
+}, []);
 
-      })
+if (loading) {
 
-      .catch((err) => {
+return (
 
-        console.log(err);
+  <div
+    className="
+      min-h-screen
+      flex
+      items-center
+      justify-center
+      bg-[#050816]
+      text-white
+    "
+  >
 
-      })
-
-      .finally(() => {
-
-        setLoading(false);
-
-      });
-
-  }, []);
-
-  // LOADING
-  if (loading) {
-
-    return (
+    <div className="text-center">
 
       <div
         className="
-          min-h-screen
-          flex
-          items-center
-          justify-center
-          bg-[#050816]
-          text-white
+          w-12
+          h-12
+          border-4
+          border-sky-400
+          border-t-transparent
+          rounded-full
+          animate-spin
+          mx-auto
         "
-      >
+      />
 
-        <div className="text-center">
-
-          <div
-            className="
-              w-12
-              h-12
-              border-4
-              border-sky-400
-              border-t-transparent
-              rounded-full
-              animate-spin
-              mx-auto
-            "
-          />
-
-          <p className="mt-4 text-gray-400">
-            Đang tải sự kiện...
-          </p>
-
-        </div>
-
-      </div>
-
-    );
-
-  }
-
-  return (
-
-    <div className="min-h-screen bg-[#050816] text-white">
-
-      {/* NAVBAR */}
-      <Navbar />
-
-      {/* CATEGORY */}
-      <CategoryBar />
-
-      {/* HERO */}
-      {(upcomingEvents.length > 0 ||
-        latestEvents.length > 0) && (
-
-        <HeroSection
-          event={
-            upcomingEvents[0] ||
-            latestEvents[0]
-          }
-        />
-
-      )}
-
-      {/* NEWEST EVENTS */}
-      <section className="max-w-6xl mx-auto px-6 pb-10">
-
-        <h3
-          className="
-            text-2xl
-            font-bold
-            text-white
-            mb-5
-          "
-        >
-          Sự kiện mới nhất
-        </h3>
-
-        {latestEvents.length > 0 ? (
-
-          <div className="grid md:grid-cols-4 gap-5">
-
-            {latestEvents.map((event) => (
-
-              <EventCard
-                key={event.id}
-                event={event}
-                small
-              />
-
-            ))}
-
-          </div>
-
-        ) : (
-
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-10
-              text-center
-            "
-          >
-
-            <p className="text-gray-400">
-              Chưa có sự kiện mới
-            </p>
-
-          </div>
-
-        )}
-
-      </section>
-
-      {/* UPCOMING EVENTS */}
-      <section className="max-w-6xl mx-auto px-6 pb-10">
-
-        <h3
-          className="
-            text-2xl
-            font-bold
-            text-white
-            mb-5
-          "
-        >
-          Sự kiện sắp diễn ra
-        </h3>
-
-        {upcomingEvents.length > 0 ? (
-
-          <div className="grid md:grid-cols-4 gap-5">
-
-            {upcomingEvents.map((event) => (
-
-              <EventCard
-                key={event.id}
-                event={event}
-                small
-              />
-
-            ))}
-
-          </div>
-
-        ) : (
-
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-10
-              text-center
-            "
-          >
-
-            <p className="text-gray-400">
-              Chưa có sự kiện sắp diễn ra
-            </p>
-
-          </div>
-
-        )}
-
-      </section>
-
-      {/* ALL EVENTS */}
-      <section className="max-w-6xl mx-auto px-6 pb-20">
-
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-            mb-5
-          "
-        >
-
-          <h3
-            className="
-              text-2xl
-              font-bold
-              text-white
-            "
-          >
-            Tất cả sự kiện
-          </h3>
-
-          <button
-            onClick={() =>
-              navigate("/events")
-            }
-            className="
-              px-5
-              py-2
-              rounded-2xl
-              bg-[#0B1220]
-              border
-              border-white/10
-              hover:bg-white/10
-              transition
-              text-sm
-              font-semibold
-            "
-          >
-            Xem thêm
-          </button>
-
-        </div>
-
-        {events.length > 0 ? (
-
-          <div className="grid md:grid-cols-4 gap-5">
-
-            {events.map((event) => (
-
-              <EventCard
-                key={event.id}
-                event={event}
-                small
-              />
-
-            ))}
-
-          </div>
-
-        ) : (
-
-          <div
-            className="
-              bg-[#0B1220]
-              border
-              border-gray-800
-              rounded-3xl
-              p-14
-              text-center
-            "
-          >
-
-            <h3 className="text-2xl font-bold mb-3">
-              Chưa có sự kiện nào
-            </h3>
-
-            <p className="text-gray-400">
-              Organizer có thể tạo sự kiện mới từ dashboard
-            </p>
-
-          </div>
-
-        )}
-
-      </section>
-
-      {/* FOOTER */}
-      <Footer />
+      <p className="mt-4 text-gray-400">
+        Đang tải sự kiện...
+      </p>
 
     </div>
 
-  );
+  </div>
+
+);
+
+}
+
+return (
+
+<div className="min-h-screen bg-[#050816] text-white">
+
+  <Navbar />
+
+  <CategoryBar />
+
+  {(upcomingEvents.length > 0 ||
+    latestEvents.length > 0) && (
+
+    <HeroSection
+      event={
+        upcomingEvents[0] ||
+        latestEvents[0]
+      }
+    />
+
+  )}
+
+  {/* NEWEST EVENTS */}
+  <section className="max-w-7xl mx-auto px-6 pb-12">
+
+    <h2 className="text-3xl font-black mb-6">
+      Sự kiện mới nhất
+    </h2>
+
+    {latestEvents.length > 0 ? (
+
+      <div
+        className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          xl:grid-cols-2
+          gap-8
+        "
+      >
+
+        {latestEvents.map((event) => (
+
+          <EventCard
+            key={event.id}
+            event={event}
+          />
+
+        ))}
+
+      </div>
+
+    ) : (
+
+      <div
+        className="
+          bg-[#0B1220]
+          border
+          border-white/10
+          rounded-3xl
+          p-12
+          text-center
+        "
+      >
+
+        Chưa có sự kiện mới
+
+      </div>
+
+    )}
+
+  </section>
+
+  {/* UPCOMING EVENTS */}
+  <section className="max-w-7xl mx-auto px-6 pb-12">
+
+    <h2 className="text-3xl font-black mb-6">
+      Sự kiện sắp diễn ra
+    </h2>
+
+    {upcomingEvents.length > 0 ? (
+
+      <div
+        className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          xl:grid-cols-3
+          gap-8
+        "
+      >
+
+        {upcomingEvents.map((event) => (
+
+          <EventCard
+            key={event.id}
+            event={event}
+          />
+
+        ))}
+
+      </div>
+
+    ) : (
+
+      <div
+        className="
+          bg-[#0B1220]
+          border
+          border-white/10
+          rounded-3xl
+          p-12
+          text-center
+        "
+      >
+
+        Chưa có sự kiện sắp diễn ra
+
+      </div>
+
+    )}
+
+  </section>
+
+  {/* ALL EVENTS */}
+  <section className="max-w-7xl mx-auto px-6 pb-20">
+
+    <div
+      className="
+        flex
+        items-center
+        justify-between
+        mb-6
+      "
+    >
+
+      <h2 className="text-3xl font-black">
+        Tất cả sự kiện
+      </h2>
+
+      <button
+        onClick={() =>
+          navigate("/events")
+        }
+        className="
+          px-5
+          py-3
+          rounded-2xl
+          bg-[#0B1220]
+          border
+          border-white/10
+          hover:bg-white/10
+          transition
+        "
+      >
+        Xem thêm
+      </button>
+
+    </div>
+
+    {events.length > 0 ? (
+
+      <div
+        className="
+          grid
+          grid-cols-1
+          md:grid-cols-2
+          xl:grid-cols-3
+          gap-8
+        "
+      >
+
+        {events.map((event) => (
+
+          <EventCard
+            key={event.id}
+            event={event}
+          />
+
+        ))}
+
+      </div>
+
+    ) : (
+
+      <div
+        className="
+          bg-[#0B1220]
+          border
+          border-white/10
+          rounded-3xl
+          p-16
+          text-center
+        "
+      >
+
+        <h3 className="text-2xl font-bold mb-3">
+          Chưa có sự kiện nào
+        </h3>
+
+        <p className="text-gray-400">
+          Chưa có sự kiện được duyệt
+        </p>
+
+      </div>
+
+    )}
+
+  </section>
+
+  <Footer />
+
+</div>
+
+);
 
 }

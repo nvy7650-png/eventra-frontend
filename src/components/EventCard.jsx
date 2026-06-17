@@ -87,46 +87,29 @@ export default function EventCard({
       <div
   className="
     overflow-hidden
-    aspect-video
+    h-[260px]
     bg-[#081120]
   "
 >
 
-        <img
-          src={imageUrl}
-          alt={event.title}
-          className="
-            w-full
-            h-full
-            object-contain
-            hover:scale-105
-            transition
-            duration-500
-          "
-        />
+       <img
+  src={imageUrl}
+  alt={event.title}
+  className="
+    w-full
+    h-full
+    object-cover
+    hover:scale-105
+    transition
+    duration-500
+  "
+/>
 
       </div>
 
       {/* CONTENT */}
       <div className="p-5 flex flex-col flex-1">
 
-        {/* STATUS */}
-        <div
-          className={`
-            inline-flex
-            items-center
-            w-fit
-            px-3
-            py-1
-            rounded-full
-            text-xs
-            font-semibold
-            mb-3
-            ${status.color}
-          `}
-        >
-          {status.text}
-        </div>
 
         {/* TITLE */}
         <h3
@@ -140,6 +123,7 @@ export default function EventCard({
         >
           {event.title}
         </h3>
+
 
         {/* DATE */}
         <p
