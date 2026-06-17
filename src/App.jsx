@@ -34,6 +34,7 @@ import ConfirmEvent from "./pages/ConfirmEvent";
 import OrganizerTickets from "./pages/OrganizerTickets";
 import OrganizerTicketDetail from "./pages/OrganizerTicketDetail";
 import AdminEventDetail from "./pages/AdminEventDetail";
+import SeatMap from "./pages/SeatMap";
 
 function App() {
 
@@ -266,6 +267,11 @@ element={ <ProtectedRoute role="ADMIN"> <AdminDashboard /> </ProtectedRoute>
 path="/admin/events/:id"
 element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
 }
+/>
+
+<Route
+  path="/event/:eventId/seatmap"
+  element={<SeatMap />}
 />
 
       </Routes>
