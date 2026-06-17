@@ -33,6 +33,7 @@ import ConfirmEvent from "./pages/ConfirmEvent";
 
 import OrganizerTickets from "./pages/OrganizerTickets";
 import OrganizerTicketDetail from "./pages/OrganizerTicketDetail";
+import AdminEventDetail from "./pages/AdminEventDetail";
 
 function App() {
 
@@ -253,6 +254,21 @@ function App() {
         />
 
       </Routes>
+
+      {/* ADMIN DASHBOARD */}
+<Route
+path="/admin/dashboard"
+element={ <ProtectedRoute role="ADMIN"> <AdminDashboard /> </ProtectedRoute>
+}
+/>
+
+{/* ADMIN EVENT DETAIL */}
+<Route
+path="/admin/events/:id"
+element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
+}
+/>
+
 
     </BrowserRouter>
 
