@@ -555,8 +555,8 @@ export default function AdminDashboard() {
                   text-orange-400
                 "
               >
-                {Number(stats.revenue)
-                  .toLocaleString("vi-VN")}đ
+               {Number(stats.revenue || 0)
+  .toLocaleString("vi-VN")}đ
               </h2>
 
             </div>
@@ -613,6 +613,73 @@ export default function AdminDashboard() {
     </h2>
 
   </div>
+
+</div>
+
+<div className="grid lg:grid-cols-2 gap-6 mt-8">
+
+  {events.map((event) => (
+
+    <div
+      key={event.id}
+      className="
+        bg-[#0B1120]
+        border border-white/10
+        rounded-3xl
+        p-6
+      "
+    >
+
+      <div className="flex justify-between items-start">
+
+        <div>
+
+          <h2 className="text-xl font-bold">
+            {event.title}
+          </h2>
+
+          <p className="text-gray-400 mt-1">
+            {event.category_name}
+          </p>
+
+        </div>
+
+        <span
+          className={`
+            px-3 py-1 rounded-full text-xs font-bold
+            ${
+              event.status === "APPROVED"
+                ? "bg-green-500/20 text-green-400"
+                : event.status === "PENDING"
+                ? "bg-yellow-500/20 text-yellow-400"
+                : "bg-red-500/20 text-red-400"
+            }
+          `}
+        >
+          {event.status}
+        </span>
+
+      </div>
+
+      <div className="flex gap-3 mt-6">
+
+        <button
+          className="
+            px-4 py-2
+            rounded-2xl
+            bg-sky-500
+            text-black
+            font-semibold
+          "
+        >
+          Chi tiết
+        </button>
+
+      </div>
+
+    </div>
+
+  ))}
 
 </div>
 
