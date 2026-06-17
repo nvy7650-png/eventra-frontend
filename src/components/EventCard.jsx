@@ -85,11 +85,12 @@ export default function EventCard({
 
       {/* IMAGE */}
       <div
-        className={`
-          overflow-hidden
-          ${small ? "h-44" : "h-60"}
-        `}
-      >
+  className="
+    overflow-hidden
+    aspect-video
+    bg-[#081120]
+  "
+>
 
         <img
           src={imageUrl}
@@ -97,7 +98,7 @@ export default function EventCard({
           className="
             w-full
             h-full
-            object-cover
+            object-contain
             hover:scale-105
             transition
             duration-500
