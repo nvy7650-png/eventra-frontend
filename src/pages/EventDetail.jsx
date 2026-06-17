@@ -118,15 +118,23 @@ export default function EventDetail() {
                expandedShowtime === st.id;
 
               return (
-                <div
-                  key={st.id}
-                  className="
-                    bg-[#0B1120]
-                    border border-white/10
-                    rounded-3xl
-                    overflow-hidden
-                  "
-                >
+               <div
+  key={st.id}
+  className={`
+    rounded-3xl
+    overflow-hidden
+    border
+    transition-all
+    duration-300
+    hover:scale-[1.01]
+    hover:border-sky-400/50
+    ${
+      isOpen
+        ? "border-sky-400 bg-gradient-to-r from-[#0B1120] to-[#13203A]"
+        : "border-white/10 bg-[#0B1120]"
+    }
+  `}
+>
 
               <button
                 onClick={() =>
@@ -162,9 +170,16 @@ export default function EventDetail() {
                   </div>
                 </div>
 
-          <div className="text-2xl">
-            {isOpen ? "▲" : "▼"}
-          </div>
+          <div
+  className={`
+    text-xl
+    transition-transform
+    duration-300
+    ${isOpen ? "rotate-180" : ""}
+  `}
+>
+  ▼
+</div>
         </button>
 
         {isOpen && (
@@ -188,16 +203,22 @@ export default function EventDetail() {
 
               return (
                 <div
-                  key={zone.id}
-                  className="
-                    p-5
-                    flex
-                    justify-between
-                    items-center
-                    border-b
-                    border-white/5
-                  "
-                >
+                    key={zone.id}
+                    className="
+                      mx-4
+                      my-4
+                      p-5
+                      rounded-2xl
+                      bg-[#081018]
+                      border
+                      border-white/5
+                      hover:border-sky-400/30
+                      transition
+                      flex
+                      justify-between
+                      items-center
+                    "
+                  >
 
                   <div>
                     <div className="font-bold">
