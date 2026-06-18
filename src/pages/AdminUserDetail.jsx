@@ -424,6 +424,134 @@ export default function AdminUserDetail() {
   )}
 
 </div>
+{/* DANH SÁCH VÉ */}
+
+<div
+  className="
+    mt-8
+    bg-[#0B1120]
+    border
+    border-white/10
+    rounded-3xl
+    p-6
+  "
+>
+
+  <h2
+    className="
+      text-xl
+      font-bold
+      mb-6
+    "
+  >
+    Danh sách vé đã mua
+  </h2>
+
+  {user.tickets?.length > 0 ? (
+
+    <div className="overflow-x-auto">
+
+      <table className="w-full">
+
+        <thead>
+
+          <tr className="border-b border-white/10">
+
+            <th className="text-left p-3">
+              Mã vé
+            </th>
+
+            <th className="text-left p-3">
+              Sự kiện
+            </th>
+
+            <th className="text-left p-3">
+              Ghế
+            </th>
+
+            <th className="text-left p-3">
+              Trạng thái
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {user.tickets.map((ticket) => (
+
+            <tr
+              key={ticket.id}
+              className="
+                border-b
+                border-white/5
+              "
+            >
+
+              <td className="p-3">
+                {ticket.ticket_code}
+              </td>
+
+              <td className="p-3">
+                {ticket.event_title}
+              </td>
+
+              <td className="p-3">
+                {ticket.seat_code || "-"}
+              </td>
+
+              <td className="p-3">
+
+                <span
+                  className={`
+
+                    px-3
+                    py-1
+                    rounded-full
+                    text-xs
+                    font-bold
+
+                    ${
+                      ticket.status === "VALID"
+                        ? "bg-green-500/20 text-green-400"
+                        : ticket.status === "USED"
+                        ? "bg-gray-500/20 text-gray-300"
+                        : "bg-red-500/20 text-red-400"
+                    }
+
+                  `}
+                >
+
+                  {ticket.status === "VALID"
+                    ? "Còn hiệu lực"
+                    : ticket.status === "USED"
+                    ? "Đã sử dụng"
+                    : "Đã hủy"}
+
+                </span>
+
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  ) : (
+
+    <p className="text-gray-400">
+      Chưa có vé nào
+    </p>
+
+  )}
+
+</div>
 
 </main>
 
