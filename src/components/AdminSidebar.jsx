@@ -9,11 +9,15 @@ import {
   LogOut,
 } from "lucide-react";
 
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 
 export default function AdminSidebar() {
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   const user =
     JSON.parse(
@@ -79,17 +83,22 @@ export default function AdminSidebar() {
   return (
 
     <aside
-      className="
-        w-64
-        bg-[#0B1120]
-        border-r
-        border-white/10
-        flex
-        flex-col
-        justify-between
-        p-5
-      "
-    >
+  className="
+    hidden
+    lg:flex
+
+    w-72
+
+    bg-[#0B1120]
+    border-r
+    border-white/10
+
+    flex-col
+    justify-between
+
+    p-5
+  "
+>
 
       <div>
 
@@ -158,22 +167,27 @@ export default function AdminSidebar() {
             return (
 
               <button
-                key={item.path}
-                onClick={() =>
-                  navigate(item.path)
-                }
-                className="
-                  w-full
-                  flex
-                  items-center
-                  gap-3
-                  px-4
-                  py-3
-                  rounded-2xl
-                  hover:bg-white/5
-                  transition
-                "
-              >
+  key={item.path}
+  onClick={() =>
+    navigate(item.path)
+  }
+  className={`
+    w-full
+    flex
+    items-center
+    gap-3
+    px-4
+    py-3
+    rounded-2xl
+    transition
+
+    ${
+      location.pathname === item.path
+        ? "bg-sky-500 text-black font-bold"
+        : "hover:bg-white/5"
+    }
+  `}
+>
 
                 <Icon size={20} />
 

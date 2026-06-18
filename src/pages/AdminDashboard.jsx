@@ -133,22 +133,37 @@ export default function AdminDashboard() {
       <main className="flex-1">
 
         {/* TOPBAR */}
-        <div
-          className="
-            flex
-            items-center
-            justify-between
-            px-10
-            py-6
-            border-b
-            border-white/10
-            bg-[#081120]
-          "
-        >
+       <div
+  className="
+    flex
+    flex-col
+    md:flex-row
+    md:items-center
+    md:justify-between
+
+    gap-4
+
+    px-4
+    md:px-10
+
+    py-6
+
+    border-b
+    border-white/10
+
+    bg-[#081120]
+  "
+>
 
           <div>
 
-            <h1 className="text-3xl font-bold">
+           <h1
+  className="
+    text-2xl
+    md:text-3xl
+    font-bold
+  "
+>
               Admin Dashboard
             </h1>
 
@@ -186,10 +201,23 @@ export default function AdminDashboard() {
         </div>
 
         {/* CONTENT */}
-        <div className="p-10">
+       <div
+  className="
+    p-4
+    md:p-10
+  "
+>
 
           {/* STATS */}
-          <div className="grid lg:grid-cols-4 gap-6">
+          <div
+  className="
+    grid
+    grid-cols-1
+    sm:grid-cols-2
+    xl:grid-cols-4
+    gap-6
+  "
+>
 
             {/* USERS */}
             <div
@@ -208,7 +236,7 @@ export default function AdminDashboard() {
 
               <h2
                 className="
-                  text-5xl
+                 text-3xl md:text-5xl
                   font-black
                   text-sky-400
                 "
@@ -235,7 +263,7 @@ export default function AdminDashboard() {
 
               <h2
                 className="
-                  text-5xl
+                 text-3xl md:text-5xl
                   font-black
                   text-pink-400
                 "
@@ -262,7 +290,7 @@ export default function AdminDashboard() {
 
               <h2
                 className="
-                  text-5xl
+                  text-3xl md:text-5xl
                   font-black
                   text-green-400
                 "
@@ -289,7 +317,7 @@ export default function AdminDashboard() {
 
               <h2
                 className="
-                  text-5xl
+                  text-3xl md:text-5xl
                   font-black
                   text-orange-400
                 "
@@ -303,7 +331,15 @@ export default function AdminDashboard() {
           </div>
 
           {/* EVENT MANAGEMENT */}
-         <div className="grid lg:grid-cols-3 gap-6 mt-8">
+         <div
+  className="
+    grid
+    grid-cols-1
+    sm:grid-cols-3
+    gap-6
+    mt-8
+  "
+>
 
   <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-6">
 
@@ -355,7 +391,15 @@ export default function AdminDashboard() {
 
 </div>
 
-<div className="grid lg:grid-cols-2 gap-6 mt-8">
+<div
+  className="
+    grid
+    grid-cols-1
+    xl:grid-cols-2
+    gap-6
+    mt-8
+  "
+>
 
   {events.map((event) => (
 
@@ -369,7 +413,16 @@ export default function AdminDashboard() {
       "
     >
 
-      <div className="flex justify-between items-start">
+      <div
+  className="
+    flex
+    flex-col
+    sm:flex-row
+    sm:justify-between
+    sm:items-start
+    gap-3
+  "
+>
 
         <div>
 
@@ -433,14 +486,14 @@ export default function AdminDashboard() {
               border
               border-white/10
               rounded-3xl
-              p-16
+              p-6 md:p-16
               text-center
             "
           >
 
             <h2
               className="
-                text-4xl
+                text-2xl md:text-4xl
                 font-black
                 mb-4
               "
