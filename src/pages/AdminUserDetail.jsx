@@ -387,7 +387,6 @@ const [activeTab, setActiveTab] =
       setActiveTab("EVENTS")
     }
     className={`
-
       px-5
       py-3
       rounded-2xl
@@ -398,12 +397,51 @@ const [activeTab, setActiveTab] =
           ? "bg-sky-500 text-black"
           : "bg-[#0B1120] border border-white/10"
       }
-
     `}
   >
     Sự kiện đã tạo
     {" "}
     ({user.events?.length || 0})
+  </button>
+
+  <button
+    onClick={() =>
+      setActiveTab("SALES")
+    }
+    className={`
+      px-5
+      py-3
+      rounded-2xl
+      font-bold
+
+      ${
+        activeTab === "SALES"
+          ? "bg-sky-500 text-black"
+          : "bg-[#0B1120] border border-white/10"
+      }
+    `}
+  >
+    Vé đã bán
+  </button>
+
+  <button
+    onClick={() =>
+      setActiveTab("REVENUE")
+    }
+    className={`
+      px-5
+      py-3
+      rounded-2xl
+      font-bold
+
+      ${
+        activeTab === "REVENUE"
+          ? "bg-sky-500 text-black"
+          : "bg-[#0B1120] border border-white/10"
+      }
+    `}
+  >
+    Doanh thu
   </button>
 
 </>
@@ -702,5 +740,282 @@ const [activeTab, setActiveTab] =
     </div>
 
   );
+
+{activeTab === "EVENTS" && (
+
+<div
+  className="
+    mt-8
+    bg-[#0B1120]
+    border
+    border-white/10
+    rounded-3xl
+    p-6
+  "
+>
+
+  <h2
+    className="
+      text-xl
+      font-bold
+      mb-6
+    "
+  >
+    Danh sách sự kiện đã tạo
+  </h2>
+
+  {user.events?.length > 0 ? (
+
+    <div className="overflow-x-auto">
+
+      <table className="w-full">
+
+        <thead>
+
+          <tr className="border-b border-white/10">
+
+            <th className="text-left p-3">
+              ID
+            </th>
+
+            <th className="text-left p-3">
+              Tên sự kiện
+            </th>
+
+            <th className="text-left p-3">
+              Trạng thái
+            </th>
+
+            <th className="text-left p-3">
+              Ngày tạo
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {user.events.map((event) => (
+
+            <tr
+              key={event.id}
+              className="
+                border-b
+                border-white/5
+              "
+            >
+
+              <td className="p-3">
+                #{event.id}
+              </td>
+
+              <td className="p-3">
+                {event.title}
+              </td>
+
+              <td className="p-3">
+
+                <span
+                  className={`
+
+                    px-3
+                    py-1
+                    rounded-full
+                    text-xs
+                    font-bold
+
+                    ${
+                      event.status === "APPROVED"
+                        ? "bg-green-500/20 text-green-400"
+                        : event.status === "PENDING"
+                        ? "bg-yellow-500/20 text-yellow-400"
+                        : "bg-red-500/20 text-red-400"
+                    }
+
+                  `}
+                >
+
+                  {event.status === "APPROVED"
+                    ? "Đã duyệt"
+                    : event.status === "PENDING"
+                    ? "Chờ duyệt"
+                    : "Đã hủy"}
+
+                </span>
+
+              </td>
+
+              <td className="p-3">
+
+                {new Date(
+                  event.created_at
+                ).toLocaleDateString("vi-VN")}
+
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  ) : (
+
+    <p className="text-gray-400">
+      Chưa có sự kiện nào
+    </p>
+
+  )}
+
+</div>
+
+)}
+
+{activeTab === "SALES" && (
+
+<div
+  className="
+    mt-8
+    bg-[#0B1120]
+    border
+    border-white/10
+    rounded-3xl
+    p-6
+  "
+>
+
+  <h2
+    className="
+      text-xl
+      font-bold
+      mb-6
+    "
+  >
+    Thống kê vé đã bán
+  </h2>
+
+  <table className="w-full">
+
+    <thead>
+
+      <tr className="border-b border-white/10">
+
+        <th className="text-left p-3">
+          Sự kiện
+        </th>
+
+        <th className="text-left p-3">
+          Số vé
+        </th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      {user.ticketSales?.map((item) => (
+
+        <tr
+          key={item.id}
+          className="border-b border-white/5"
+        >
+
+          <td className="p-3">
+            {item.title}
+          </td>
+
+          <td className="p-3">
+            {item.total_tickets}
+          </td>
+
+        </tr>
+
+      ))}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+)}
+
+{activeTab === "REVENUE" && (
+
+<div
+  className="
+    mt-8
+    bg-[#0B1120]
+    border
+    border-white/10
+    rounded-3xl
+    p-6
+  "
+>
+
+  <h2
+    className="
+      text-xl
+      font-bold
+      mb-6
+    "
+  >
+    Doanh thu theo sự kiện
+  </h2>
+
+  <table className="w-full">
+
+    <thead>
+
+      <tr className="border-b border-white/10">
+
+        <th className="text-left p-3">
+          Sự kiện
+        </th>
+
+        <th className="text-left p-3">
+          Doanh thu
+        </th>
+
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      {user.revenues?.map((item) => (
+
+        <tr
+          key={item.id}
+          className="border-b border-white/5"
+        >
+
+          <td className="p-3">
+            {item.title}
+          </td>
+
+          <td className="p-3 text-green-400 font-bold">
+            {Number(
+              item.revenue
+            ).toLocaleString("vi-VN")}đ
+          </td>
+
+        </tr>
+
+      ))}
+
+    </tbody>
+
+  </table>
+
+</div>
+
+)}
 
 }
