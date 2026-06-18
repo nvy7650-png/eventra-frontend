@@ -7,8 +7,8 @@ export default function AdminUserDetail() {
 
 
 const [activeTab, setActiveTab] =
-  useState("ORDERS");
-
+  useState("");
+  
   const { id } = useParams();
 
   const [user, setUser] =
@@ -16,6 +16,26 @@ const [activeTab, setActiveTab] =
 
   const [loading, setLoading] =
     useState(true);
+
+    useEffect(() => {
+
+  if (!user) return;
+
+  if (user.role === "USER") {
+
+    setActiveTab(
+      "ORDERS"
+    );
+
+  } else {
+
+    setActiveTab(
+      "EVENTS"
+    );
+
+  }
+
+}, [user]);
 
   useEffect(() => {
 
@@ -131,94 +151,105 @@ const [activeTab, setActiveTab] =
 
   </div>
 
-  {/* STATS */}
-  <div
-    className="
-      grid
-      grid-cols-1
-      md:grid-cols-3
-      gap-6
-    "
-  >
+  {/* USER STATS */}
 
-    <div
-      className="
-        bg-sky-500/10
-        border
-        border-sky-500/20
-        rounded-3xl
-        p-6
-      "
-    >
-      <p className="text-gray-400">
-        Tổng đơn hàng
-      </p>
+{user.role === "USER" && (
 
-      <h2
-        className="
-          text-4xl
-          font-black
-          text-sky-400
-          mt-2
-        "
-      >
-        {user.total_orders}
-      </h2>
-    </div>
+<div
+  className="
+    grid
+    grid-cols-1
+    md:grid-cols-3
+    gap-6
+  "
+>
 
-    <div
-      className="
-        bg-green-500/10
-        border
-        border-green-500/20
-        rounded-3xl
-        p-6
-      "
-    >
-      <p className="text-gray-400">
-        Tổng vé
-      </p>
+  <div className="bg-sky-500/10 border border-sky-500/20 rounded-3xl p-6">
+    <p className="text-gray-400">
+      Tổng đơn hàng
+    </p>
 
-      <h2
-        className="
-          text-4xl
-          font-black
-          text-green-400
-          mt-2
-        "
-      >
-        {user.total_tickets}
-      </h2>
-    </div>
+    <h2 className="text-4xl font-black text-sky-400 mt-2">
+      {user.total_orders}
+    </h2>
+  </div>
 
-    <div
-      className="
-        bg-orange-500/10
-        border
-        border-orange-500/20
-        rounded-3xl
-        p-6
-      "
-    >
-      <p className="text-gray-400">
-        Tổng chi tiêu
-      </p>
+  <div className="bg-green-500/10 border border-green-500/20 rounded-3xl p-6">
+    <p className="text-gray-400">
+      Tổng vé
+    </p>
 
-      <h2
-        className="
-          text-3xl
-          font-black
-          text-orange-400
-          mt-2
-        "
-      >
-        {Number(
-          user.total_spent || 0
-        ).toLocaleString("vi-VN")}đ
-      </h2>
-    </div>
+    <h2 className="text-4xl font-black text-green-400 mt-2">
+      {user.total_tickets}
+    </h2>
+  </div>
+
+  <div className="bg-orange-500/10 border border-orange-500/20 rounded-3xl p-6">
+    <p className="text-gray-400">
+      Tổng chi tiêu
+    </p>
+
+    <h2 className="text-3xl font-black text-orange-400 mt-2">
+      {Number(
+        user.total_spent || 0
+      ).toLocaleString("vi-VN")}đ
+    </h2>
+  </div>
+
+</div>
+
+)}
+
+{user.role === "ORGANIZER" && (
+
+<div
+  className="
+    grid
+    grid-cols-1
+    md:grid-cols-3
+    gap-6
+  "
+>
+
+  <div className="bg-sky-500/10 border border-sky-500/20 rounded-3xl p-6">
+
+    <p className="text-gray-400">
+      Tổng sự kiện
+    </p>
+
+    <h2 className="text-4xl font-black text-sky-400 mt-2">
+      {user.total_events}
+    </h2>
 
   </div>
+
+  <div className="bg-green-500/10 border border-green-500/20 rounded-3xl p-6">
+
+    <p className="text-gray-400">
+      Đã duyệt
+    </p>
+
+    <h2 className="text-4xl font-black text-green-400 mt-2">
+      {user.approved_events}
+    </h2>
+
+  </div>
+
+  <div className="bg-yellow-500/10 border border-yellow-500/20 rounded-3xl p-6">
+
+    <p className="text-gray-400">
+      Chờ duyệt
+    </p>
+
+    <h2 className="text-4xl font-black text-yellow-400 mt-2">
+      {user.pending_events}
+    </h2>
+
+  </div>
+
+</div>
+
+)}
 
   {/* INFO */}
   <div
@@ -293,6 +324,10 @@ const [activeTab, setActiveTab] =
   "
 >
 
+  {user.role === "USER" ? (
+
+<>
+
   <button
     onClick={() =>
       setActiveTab("ORDERS")
@@ -340,6 +375,40 @@ const [activeTab, setActiveTab] =
     {" "}
     ({user.tickets?.length || 0})
   </button>
+
+</>
+
+) : (
+
+<>
+
+  <button
+    onClick={() =>
+      setActiveTab("EVENTS")
+    }
+    className={`
+
+      px-5
+      py-3
+      rounded-2xl
+      font-bold
+
+      ${
+        activeTab === "EVENTS"
+          ? "bg-sky-500 text-black"
+          : "bg-[#0B1120] border border-white/10"
+      }
+
+    `}
+  >
+    Sự kiện đã tạo
+    {" "}
+    ({user.events?.length || 0})
+  </button>
+
+</>
+
+)}
 
 </div>
 
