@@ -195,21 +195,6 @@ export default function AdminDashboard() {
   "
 >
 
-  <button
-    onClick={() =>
-      navigate("/admin/events")
-    }
-    className="
-      px-5
-      py-3
-      rounded-2xl
-      bg-sky-500
-      text-black
-      font-bold
-    "
-  >
-    Quản lý sự kiện
-  </button>
 
   <button
     onClick={() =>
