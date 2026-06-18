@@ -3,16 +3,12 @@ import {
   useState,
 } from "react";
 
-import {
-  useNavigate,
-} from "react-router-dom";
 
 
 import AdminSidebar from "../components/AdminSidebar";
 
 export default function AdminDashboard() {
 
-  const navigate = useNavigate();
 
   const [stats, setStats] =
     useState({
@@ -158,7 +154,7 @@ export default function AdminDashboard() {
     px-4
     md:px-10
 
-    py-4
+    py-3
 
     border-b
     border-white/10
@@ -179,7 +175,7 @@ export default function AdminDashboard() {
               Admin Dashboard
             </h1>
 
-            <p className="text-gray-400 mt-1">
+            <p className="text-gray-500 text-sm mt-1">
               Quản trị hệ thống HOMIETICKET
             </p>
 
@@ -336,9 +332,9 @@ export default function AdminDashboard() {
  className="
   text-2xl
   md:text-4xl
-  truncate
   font-black
   text-orange-400
+  break-all
 "
 >
                {Number(stats.revenue || 0)
@@ -382,7 +378,8 @@ border-yellow-500/20
 
   <div className="bg-green-500/5
 border-green-500/20
- border border-white/10 
+ border 
+ border-white/10 \\
  rounded-3xl p-6">
 
     <p className="text-gray-400 text-sm">
