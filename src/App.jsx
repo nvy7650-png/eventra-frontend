@@ -260,13 +260,6 @@ function App() {
           }
         />
 
-        
-      {/* ADMIN DASHBOARD */}
-<Route
-path="/admin/dashboard"
-element={ <ProtectedRoute role="ADMIN"> <AdminDashboard /> </ProtectedRoute>
-}
-/>
 
 {/* ADMIN EVENT DETAIL */}
 <Route
@@ -282,11 +275,6 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
       <ScanTicket />
     </ProtectedRoute>
   }
-/>
-
-<Route
-  path="/event/:eventId/seatmap"
-  element={<SeatMap />}
 />
 
 <Route

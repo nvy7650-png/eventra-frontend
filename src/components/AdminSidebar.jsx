@@ -180,7 +180,7 @@ const [open, setOpen] =
 
       <div>
 
-        <div className="mb-10">
+        <div className="mb-10 flex items-start justify-between">
 
           <h1 className="text-3xl font-black text-sky-400">
             HOMIETICKET
@@ -189,6 +189,20 @@ const [open, setOpen] =
           <p className="text-gray-400 text-sm">
             Admin Center
           </p>
+
+          <button
+  onClick={() =>
+    setOpen(false)
+  }
+  className="
+    lg:hidden
+    p-2
+    rounded-xl
+    hover:bg-white/10
+  "
+>
+  <X size={22} />
+</button>
 
         </div>
 
