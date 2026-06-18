@@ -1,88 +1,84 @@
 import { useEffect, useRef, useState } from "react";
-import { Html5QrcodeScanner } from "html5-qrcode";
+import { Html5Qrcode } from "html5-qrcode";
 
 export default function ScanTicket() {
 
-  const scannerRef = useRef(null);
+  const qrRef = useRef(null);
 
   const [result, setResult] =
     useState(null);
 
-  const [loading, setLoading] =
-    useState(false);
-
   useEffect(() => {
 
-    if (scannerRef.current) return;
+    const qr =
+      new Html5Qrcode("reader");
 
-    scannerRef.current =
-      new Html5QrcodeScanner(
-        "reader",
-        {
-          fps: 10,
-          qrbox: 250,
-          rememberLastUsedCamera: true,
-        },
-        false
-      );
+    qrRef.current = qr;
 
-    scannerRef.current.render(
+    Html5Qrcode.getCameras()
+      .then((devices) => {
 
-      async (decodedText) => {
+        if (!devices.length) return;
 
-        if (loading) return;
+        const backCamera =
+          devices.find(
+            d =>
+              d.label
+                .toLowerCase()
+                .includes("back")
+          ) || devices[0];
 
-        try {
+        qr.start(
+          backCamera.id,
+          {
+            fps: 10,
+            qrbox: 250,
+          },
 
-          setLoading(true);
+          async (decodedText) => {
 
-          const res = await fetch(
-            `${import.meta.env.VITE_API_URL}/api/tickets/checkin`,
-            {
-              method: "POST",
-              headers: {
-                "Content-Type":
-                  "application/json",
-              },
-              body: JSON.stringify({
-                ticket_code:
-                  decodedText,
-              }),
+            try {
+
+              const res =
+                await fetch(
+                  `${import.meta.env.VITE_API_URL}/api/tickets/checkin`,
+                  {
+                    method: "POST",
+                    headers: {
+                      "Content-Type":
+                        "application/json",
+                    },
+                    body: JSON.stringify({
+                      ticket_code:
+                        decodedText,
+                    }),
+                  }
+                );
+
+              const data =
+                await res.json();
+
+              setResult(data);
+
+              await qr.stop();
+
+            } catch (err) {
+
+              console.log(err);
+
             }
-          );
 
-          const data =
-            await res.json();
+          }
+        );
 
-          setResult(data);
-
-          await scannerRef.current.clear();
-
-        } catch (err) {
-
-          console.log(err);
-
-          setResult({
-            success: false,
-            message:
-              "Lỗi kết nối server",
-          });
-
-        }
-
-      },
-
-      () => {}
-    );
+      });
 
     return () => {
 
-      if (
-        scannerRef.current
-      ) {
+      if (qrRef.current) {
 
-        scannerRef.current
-          .clear()
+        qrRef.current
+          .stop()
           .catch(() => {});
 
       }
@@ -91,18 +87,11 @@ export default function ScanTicket() {
 
   }, []);
 
-  const handleScanAgain =
-    () => {
-
-      window.location.reload();
-
-    };
-
   return (
 
-    <div className="min-h-screen bg-gray-950 text-white px-4 py-8">
+    <div className="min-h-screen bg-gray-950 text-white">
 
-      <div className="max-w-md mx-auto">
+      <div className="max-w-md mx-auto px-4 py-8">
 
         <h1
           className="
@@ -110,7 +99,7 @@ export default function ScanTicket() {
             font-black
             text-sky-400
             text-center
-            mb-8
+            mb-6
           "
         >
           Check-in Vé
@@ -121,24 +110,30 @@ export default function ScanTicket() {
           <div
             className="
               bg-gray-900
-              border
-              border-gray-800
               rounded-3xl
               p-4
+              border
+              border-gray-800
             "
           >
 
-            <div id="reader" />
-
             <div
+              id="reader"
               className="
-                mt-4
+                overflow-hidden
+                rounded-2xl
+              "
+            />
+
+            <p
+              className="
                 text-center
                 text-gray-400
+                mt-4
               "
             >
-              Đưa mã QR vào khung để check-in
-            </div>
+              Đưa QR vào khung để check-in
+            </p>
 
           </div>
 
@@ -150,87 +145,58 @@ export default function ScanTicket() {
             className={`
               rounded-3xl
               p-6
-              border
+              text-center
 
               ${
                 result.success
-                  ? "bg-green-500/10 border-green-500"
-                  : "bg-red-500/10 border-red-500"
+                  ? "bg-green-500/10 border border-green-500"
+                  : "bg-red-500/10 border border-red-500"
               }
             `}
           >
 
-            <div
-              className="
-                text-center
-                text-6xl
-                mb-4
-              "
-            >
-              {result.success ? "✅" : "❌"}
+            <div className="text-7xl mb-4">
+
+              {result.success
+                ? "✅"
+                : "❌"}
+
             </div>
 
-            <h2
+            <div
               className="
                 text-2xl
                 font-bold
-                text-center
-                mb-4
+                mb-3
               "
             >
               {result.message}
-            </h2>
+            </div>
 
             {result.ticket && (
 
-              <div
-                className="
-                  bg-black/20
-                  rounded-2xl
-                  p-4
-                  space-y-3
-                "
-              >
+              <>
 
-                <div>
-                  <span className="text-gray-400">
-                    Sự kiện:
-                  </span>
-                  <br />
-                  <span className="font-bold">
-                    {result.ticket.event_title}
-                  </span>
+                <div className="mb-2">
+                  {result.ticket.event_title}
                 </div>
 
-                <div>
-                  <span className="text-gray-400">
-                    Ghế:
-                  </span>
-                  <br />
-                  <span className="font-bold">
-                    {result.ticket.seat_code}
-                  </span>
+                <div className="mb-5">
+                  Ghế:
+                  {" "}
+                  {result.ticket.seat_code}
                 </div>
 
-                <div>
-                  <span className="text-gray-400">
-                    Mã vé:
-                  </span>
-                  <br />
-                  <span className="font-bold">
-                    {result.ticket.ticket_code}
-                  </span>
-                </div>
-
-              </div>
+              </>
 
             )}
 
             <button
-              onClick={handleScanAgain}
+              onClick={() =>
+                window.location.reload()
+              }
               className="
                 w-full
-                mt-6
                 py-4
                 rounded-2xl
                 bg-sky-500
