@@ -11,6 +11,8 @@ export default function AdminUsers() {
     useState(true);
 const [search, setSearch] =
   useState("");
+  const [roleFilter, setRoleFilter] =
+  useState("ALL");
 
 const updateStatus = async (
   id,
@@ -131,7 +133,15 @@ const updateStatus = async (
           <p className="text-gray-400 mt-2">
             Danh sách tài khoản hệ thống
           </p>
-          <div className="mt-6">
+         <div
+  className="
+    mt-6
+    flex
+    flex-col
+    md:flex-row
+    gap-4
+  "
+>
 
   <input
     type="text"
@@ -141,7 +151,7 @@ const updateStatus = async (
       setSearch(e.target.value)
     }
     className="
-      w-full
+      flex-1
       bg-[#111827]
       border
       border-white/10
@@ -151,6 +161,38 @@ const updateStatus = async (
       outline-none
     "
   />
+
+  <select
+    value={roleFilter}
+    onChange={(e) =>
+      setRoleFilter(e.target.value)
+    }
+    className="
+      bg-[#111827]
+      border
+      border-white/10
+      rounded-2xl
+      px-4
+      py-3
+    "
+  >
+    <option value="ALL">
+      Tất cả role
+    </option>
+
+    <option value="USER">
+      USER
+    </option>
+
+    <option value="ORGANIZER">
+      ORGANIZER
+    </option>
+
+    <option value="ADMIN">
+      ADMIN
+    </option>
+
+  </select>
 
 </div>
           <div
@@ -255,19 +297,38 @@ const updateStatus = async (
               <tbody>
 
                {users
-  .filter(
-    (user) =>
-      user.name
-        ?.toLowerCase()
-        .includes(
-          search.toLowerCase()
-        ) ||
-      user.email
-        ?.toLowerCase()
-        .includes(
-          search.toLowerCase()
-        )
-  )
+  .filter((user) => {
+
+  const matchSearch =
+
+    user.name
+      ?.toLowerCase()
+      .includes(
+        search.toLowerCase()
+      )
+
+    ||
+
+    user.email
+      ?.toLowerCase()
+      .includes(
+        search.toLowerCase()
+      );
+
+  const matchRole =
+
+    roleFilter === "ALL"
+
+    ||
+
+    user.role === roleFilter;
+
+  return (
+    matchSearch &&
+    matchRole
+  );
+
+})
   .map((user) => (
 
                   <tr
