@@ -98,11 +98,11 @@ const [open, setOpen] =
         setOpen(true)
       }
       className="
-        lg:hidden
+  lg:hidden
 
-        fixed
-        top-4
-        left-4
+  fixed
+  top-5
+  right-5
 
         z-[1100]
 
