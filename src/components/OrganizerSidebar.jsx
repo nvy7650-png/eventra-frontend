@@ -57,6 +57,12 @@ export default function OrganizerSidebar() {
     },
 
     {
+  name: "Check-in vé",
+  icon: Ticket,
+  path: "/organizer/scan",
+}, 
+
+    {
       name:
         "Khuyến mãi",
       icon:

@@ -40,6 +40,7 @@ import Payment from "./pages/Payment";
 
 import MyTickets from "./pages/MyTickets";
 import TicketDetail from "./pages/TicketDetail";
+import ScanTicket from "./pages/ScanTicket";
 
 function App() {
 
@@ -272,6 +273,15 @@ element={ <ProtectedRoute role="ADMIN"> <AdminDashboard /> </ProtectedRoute>
 path="/admin/events/:id"
 element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
 }
+/>
+
+<Route
+  path="/organizer/scan"
+  element={
+    <ProtectedRoute role="ORGANIZER">
+      <ScanTicket />
+    </ProtectedRoute>
+  }
 />
 
 <Route
