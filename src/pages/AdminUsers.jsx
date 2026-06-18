@@ -9,6 +9,8 @@ export default function AdminUsers() {
 
   const [loading, setLoading] =
     useState(true);
+const [search, setSearch] =
+  useState("");
 
 const updateStatus = async (
   id,
@@ -18,7 +20,7 @@ const updateStatus = async (
   try {
 
     await fetch(
-      `${import.meta.env.VITE_API_URL}/api/admin/users/${id}/${action}`,
+      `${import.meta.env.VITE_API_URL}/api/auth/users/${id}/${action}`,
       {
         method: "PUT",
       }
@@ -52,7 +54,7 @@ const updateStatus = async (
   useEffect(() => {
 
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/admin/users`
+      `${import.meta.env.VITE_API_URL}/api/auth/users`
     )
       .then((res) => res.json())
       .then((data) => {
@@ -127,6 +129,74 @@ const updateStatus = async (
           <p className="text-gray-400 mt-2">
             Danh sách tài khoản hệ thống
           </p>
+          <div className="mt-6">
+
+  <input
+    type="text"
+    placeholder="Tìm tên hoặc email..."
+    value={search}
+    onChange={(e) =>
+      setSearch(e.target.value)
+    }
+    className="
+      w-full
+      bg-[#111827]
+      border
+      border-white/10
+      rounded-2xl
+      px-4
+      py-3
+      outline-none
+    "
+  />
+
+</div>
+          <div
+  className="
+    grid
+    grid-cols-1
+    sm:grid-cols-3
+    gap-4
+    mt-6
+  "
+>
+
+  <div className="bg-sky-500/10 border border-sky-500/20 rounded-2xl p-4">
+    <p className="text-gray-400 text-sm">
+      Tổng tài khoản
+    </p>
+    <h2 className="text-3xl font-black text-sky-400">
+      {users.length}
+    </h2>
+  </div>
+
+  <div className="bg-green-500/10 border border-green-500/20 rounded-2xl p-4">
+    <p className="text-gray-400 text-sm">
+      Đang hoạt động
+    </p>
+    <h2 className="text-3xl font-black text-green-400">
+      {
+        users.filter(
+          u => u.status === "ACTIVE"
+        ).length
+      }
+    </h2>
+  </div>
+
+  <div className="bg-red-500/10 border border-red-500/20 rounded-2xl p-4">
+    <p className="text-gray-400 text-sm">
+      Đã khóa
+    </p>
+    <h2 className="text-3xl font-black text-red-400">
+      {
+        users.filter(
+          u => u.status === "BLOCKED"
+        ).length
+      }
+    </h2>
+  </div>
+
+</div>
 
         </div>
 
@@ -182,7 +252,21 @@ const updateStatus = async (
 
               <tbody>
 
-                {users.map((user) => (
+               {users
+  .filter(
+    (user) =>
+      user.name
+        ?.toLowerCase()
+        .includes(
+          search.toLowerCase()
+        ) ||
+      user.email
+        ?.toLowerCase()
+        .includes(
+          search.toLowerCase()
+        )
+  )
+  .map((user) => (
 
                   <tr
                     key={user.id}
@@ -200,9 +284,35 @@ const updateStatus = async (
                       {user.email}
                     </td>
 
-                    <td className="p-4">
-                      {user.role}
-                    </td>
+                   <td className="p-4">
+
+  <span
+    className={`
+
+      px-3
+      py-1
+
+      rounded-full
+
+      text-xs
+      font-bold
+
+      ${
+        user.role === "ADMIN"
+          ? "bg-red-500/20 text-red-400"
+          : user.role === "ORGANIZER"
+          ? "bg-sky-500/20 text-sky-400"
+          : "bg-green-500/20 text-green-400"
+      }
+
+    `}
+  >
+
+    {user.role}
+
+  </span>
+
+</td>
 
                     <td className="p-4">
 
@@ -227,7 +337,18 @@ const updateStatus = async (
                     </td>
                     <td className="p-4">
 
-  {user.status === "ACTIVE" ? (
+  {user.role === "ADMIN" ? (
+
+  <span
+    className="
+      text-sky-400
+      font-bold
+    "
+  >
+    Protected
+  </span>
+
+) : user.status === "ACTIVE" ? (
 
     <button
       onClick={() =>
