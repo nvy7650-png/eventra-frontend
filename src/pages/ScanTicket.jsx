@@ -10,57 +10,60 @@ export default function ScanTicket() {
 
   useEffect(() => {
 
-    const qr =
-      new Html5Qrcode("reader");
+  const qr =
+    new Html5Qrcode("reader");
 
-    qrRef.current = qr;
+  qrRef.current = qr;
+
+  setTimeout(() => {
 
     qr.start(
-  {
-    facingMode: "environment",
-  },
-          {
-            fps: 10,
-            qrbox: 250,
-          },
+      {
+        facingMode:
+          "environment",
+      },
+      {
+        fps: 10,
+        qrbox: 250,
+      },
 
-          async (decodedText) => {
+      async (decodedText) => {
 
-            try {
+        try {
 
-              const res =
-                await fetch(
-                  `${import.meta.env.VITE_API_URL}/api/tickets/checkin`,
-                  {
-                    method: "POST",
-                    headers: {
-                      "Content-Type":
-                        "application/json",
-                    },
-                    body: JSON.stringify({
-                      ticket_code:
-                        decodedText,
-                    }),
-                  }
-                );
+          const res =
+            await fetch(
+              `${import.meta.env.VITE_API_URL}/api/tickets/checkin`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                },
+                body: JSON.stringify({
+                  ticket_code:
+                    decodedText,
+                }),
+              }
+            );
 
-              const data =
-                await res.json();
+          const data =
+            await res.json();
 
-              setResult(data);
+          setResult(data);
 
-              await qr.stop();
+          await qr.stop();
 
-            } catch (err) {
+        } catch (err) {
 
-              console.log(err);
+          console.log(err);
 
-            }
+        }
 
-          }
-        );
+      }
+    );
 
-      });
+  }, 300);
 
     return () => {
 
@@ -73,7 +76,7 @@ export default function ScanTicket() {
       }
 
     };
-
+}, []);
 
   return (
 
