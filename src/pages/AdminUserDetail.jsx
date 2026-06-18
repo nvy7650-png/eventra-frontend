@@ -20,6 +20,8 @@ export default function AdminUserDetail() {
     )
       .then((res) => res.json())
       .then((data) => {
+          console.log("USER DETAIL:", data);
+
 
         setUser(data);
 
