@@ -348,10 +348,148 @@ const [activeTab, setActiveTab] =
 
 <>
 
-<div>
-  ... lịch sử đơn hàng ...
-</div>
+<div
+  className="
+    mt-8
+    bg-[#0B1120]
+    border
+    border-white/10
+    rounded-3xl
+    p-6
+  "
+>
 
+  <h2
+    className="
+      text-xl
+      font-bold
+      mb-6
+    "
+  >
+    Lịch sử đơn hàng
+  </h2>
+
+  {user.orders?.length > 0 ? (
+
+    <div className="overflow-x-auto">
+
+      <table className="w-full">
+
+        <thead>
+
+          <tr className="border-b border-white/10">
+
+            <th className="text-left p-3">
+              Mã đơn
+            </th>
+
+            <th className="text-left p-3">
+              Sự kiện
+            </th>
+
+            <th className="text-left p-3">
+              Tổng tiền
+            </th>
+
+            <th className="text-left p-3">
+              Trạng thái
+            </th>
+
+            <th className="text-left p-3">
+              Ngày mua
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {user.orders.map((order) => (
+
+            <tr
+              key={order.id}
+              className="
+                border-b
+                border-white/5
+              "
+            >
+
+              <td className="p-3">
+                #{order.id}
+              </td>
+
+              <td className="p-3">
+                {order.event_title}
+              </td>
+
+              <td className="p-3">
+                {Number(
+                  order.total_price
+                ).toLocaleString("vi-VN")}đ
+              </td>
+
+              <td className="p-3">
+
+                <span
+                  className={`
+
+                    px-3
+                    py-1
+                    rounded-full
+                    text-xs
+                    font-bold
+
+                    ${
+                      order.status === "PAID"
+                        ? "bg-green-500/20 text-green-400"
+                        : order.status === "PENDING"
+                        ? "bg-yellow-500/20 text-yellow-400"
+                        : "bg-red-500/20 text-red-400"
+                    }
+
+                  `}
+                >
+
+                  {order.status === "PAID"
+                    ? "Thành công"
+                    : order.status === "PENDING"
+                    ? "Chờ thanh toán"
+                    : order.status === "EXPIRED"
+                    ? "Hết hạn"
+                    : "Đã hủy"}
+
+                </span>
+
+              </td>
+
+              <td className="p-3">
+
+                {new Date(
+                  order.created_at
+                ).toLocaleDateString("vi-VN")}
+
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  ) : (
+
+    <p className="text-gray-400">
+      Chưa có đơn hàng nào
+    </p>
+
+  )}
+
+</div>
 </>
 
 )}
@@ -359,8 +497,131 @@ const [activeTab, setActiveTab] =
 
 <>
 
-<div>
-  ... lịch sử vé đã mua ...
+<div
+  className="
+    mt-8
+    bg-[#0B1120]
+    border
+    border-white/10
+    rounded-3xl
+    p-6
+  "
+>
+
+  <h2
+    className="
+      text-xl
+      font-bold
+      mb-6
+    "
+  >
+    Danh sách vé đã mua
+  </h2>
+
+  {user.tickets?.length > 0 ? (
+
+    <div className="overflow-x-auto">
+
+      <table className="w-full">
+
+        <thead>
+
+          <tr className="border-b border-white/10">
+
+            <th className="text-left p-3">
+              Mã vé
+            </th>
+
+            <th className="text-left p-3">
+              Sự kiện
+            </th>
+
+            <th className="text-left p-3">
+              Ghế
+            </th>
+
+            <th className="text-left p-3">
+              Trạng thái
+            </th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {user.tickets.map((ticket) => (
+
+            <tr
+              key={ticket.id}
+              className="
+                border-b
+                border-white/5
+              "
+            >
+
+              <td className="p-3">
+                {ticket.ticket_code}
+              </td>
+
+              <td className="p-3">
+                {ticket.event_title}
+              </td>
+
+              <td className="p-3">
+                {ticket.seat_code || "-"}
+              </td>
+
+              <td className="p-3">
+
+                <span
+                  className={`
+
+                    px-3
+                    py-1
+                    rounded-full
+                    text-xs
+                    font-bold
+
+                    ${
+                      ticket.status === "VALID"
+                        ? "bg-green-500/20 text-green-400"
+                        : ticket.status === "USED"
+                        ? "bg-gray-500/20 text-gray-300"
+                        : "bg-red-500/20 text-red-400"
+                    }
+
+                  `}
+                >
+
+                  {ticket.status === "VALID"
+                    ? "Còn hiệu lực"
+                    : ticket.status === "USED"
+                    ? "Đã sử dụng"
+                    : "Đã hủy"}
+
+                </span>
+
+              </td>
+
+            </tr>
+
+          ))}
+
+        </tbody>
+
+      </table>
+
+    </div>
+
+  ) : (
+
+    <p className="text-gray-400">
+      Chưa có vé nào
+    </p>
+
+  )}
+
 </div>
 
 </>
