@@ -142,10 +142,10 @@ const [open, setOpen] =
 
 )}
 
-    <aside
+  <aside
   className={`
     fixed
-    lg:static
+    lg:fixed
 
     top-0
     left-0

@@ -59,6 +59,8 @@ return (
       min-w-0
       p-4
       md:p-10
+
+       lg:ml-72
     "
   >
 

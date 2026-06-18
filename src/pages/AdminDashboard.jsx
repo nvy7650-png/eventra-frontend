@@ -139,6 +139,8 @@ export default function AdminDashboard() {
   className="
     flex-1
     min-w-0
+
+    lg:ml-72
   "
 >
 
