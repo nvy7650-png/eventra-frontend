@@ -213,8 +213,8 @@ export default function AdminDashboard() {
 
         </div>
 
-        {/* CONTENT */}
-       <div
+       {/* CONTENT */}
+<div
   className="
     p-4
     md:p-10
@@ -406,90 +406,58 @@ export default function AdminDashboard() {
 
 <div
   className="
-    grid
-    grid-cols-1
-    xl:grid-cols-2
-    gap-6
     mt-8
+    bg-[#0B1120]
+    border
+    border-white/10
+    rounded-3xl
+    p-8
   "
 >
 
-  {events.map((event) => (
+  <div
+    className="
+      flex
+      flex-col
+      md:flex-row
+      md:items-center
+      md:justify-between
+      gap-4
+    "
+  >
 
-    <div
-      key={event.id}
-      className="
-        bg-[#0B1120]
-        border border-white/10
-        rounded-3xl
-        p-6
-      "
-    >
+    <div>
 
-      <div
-  className="
-    flex
-    flex-col
-    sm:flex-row
-    sm:justify-between
-    sm:items-start
-    gap-3
-  "
->
+      <h2 className="text-2xl font-bold">
+        Quản lý sự kiện
+      </h2>
 
-        <div>
-
-          <h2 className="text-xl font-bold">
-            {event.title}
-          </h2>
-
-          <p className="text-gray-400 mt-1">
-            {event.category_name}
-          </p>
-
-        </div>
-
-        <span
-          className={`
-            px-3 py-1 rounded-full text-xs font-bold
-            ${
-              event.status === "APPROVED"
-                ? "bg-green-500/20 text-green-400"
-                : event.status === "PENDING"
-                ? "bg-yellow-500/20 text-yellow-400"
-                : "bg-red-500/20 text-red-400"
-            }
-          `}
-        >
-          {event.status}
-        </span>
-
-      </div>
-
-      <div className="flex gap-3 mt-6">
-
-        <button
-  onClick={() =>
-    navigate(`/admin/events/${event.id}`)
-  }
-  className="
-    px-4 py-2
-    rounded-2xl
-    bg-sky-500
-    text-black
-    font-semibold
-  "
->
-  Chi tiết
-</button>
-
-      </div>
+      <p className="text-gray-400 mt-1">
+        Xem và kiểm duyệt toàn bộ sự kiện trong hệ thống
+      </p>
 
     </div>
 
-  ))}
+    <button
+      onClick={() =>
+        navigate("/admin/events")
+      }
+      className="
+        px-6
+        py-3
+        rounded-2xl
+        bg-sky-500
+        text-black
+        font-bold
+      "
+    >
+      Xem tất cả sự kiện
+    </button>
+
+  </div>
 
 </div>
+
 
           {/* EMPTY STATE */}
           <div
@@ -521,7 +489,7 @@ export default function AdminDashboard() {
 
           </div>
 
-        </div>
+</div>
 
       </main>
 
