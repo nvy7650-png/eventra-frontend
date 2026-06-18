@@ -5,10 +5,10 @@ export default function ScanTicket() {
 
   const scannerRef = useRef(null);
 
-  const [message, setMessage] =
-    useState("");
+  const [result, setResult] =
+    useState(null);
 
-  const [success, setSuccess] =
+  const [loading, setLoading] =
     useState(false);
 
   useEffect(() => {
@@ -21,6 +21,7 @@ export default function ScanTicket() {
         {
           fps: 10,
           qrbox: 250,
+          rememberLastUsedCamera: true,
         },
         false
       );
@@ -29,7 +30,11 @@ export default function ScanTicket() {
 
       async (decodedText) => {
 
+        if (loading) return;
+
         try {
+
+          setLoading(true);
 
           const res = await fetch(
             `${import.meta.env.VITE_API_URL}/api/tickets/checkin`,
@@ -49,29 +54,19 @@ export default function ScanTicket() {
           const data =
             await res.json();
 
-          setMessage(
-            data.message
-          );
+          setResult(data);
 
-          setSuccess(
-            data.success
-          );
-
-          setTimeout(() => {
-
-            setMessage("");
-
-          }, 3000);
+          await scannerRef.current.clear();
 
         } catch (err) {
 
           console.log(err);
 
-          setSuccess(false);
-
-          setMessage(
-            "Lỗi kết nối server"
-          );
+          setResult({
+            success: false,
+            message:
+              "Lỗi kết nối server",
+          });
 
         }
 
@@ -96,52 +91,159 @@ export default function ScanTicket() {
 
   }, []);
 
+  const handleScanAgain =
+    () => {
+
+      window.location.reload();
+
+    };
+
   return (
 
-    <div className="min-h-screen bg-gray-950 text-white">
+    <div className="min-h-screen bg-gray-950 text-white px-4 py-8">
 
-      <div className="max-w-4xl mx-auto py-12 px-6">
+      <div className="max-w-md mx-auto">
 
-        <h1 className="text-4xl font-bold text-sky-400 mb-8">
+        <h1
+          className="
+            text-4xl
+            font-black
+            text-sky-400
+            text-center
+            mb-8
+          "
+        >
           Check-in Vé
         </h1>
 
-        <div
-          className="
-            bg-gray-900
-            border
-            border-gray-800
-            rounded-3xl
-            p-6
-          "
-        >
+        {!result && (
 
           <div
-            id="reader"
-          />
+            className="
+              bg-gray-900
+              border
+              border-gray-800
+              rounded-3xl
+              p-4
+            "
+          >
 
-          {message && (
+            <div id="reader" />
 
             <div
-              className={`
-                mt-6
-                p-4
-                rounded-xl
-                font-bold
-
-                ${
-                  success
-                    ? "bg-green-500 text-black"
-                    : "bg-red-500 text-white"
-                }
-              `}
+              className="
+                mt-4
+                text-center
+                text-gray-400
+              "
             >
-              {message}
+              Đưa mã QR vào khung để check-in
             </div>
 
-          )}
+          </div>
 
-        </div>
+        )}
+
+        {result && (
+
+          <div
+            className={`
+              rounded-3xl
+              p-6
+              border
+
+              ${
+                result.success
+                  ? "bg-green-500/10 border-green-500"
+                  : "bg-red-500/10 border-red-500"
+              }
+            `}
+          >
+
+            <div
+              className="
+                text-center
+                text-6xl
+                mb-4
+              "
+            >
+              {result.success ? "✅" : "❌"}
+            </div>
+
+            <h2
+              className="
+                text-2xl
+                font-bold
+                text-center
+                mb-4
+              "
+            >
+              {result.message}
+            </h2>
+
+            {result.ticket && (
+
+              <div
+                className="
+                  bg-black/20
+                  rounded-2xl
+                  p-4
+                  space-y-3
+                "
+              >
+
+                <div>
+                  <span className="text-gray-400">
+                    Sự kiện:
+                  </span>
+                  <br />
+                  <span className="font-bold">
+                    {result.ticket.event_title}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-gray-400">
+                    Ghế:
+                  </span>
+                  <br />
+                  <span className="font-bold">
+                    {result.ticket.seat_code}
+                  </span>
+                </div>
+
+                <div>
+                  <span className="text-gray-400">
+                    Mã vé:
+                  </span>
+                  <br />
+                  <span className="font-bold">
+                    {result.ticket.ticket_code}
+                  </span>
+                </div>
+
+              </div>
+
+            )}
+
+            <button
+              onClick={handleScanAgain}
+              className="
+                w-full
+                mt-6
+                py-4
+                rounded-2xl
+                bg-sky-500
+                text-black
+                font-bold
+              "
+            >
+              Quét vé tiếp theo
+            </button>
+
+          </div>
+
+        )}
 
       </div>
 
