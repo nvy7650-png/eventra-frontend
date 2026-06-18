@@ -42,6 +42,8 @@ import MyTickets from "./pages/MyTickets";
 import TicketDetail from "./pages/TicketDetail";
 import ScanTicket from "./pages/ScanTicket";
 import AdminEvents from "./pages/AdminEvents";
+import AdminUsers from "./pages/AdminUsers";
+
 
 function App() {
 
@@ -249,6 +251,15 @@ function App() {
 
           }
         />
+
+        <Route
+  path="/admin/users"
+  element={
+    <ProtectedRoute role="ADMIN">
+      <AdminUsers />
+    </ProtectedRoute>
+  }
+/>
 
         {/* 404 */}
         <Route
