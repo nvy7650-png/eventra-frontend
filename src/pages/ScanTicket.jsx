@@ -15,21 +15,10 @@ export default function ScanTicket() {
 
     qrRef.current = qr;
 
-    Html5Qrcode.getCameras()
-      .then((devices) => {
-
-        if (!devices.length) return;
-
-        const backCamera =
-          devices.find(
-            d =>
-              d.label
-                .toLowerCase()
-                .includes("back")
-          ) || devices[0];
-
-        qr.start(
-          backCamera.id,
+    qr.start(
+  {
+    facingMode: "environment",
+  },
           {
             fps: 10,
             qrbox: 250,
@@ -85,7 +74,6 @@ export default function ScanTicket() {
 
     };
 
-  }, []);
 
   return (
 
