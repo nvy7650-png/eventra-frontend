@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import QRCode from "react-qr-code";
+import { useNavigate } from "react-router-dom";
 
 export default function MyTickets() {
 
+  const navigate = useNavigate();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -86,18 +87,6 @@ export default function MyTickets() {
                 {ticket.ticket_code}
               </div>
 
-              <div className="mt-4">
-
-  <div className="bg-white p-3 rounded-xl inline-block">
-
-    <QRCode
-      value={ticket.ticket_code}
-      size={140}
-    />
-
-  </div>
-
-</div>
 
               <div className="mb-2">
                 Trạng thái:
@@ -106,6 +95,23 @@ export default function MyTickets() {
                   {ticket.status}
                 </span>
               </div>
+
+              <button
+  onClick={() =>
+    navigate(`/ticket/${ticket.id}`)
+  }
+  className="
+    mt-4
+    px-5
+    py-3
+    rounded-xl
+    bg-sky-500
+    text-black
+    font-bold
+  "
+>
+  Xem vé
+</button>
 
             </div>
 

@@ -39,6 +39,7 @@ import Checkout from "./pages/Checkout";
 import Payment from "./pages/Payment";
 
 import MyTickets from "./pages/MyTickets";
+import TicketDetail from "./pages/TicketDetail";
 
 function App() {
 
@@ -296,6 +297,11 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
 <Route
   path="/my-tickets"
   element={<MyTickets />}
+/>
+
+<Route
+  path="/ticket/:id"
+  element={<TicketDetail />}
 />
 
       </Routes>
