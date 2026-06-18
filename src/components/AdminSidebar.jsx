@@ -180,15 +180,19 @@ const [open, setOpen] =
 
       <div>
 
-        <div className="mb-10 flex items-center justify-between">
+        <div className="mb-10 flex items-start justify-between">
 
-           <h1 className="text-3xl font-black text-sky-400">
-    HOMIETICKET
-  </h1>
+  <div>
 
-  <p className="text-gray-400 text-sm">
-    Admin Center
-  </p>
+    <h1 className="text-3xl font-black text-sky-400">
+      HOMIETICKET
+    </h1>
+
+    <p className="text-gray-400 text-sm">
+      Admin Center
+    </p>
+
+  </div>
 
           <button
   onClick={() =>
