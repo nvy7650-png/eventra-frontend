@@ -41,6 +41,7 @@ import Payment from "./pages/Payment";
 import MyTickets from "./pages/MyTickets";
 import TicketDetail from "./pages/TicketDetail";
 import ScanTicket from "./pages/ScanTicket";
+import AdminEvents from "./pages/AdminEvents";
 
 function App() {
 
@@ -260,6 +261,14 @@ function App() {
           }
         />
 
+<Route
+  path="/admin/events"
+  element={
+    <ProtectedRoute role="ADMIN">
+      <AdminEvents />
+    </ProtectedRoute>
+  }
+/>
 
 {/* ADMIN EVENT DETAIL */}
 <Route
