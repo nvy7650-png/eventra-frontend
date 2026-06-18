@@ -7,9 +7,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 
-import {
-  ChevronRight,
-} from "lucide-react";
 
 import AdminSidebar from "../components/AdminSidebar";
 
@@ -159,7 +156,7 @@ export default function AdminDashboard() {
     px-4
     md:px-10
 
-    py-6
+    py-4
 
     border-b
     border-white/10
@@ -172,10 +169,10 @@ export default function AdminDashboard() {
 
            <h1
   className="
-    text-2xl
-    md:text-3xl
-    font-bold
-  "
+  text-xl
+  md:text-3xl
+  font-bold
+"
 >
               Admin Dashboard
             </h1>
@@ -186,33 +183,6 @@ export default function AdminDashboard() {
 
           </div>
 
-          <div
-  className="
-    flex
-    flex-col
-    sm:flex-row
-    gap-3
-  "
->
-
-
-  <button
-    onClick={() =>
-      navigate("/")
-    }
-    className="
-      px-5
-      py-3
-      rounded-2xl
-      bg-white/5
-      border
-      border-white/10
-    "
-  >
-    Trang chủ
-  </button>
-
-</div>
 
 
         </div>
@@ -361,15 +331,13 @@ export default function AdminDashboard() {
               </p>
 
               <h2
-  className="
-    text-2xl
-    md:text-5xl
-
-    break-words
-
-    font-black
-    text-orange-400
-  "
+ className="
+  text-2xl
+  md:text-4xl
+  truncate
+  font-black
+  text-orange-400
+"
 >
                {Number(stats.revenue || 0)
   .toLocaleString("vi-VN")}đ
@@ -390,7 +358,11 @@ export default function AdminDashboard() {
   "
 >
 
-  <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-6">
+  <div className="
+  bg-yellow-500/5
+border-yellow-500/20
+ border border-white/10 
+ rounded-3xl p-6">
 
     <p className="text-gray-400 text-sm">
       Chờ duyệt
@@ -406,7 +378,10 @@ export default function AdminDashboard() {
 
   </div>
 
-  <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-6">
+  <div className="bg-green-500/5
+border-green-500/20
+ border border-white/10 
+ rounded-3xl p-6">
 
     <p className="text-gray-400 text-sm">
       Đã duyệt
@@ -422,7 +397,10 @@ export default function AdminDashboard() {
 
   </div>
 
-  <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-6">
+  <div className="bg-red-500/5
+border-red-500/20
+ border border-white/10 
+ rounded-3xl p-6">
 
     <p className="text-gray-400 text-sm">
       Đã hủy
@@ -440,93 +418,8 @@ export default function AdminDashboard() {
 
 </div>
 
-<div
-  className="
-    mt-8
-    bg-[#0B1120]
-    border
-    border-white/10
-    rounded-3xl
-    p-8
-  "
->
-
-  <div
-    className="
-      flex
-      flex-col
-      md:flex-row
-      md:items-center
-      md:justify-between
-      gap-4
-    "
-  >
-
-    <div>
-
-      <h2 className="text-2xl font-bold">
-        Quản lý sự kiện
-      </h2>
-
-      <p className="text-gray-400 mt-1">
-        Xem và kiểm duyệt toàn bộ sự kiện trong hệ thống
-      </p>
-
-    </div>
-
-    <button
-      onClick={() =>
-        navigate("/admin/events")
-      }
-      className="
-        px-6
-        py-3
-        rounded-2xl
-        bg-sky-500
-        text-black
-        font-bold
-      "
-    >
-      Xem tất cả sự kiện
-    </button>
-
-  </div>
 
 </div>
-
-
-          {/* EMPTY STATE */}
-          <div
-            className="
-              mt-10
-              bg-[#0B1120]
-              border
-              border-white/10
-              rounded-3xl
-              p-6 md:p-16
-              text-center
-            "
-          >
-
-            <h2
-              className="
-                text-2xl md:text-4xl
-                font-black
-                mb-4
-              "
-            >
-              HOMIETICKET ADMIN
-            </h2>
-
-            <p className="text-gray-400 text-lg">
-              Quản lý toàn bộ hệ thống sự kiện,
-              organizer, user và doanh thu.
-            </p>
-
-          </div>
-
-</div>
-
       </main>
 
     </div>
