@@ -735,11 +735,6 @@ const [activeTab, setActiveTab] =
 
 )}
 
-</main>
-
-    </div>
-
-  );
 
 {activeTab === "EVENTS" && (
 
@@ -1017,5 +1012,10 @@ const [activeTab, setActiveTab] =
 </div>
 
 )}
+</main>
+
+    </div>
+
+  );
 
 }
