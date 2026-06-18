@@ -16,6 +16,7 @@ export default function TicketDetail() {
     )
       .then((res) => res.json())
       .then((data) => {
+         console.log("TICKET DATA:", data);
 
         setTicket(data);
 
