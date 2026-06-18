@@ -397,7 +397,33 @@ const updateStatus = async (
                         {user.status}
                       </span>
 
+
                     </td>
+
+                    <td className="p-4">
+
+  <div className="flex gap-2">
+
+    <button
+      onClick={() =>
+        navigate(
+          `/admin/users/${user.id}`
+        )
+      }
+      className="
+        px-4
+        py-2
+        rounded-xl
+        bg-sky-500
+        text-black
+        text-sm
+        font-bold
+      "
+    >
+      Chi tiết
+    </button>
+    </div>
+    </td>
                     <td className="p-4">
 
   {user.role === "ADMIN" ? (
@@ -458,6 +484,8 @@ const updateStatus = async (
   )}
 
 </td>
+
+
 
                   </tr>
 

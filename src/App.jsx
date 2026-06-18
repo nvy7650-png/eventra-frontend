@@ -43,6 +43,7 @@ import TicketDetail from "./pages/TicketDetail";
 import ScanTicket from "./pages/ScanTicket";
 import AdminEvents from "./pages/AdminEvents";
 import AdminUsers from "./pages/AdminUsers";
+import AdminUserDetail from "./pages/AdminUserDetail";
 
 
 function App() {
@@ -258,6 +259,13 @@ function App() {
     <ProtectedRoute role="ADMIN">
       <AdminUsers />
     </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/admin/users/:id"
+  element={
+    <AdminUserDetail />
   }
 />
 
