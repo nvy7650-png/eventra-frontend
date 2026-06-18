@@ -122,6 +122,25 @@ const [open, setOpen] =
 
     </button>
 
+{open && (
+
+  <div
+    onClick={() =>
+      setOpen(false)
+    }
+    className="
+      lg:hidden
+
+      fixed
+      inset-0
+
+      bg-black/60
+
+      z-[999]
+    "
+  />
+
+)}
 
     <aside
   className={`
