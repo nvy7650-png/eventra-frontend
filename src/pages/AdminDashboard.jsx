@@ -186,30 +186,49 @@ export default function AdminDashboard() {
 
           </div>
 
-          <button
-            onClick={() =>
-              navigate("/")
-            }
-            className="
-              flex
-              items-center
-              gap-2
-              px-5
-              py-3
-              rounded-2xl
-              bg-white/5
-              hover:bg-white/10
-              border
-              border-white/10
-              transition
-            "
-          >
+          <div
+  className="
+    flex
+    flex-col
+    sm:flex-row
+    gap-3
+  "
+>
 
-            Trang chủ
+  <button
+    onClick={() =>
+      navigate("/admin/events")
+    }
+    className="
+      px-5
+      py-3
+      rounded-2xl
+      bg-sky-500
+      text-black
+      font-bold
+    "
+  >
+    Quản lý sự kiện
+  </button>
 
-            <ChevronRight size={18} />
+  <button
+    onClick={() =>
+      navigate("/")
+    }
+    className="
+      px-5
+      py-3
+      rounded-2xl
+      bg-white/5
+      border
+      border-white/10
+    "
+  >
+    Trang chủ
+  </button>
 
-          </button>
+</div>
+
 
         </div>
 
@@ -235,12 +254,19 @@ export default function AdminDashboard() {
             {/* USERS */}
             <div
               className="
-                bg-[#0B1120]
-                border
-                border-white/10
-                rounded-3xl
-                p-7
-              "
+  bg-gradient-to-br
+  from-sky-500/10
+  to-sky-900/20
+
+  border
+  border-sky-500/20
+
+  rounded-3xl
+  p-7
+
+  hover:scale-[1.02]
+  transition
+"
             >
 
               <p className="text-gray-400 mb-3">
@@ -262,12 +288,19 @@ export default function AdminDashboard() {
             {/* EVENTS */}
             <div
               className="
-                bg-[#0B1120]
-                border
-                border-white/10
-                rounded-3xl
-                p-7
-              "
+  bg-gradient-to-br
+  from-pink-500/10
+  to-pink-900/20
+
+  border
+  border-pink-500/20
+
+  rounded-3xl
+  p-7
+
+  hover:scale-[1.02]
+  transition
+"
             >
 
               <p className="text-gray-400 mb-3">
@@ -289,12 +322,19 @@ export default function AdminDashboard() {
             {/* ORDERS */}
             <div
               className="
-                bg-[#0B1120]
-                border
-                border-white/10
-                rounded-3xl
-                p-7
-              "
+  bg-gradient-to-br
+  from-green-500/10
+  to-green-900/20
+
+  border
+  border-green-500/20
+
+  rounded-3xl
+  p-7
+
+  hover:scale-[1.02]
+  transition
+"
             >
 
               <p className="text-gray-400 mb-3">
@@ -316,12 +356,19 @@ export default function AdminDashboard() {
             {/* REVENUE */}
             <div
               className="
-                bg-[#0B1120]
-                border
-                border-white/10
-                rounded-3xl
-                p-7
-              "
+  bg-gradient-to-br
+  from-orange-500/10
+  to-orange-900/20
+
+  border
+  border-orange-500/20
+
+  rounded-3xl
+  p-7
+
+  hover:scale-[1.02]
+  transition
+"
             >
 
               <p className="text-gray-400 mb-3">
@@ -329,12 +376,16 @@ export default function AdminDashboard() {
               </p>
 
               <h2
-                className="
-                  text-3xl md:text-5xl
-                  font-black
-                  text-orange-400
-                "
-              >
+  className="
+    text-2xl
+    md:text-5xl
+
+    break-words
+
+    font-black
+    text-orange-400
+  "
+>
                {Number(stats.revenue || 0)
   .toLocaleString("vi-VN")}đ
               </h2>
