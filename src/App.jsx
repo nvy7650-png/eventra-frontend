@@ -44,7 +44,7 @@ import ScanTicket from "./pages/ScanTicket";
 import AdminEvents from "./pages/AdminEvents";
 import AdminUsers from "./pages/AdminUsers";
 import AdminUserDetail from "./pages/AdminUserDetail";
-
+import AdminCategories from "./pages/AdminCategories";
 
 function App() {
 
@@ -267,6 +267,11 @@ function App() {
   element={
     <AdminUserDetail />
   }
+/>
+
+<Route
+  path="/admin/categories"
+  element={<AdminCategories />}
 />
 
         {/* 404 */}
