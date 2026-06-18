@@ -6,6 +6,7 @@ export default function AdminUsers() {
 
   const [users, setUsers] =
     useState([]);
+    const navigate = useNavigate();
 
   const [loading, setLoading] =
     useState(true);
@@ -422,66 +423,67 @@ const updateStatus = async (
     >
       Chi tiết
     </button>
-    </div>
-    </td>
-                    <td className="p-4">
 
-  {user.role === "ADMIN" ? (
+    {user.role === "ADMIN" ? (
 
-  <span
-    className="
-      text-sky-400
-      font-bold
-    "
-  >
-    Protected
-  </span>
+      <span
+        className="
+          text-sky-400
+          font-bold
+          flex
+          items-center
+        "
+      >
+        Protected
+      </span>
 
-) : user.status === "ACTIVE" ? (
+    ) : user.status === "ACTIVE" ? (
 
-    <button
-      onClick={() =>
-        updateStatus(
-          user.id,
-          "block"
-        )
-      }
-      className="
-        px-4
-        py-2
-        rounded-xl
-        bg-red-500
-        text-white
-        text-sm
-        font-bold
-      "
-    >
-      Khóa
-    </button>
+      <button
+        onClick={() =>
+          updateStatus(
+            user.id,
+            "block"
+          )
+        }
+        className="
+          px-4
+          py-2
+          rounded-xl
+          bg-red-500
+          text-white
+          text-sm
+          font-bold
+        "
+      >
+        Khóa
+      </button>
 
-  ) : (
+    ) : (
 
-    <button
-      onClick={() =>
-        updateStatus(
-          user.id,
-          "unblock"
-        )
-      }
-      className="
-        px-4
-        py-2
-        rounded-xl
-        bg-green-500
-        text-white
-        text-sm
-        font-bold
-      "
-    >
-      Mở khóa
-    </button>
+      <button
+        onClick={() =>
+          updateStatus(
+            user.id,
+            "unblock"
+          )
+        }
+        className="
+          px-4
+          py-2
+          rounded-xl
+          bg-green-500
+          text-white
+          text-sm
+          font-bold
+        "
+      >
+        Mở khóa
+      </button>
 
-  )}
+    )}
+
+  </div>
 
 </td>
 
