@@ -125,12 +125,25 @@ export default function AdminDashboard() {
 
   return (
 
-    <div className="min-h-screen bg-[#050816] text-white flex">
+    <div
+  className="
+    min-h-screen
+    bg-[#050816]
+    text-white
+    flex
+    overflow-x-hidden
+  "
+>
 
       <AdminSidebar />
 
       {/* MAIN */}
-      <main className="flex-1">
+      <main
+  className="
+    flex-1
+    min-w-0
+  "
+>
 
         {/* TOPBAR */}
        <div

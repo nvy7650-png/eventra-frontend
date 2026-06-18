@@ -7,7 +7,11 @@ import {
   Wallet,
   Settings,
   LogOut,
+  Menu,
+  X,
 } from "lucide-react";
+
+import { useState } from "react";
 
 import {
   useNavigate,
@@ -18,6 +22,9 @@ export default function AdminSidebar() {
 
   const navigate = useNavigate();
   const location = useLocation();
+
+const [open, setOpen] =
+  useState(false);
 
   const user =
     JSON.parse(
@@ -80,24 +87,76 @@ export default function AdminSidebar() {
 
   ];
 
+ 
+
   return (
 
+  <>
+
+    <button
+      onClick={() =>
+        setOpen(true)
+      }
+      className="
+        lg:hidden
+
+        fixed
+        top-4
+        left-4
+
+        z-[1100]
+
+        p-3
+
+        rounded-xl
+
+        bg-sky-500
+
+        text-black
+
+        shadow-lg
+      "
+    >
+
+      <Menu size={22} />
+
+    </button>
+
+
     <aside
-  className="
-    hidden
-    lg:flex
+  className={`
+    fixed
+    lg:static
+
+    top-0
+    left-0
+
+    z-[1000]
+
+    h-screen
 
     w-72
 
     bg-[#0B1120]
+
     border-r
     border-white/10
 
+    flex
     flex-col
     justify-between
 
     p-5
-  "
+
+    transition-all
+    duration-300
+
+    ${
+      open
+        ? "translate-x-0"
+        : "-translate-x-full lg:translate-x-0"
+    }
+  `}
 >
 
       <div>
@@ -168,9 +227,13 @@ export default function AdminSidebar() {
 
               <button
   key={item.path}
-  onClick={() =>
-    navigate(item.path)
-  }
+ onClick={() => {
+
+  navigate(item.path);
+
+  setOpen(false);
+
+}}
   className={`
     w-full
     flex
@@ -226,6 +289,7 @@ export default function AdminSidebar() {
       </button>
 
     </aside>
+    </>
 
   );
 
