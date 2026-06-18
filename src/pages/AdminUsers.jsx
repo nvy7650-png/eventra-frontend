@@ -10,6 +10,45 @@ export default function AdminUsers() {
   const [loading, setLoading] =
     useState(true);
 
+const updateStatus = async (
+  id,
+  action
+) => {
+
+  try {
+
+    await fetch(
+      `${import.meta.env.VITE_API_URL}/api/admin/users/${id}/${action}`,
+      {
+        method: "PUT",
+      }
+    );
+
+    setUsers((prev) =>
+      prev.map((user) => {
+
+        if (user.id !== id)
+          return user;
+
+        return {
+          ...user,
+          status:
+            action === "block"
+              ? "BLOCKED"
+              : "ACTIVE",
+        };
+
+      })
+    );
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+
+};
+
   useEffect(() => {
 
     fetch(
@@ -133,6 +172,9 @@ export default function AdminUsers() {
                   <th className="text-left p-4">
                     Trạng thái
                   </th>
+                  <th className="text-left p-4">
+                     Hành động
+                  </th>
 
                 </tr>
 
@@ -183,6 +225,55 @@ export default function AdminUsers() {
                       </span>
 
                     </td>
+                    <td className="p-4">
+
+  {user.status === "ACTIVE" ? (
+
+    <button
+      onClick={() =>
+        updateStatus(
+          user.id,
+          "block"
+        )
+      }
+      className="
+        px-4
+        py-2
+        rounded-xl
+        bg-red-500
+        text-white
+        text-sm
+        font-bold
+      "
+    >
+      Khóa
+    </button>
+
+  ) : (
+
+    <button
+      onClick={() =>
+        updateStatus(
+          user.id,
+          "unblock"
+        )
+      }
+      className="
+        px-4
+        py-2
+        rounded-xl
+        bg-green-500
+        text-white
+        text-sm
+        font-bold
+      "
+    >
+      Mở khóa
+    </button>
+
+  )}
+
+</td>
 
                   </tr>
 
