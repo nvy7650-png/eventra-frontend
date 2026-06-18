@@ -59,9 +59,11 @@ const updateStatus = async (
       .then((res) => res.json())
       .then((data) => {
 
-        setUsers(data || []);
+  console.log("USERS:", data);
 
-      })
+  setUsers(data || []);
+
+})
       .catch(console.log)
       .finally(() => {
 
