@@ -18,9 +18,12 @@ export default function Home() {
 const navigate = useNavigate();
 
 const [events, setEvents] = useState([]);
+const [heroEvents, setHeroEvents] =
+  useState([]);
 const [latestEvents, setLatestEvents] = useState([]);
 const [upcomingEvents, setUpcomingEvents] = useState([]);
 const [loading, setLoading] = useState(true);
+
 
 useEffect(() => {
 
@@ -37,7 +40,9 @@ fetch(
           event.status === "APPROVED"
       );
 
-      const heroEvents =
+      setEvents(approvedEvents);
+
+      const topSoldEvents =
   [...approvedEvents]
 
     .sort(
@@ -48,7 +53,11 @@ fetch(
 
     .slice(0, 8);
 
-    setEvents(approvedEvents);
+setHeroEvents(
+  topSoldEvents
+);
+
+    
 
     const newest = [...approvedEvents]
 
