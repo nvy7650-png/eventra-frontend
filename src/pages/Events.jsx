@@ -157,24 +157,6 @@ export default function Events() {
   "
 >
 
-  <input
-    value={search}
-    onChange={(e) =>
-      setSearch(
-        e.target.value
-      )
-    }
-    placeholder="Tìm sự kiện..."
-    className="
-      px-5
-      py-3
-      rounded-2xl
-      bg-[#111827]
-      border
-      border-white/10
-      md:w-72
-    "
-  />
 
   <select
     value={selectedCategory}
