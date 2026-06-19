@@ -75,8 +75,11 @@ return (
     className="
       relative
       overflow-hidden
-      rounded-[36px]
-      h-[560px]
+      rounded-3xl
+md:rounded-[36px]
+      h-[500px]
+md:h-[560px]
+lg:h-[650px]
       bg-black
       border
       border-white/10
@@ -103,9 +106,14 @@ return (
         absolute
         inset-0
         bg-gradient-to-r
-        from-black
-        via-black/80
-        to-black/30
+from-black
+via-black/90
+to-black/40
+
+md:bg-gradient-to-r
+md:from-black
+md:via-black/75
+md:to-transparent
       "
     />
 
@@ -118,35 +126,23 @@ return (
         flex
         flex-col
         justify-center
-        px-12
+        px-6
+md:px-12
       "
     >
 
       {/* BADGES */}
       <div className="flex flex-wrap gap-3 mb-6">
 
-        <div
-          className="
-            px-4
-            py-2
-            rounded-full
-            bg-sky-500/20
-            border
-            border-sky-500/20
-            text-sky-300
-            text-sm
-            font-semibold
-          "
-        >
-          SỰ KIỆN NỔI BẬT
-        </div>
 
         {event.category_name && (
 
           <div
             className="
-              px-4
-              py-2
+             px-3
+py-1.5
+text-xs
+md:text-sm
               rounded-full
               bg-purple-500/20
               border
@@ -167,8 +163,9 @@ return (
       {/* TITLE */}
       <h1
         className="
-          text-5xl
-          lg:text-7xl
+          text-3xl
+sm:text-4xl
+lg:text-6xl
           font-black
           leading-tight
           max-w-5xl
@@ -182,7 +179,8 @@ return (
         className="
           mt-6
           text-gray-300
-          text-lg
+          text-sm
+md:text-lg
           max-w-3xl
           leading-relaxed
           line-clamp-3
@@ -193,14 +191,33 @@ return (
       </p>
 
       {/* INFO */}
-      <div className="mt-8 space-y-2">
+      <div
+  className="
+    mt-6
+    md:mt-8
+    space-y-1
+    md:space-y-2
+  "
+>
 
-        <p className="text-gray-200">
-          📅 {formattedDate}
+        <p
+  className="
+    text-sm
+    md:text-base
+    text-gray-200
+  "
+>
+          {formattedDate}
         </p>
 
-        <p className="text-gray-400">
-          📍 {event.location}
+        <p
+  className="
+    text-sm
+    md:text-base
+    text-gray-400
+  "
+>
+          {event.location}
         </p>
 
         {event.min_price && (
@@ -209,7 +226,8 @@ return (
             className="
               text-green-400
               font-bold
-              text-xl
+              text-lg
+md:text-2xl
             "
           >
             Từ{" "}
@@ -232,14 +250,24 @@ return (
             )
           }
           className="
-            px-8
-            py-4
+            px-6
+md:px-8
+
+py-3
+md:py-4
+
+text-base
+md:text-lg
+
+rounded-xl
+md:rounded-2xl
             rounded-2xl
             bg-sky-500
             hover:bg-sky-400
             text-black
             font-bold
-            text-lg
+            line-clamp-2
+md:line-clamp-3
             transition
             shadow-lg
             shadow-sky-500/20
