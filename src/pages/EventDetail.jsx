@@ -120,7 +120,13 @@ export default function EventDetail() {
     md:py-10
   "
 >
-
+<div
+  className="
+    relative
+    overflow-hidden
+    rounded-3xl
+  "
+>
         <img
           src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
           alt={event.title}
@@ -133,9 +139,19 @@ rounded-3xl
 "
         />
 
+        <div
+  className="
+    absolute
+    inset-0
+    bg-gradient-to-t
+    from-black/60
+    to-transparent
+  "
+/>
+</div>
         <div className="mt-8 max-w-4xl">
 
-          <div className="flex-1">
+    
             <h1
   className="
     text-3xl
@@ -178,20 +194,21 @@ rounded-3xl
   </span>
 
 </div>
-            <div className="mt-6 bg-white/5
-backdrop-blur-sm
- border border-white/10 rounded-3xl p-6">
-              <h2 className="text-xl font-bold mb-3">Mô tả</h2>
-              <p className="text-gray-300 whitespace-pre-wrap">{event.description}</p>
-            </div>
+            
           </div>
 
         </div>
 
         <div className="mt-12 mb-6">
-  <h2 className="text-3xl font-black">
-    Chọn suất diễn
-  </h2>
+  <h2
+  className="
+    text-2xl
+    md:text-4xl
+    font-black
+  "
+>
+  Mua vé
+</h2>
 
   <p className="text-gray-400 mt-2">
     Chọn thời gian diễn để xem các hạng vé
@@ -233,12 +250,13 @@ backdrop-blur-sm
                   )
                 }
                 className="
-                  w-full
-                  p-6
-                  flex
-                  justify-between
-                  items-center
-                "
+w-full
+p-4
+md:p-6
+flex
+justify-between
+items-center
+"
               >
                 <div>
                   <div className="font-bold text-lg">
@@ -362,10 +380,23 @@ ${
     );
 
   })}
-</div>
 
         </div>
-
+<div className="mt-6 bg-white/5
+backdrop-blur-sm
+ border border-white/10 rounded-3xl p-6">
+              <h2
+  className="
+    text-lg
+    font-semibold
+    text-gray-300
+    mb-3
+  "
+>
+  Thông tin sự kiện
+</h2>
+              <p className="text-gray-300 whitespace-pre-wrap">{event.description}</p>
+            </div>
 
       <Footer />
     </div>
