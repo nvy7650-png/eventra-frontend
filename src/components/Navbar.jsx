@@ -1,10 +1,19 @@
 import { useState } from "react";
-
-import { useNavigate } from "react-router-dom";
+import {
+  useNavigate,
+  useLocation
+} from "react-router-dom";
 
 export default function Navbar() {
 
   const navigate = useNavigate();
+
+const location =
+  useLocation();
+
+const [search,
+  setSearch] =
+  useState("");
 
   const [showMenu, setShowMenu] = useState(false);
 
@@ -67,26 +76,73 @@ export default function Navbar() {
         <div className="hidden md:flex flex-1 mx-10">
 
           <input
-            placeholder="Tìm sự kiện..."
-            className="
-              w-full
-              px-5
-              py-3
-              rounded-2xl
-              bg-[#111827]
-              border
-              border-gray-700
-              text-white
-              placeholder:text-gray-500
-              focus:outline-none
-              focus:border-sky-400
-            "
-          />
+  value={search}
+  onChange={(e) =>
+    setSearch(
+      e.target.value
+    )
+  }
+  onKeyDown={(e) => {
+
+    if (
+      e.key === "Enter"
+    ) {
+
+      navigate(
+        `/events?keyword=${search}`
+      );
+
+    }
+
+  }}
+  placeholder="Tìm sự kiện..."
+  className="
+    w-full
+    px-5
+    py-3
+    rounded-2xl
+    bg-[#111827]
+    border
+    border-gray-700
+    text-white
+    placeholder:text-gray-500
+    focus:outline-none
+    focus:border-sky-400
+  "
+/>
 
         </div>
 
         {/* AUTH */}
-        <div className="flex items-center gap-3">
+        <div
+  className="
+    hidden
+    md:flex
+    items-center
+    gap-3
+  "
+>
+  <div className="md:hidden">
+
+  <button
+    onClick={() =>
+      setShowMenu(
+        !showMenu
+      )
+    }
+    className="
+      px-4
+      py-2
+      rounded-xl
+      bg-sky-500
+      text-black
+      font-bold
+    "
+  >
+    ☰
+  </button>
+
+</div>
 
           {!user ? (
 

@@ -26,6 +26,10 @@ export default function Events() {
     searchParams.get(
       "category"
     );
+    const keyword =
+  searchParams.get(
+    "keyword"
+  );
 
     const [categories, setCategories] =
   useState([]);
@@ -241,6 +245,15 @@ export default function Events() {
 
 .filter((event) => {
 
+const matchKeyword =
+
+  !keyword ||
+
+  event.title
+    ?.toLowerCase()
+    .includes(
+      keyword.toLowerCase()
+    );
 
   const matchCategory =
 
@@ -291,10 +304,10 @@ export default function Events() {
   }
 
   return (
-    matchSearch &&
-    matchCategory &&
-    matchPrice
-  );
+  matchKeyword &&
+  matchCategory &&
+  matchPrice
+);
 
 })
 
