@@ -211,9 +211,9 @@ export default function MyOrders() {
               }
 
               return (
-                order.payment_status ===
-                activeTab
-              );
+  order.status ===
+  activeTab
+);
 
             })
 
@@ -232,21 +232,51 @@ export default function MyOrders() {
                 "
               >
 
-                {/* IMAGE */}
-
-                <img
-                  src={
-                    order.image_url
-                  }
-                  alt=""
-                  className="
-                    w-full
-                    h-48
-                    object-cover
-                  "
-                />
 
                 {/* CONTENT */}
+                <div
+  className="
+    p-6
+    border-b
+    border-white/10
+  "
+>
+
+  <div
+    className="
+      flex
+      items-center
+      justify-between
+      gap-4
+    "
+  >
+
+    <div>
+
+      <p
+        className="
+          text-gray-500
+          text-sm
+        "
+      >
+        Đơn hàng #{order.id}
+      </p>
+
+      <h3
+        className="
+          text-xl
+          font-bold
+          mt-1
+        "
+      >
+        {order.event_title}
+      </h3>
+
+    </div>
+
+  </div>
+
+</div>
 
                 <div className="p-6">
 
@@ -315,7 +345,7 @@ export default function MyOrders() {
                       >
 
                         {Number(
-                          order.total_amount
+                          order.total_price
                         ).toLocaleString(
                           "vi-VN"
                         )} đ
@@ -337,10 +367,10 @@ export default function MyOrders() {
                         font-semibold
 
                         ${
-                          order.payment_status === "PAID"
+                          order.status === "PAID"
                             ? "bg-green-500/20 text-green-400"
 
-                            : order.payment_status === "PENDING"
+                            : order.status === "PENDING"
                             ? "bg-yellow-500/20 text-yellow-400"
 
                             : "bg-red-500/20 text-red-400"
@@ -349,10 +379,10 @@ export default function MyOrders() {
                     >
 
                       {
-                        order.payment_status === "PAID"
+                        order.status === "PAID"
                           ? "Đã thanh toán"
 
-                          : order.payment_status === "PENDING"
+                          : order.status === "PENDING"
                           ? "Đang xử lý"
 
                           : "Đã hủy"
