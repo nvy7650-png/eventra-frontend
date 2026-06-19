@@ -20,8 +20,8 @@ export default function MyTickets() {
     if (!user) return;
 
     fetch(
-      `${import.meta.env.VITE_API_URL}/api/tickets/my/${user.id}`
-    )
+  `${import.meta.env.VITE_API_URL}/api/tickets/my-tickets/${user.id}`
+)
       .then((res) => res.json())
       .then((data) => {
 
