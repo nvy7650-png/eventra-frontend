@@ -104,8 +104,8 @@ export default function EventDetail() {
             alt={event.title}
             className="
               w-full
-              h-[180px]
-              md:h-[500px]
+              h-[300px]
+md:h-[550px]
               object-cover
             "
           />
@@ -124,15 +124,29 @@ export default function EventDetail() {
 
        {/* Event Info */}
 
-<div className="mt-8">
+<div
+  className="
+    mt-6
+    md:mt-8
+
+    bg-[#0B1220]
+    border
+    border-white/10
+
+    rounded-3xl
+
+    p-5
+    md:p-8
+  "
+>
 
   <h1
     className="
-      text-2xl
+      text-3xl
       md:text-5xl
+
       font-black
       leading-tight
-      max-w-4xl
     "
   >
     {event.title}
@@ -140,42 +154,138 @@ export default function EventDetail() {
 
   <div
     className="
-      mt-4
-      inline-flex
-      items-center
-      gap-2
-      px-4
-      py-2
-      rounded-2xl
-      bg-white/5
-      border
-      border-white/10
-      text-gray-300
+      mt-6
+
+      grid
+      grid-cols-1
+      md:grid-cols-2
+
+      gap-4
     "
   >
-    📍 {event.location}
+
+    <div
+      className="
+        bg-white/5
+        rounded-2xl
+        p-4
+      "
+    >
+      <p className="text-gray-500 text-sm">
+        Địa điểm
+      </p>
+
+      <p className="mt-1 font-medium">
+        {event.location}
+      </p>
+    </div>
+
+    <div
+      className="
+        bg-white/5
+        rounded-2xl
+        p-4
+      "
+    >
+      <p className="text-gray-500 text-sm">
+        Danh mục
+      </p>
+
+      <p className="mt-1 font-medium">
+        {event.category_name || "Sự kiện"}
+      </p>
+    </div>
+
   </div>
 
 </div>
 
-{/* Ticket Section */}
+<div
+  className="
+    mt-10
 
-<div className="mt-10">
+    grid
+    grid-cols-1
+    lg:grid-cols-3
 
-  <h2
-    className="
-      text-2xl
-      md:text-3xl
-      font-black
-      mb-6
-    "
-  >
-    Mua vé
-  </h2>
+    gap-8
+  "
+>
 
-  <div className="space-y-4">
+  {/* LEFT */}
 
-{showtimes.map((st) => {
+  <div className="lg:col-span-2">
+
+    <div
+      className="
+        bg-[#0B1220]
+        border
+        border-white/10
+
+        rounded-3xl
+
+        p-6
+        md:p-8
+      "
+    >
+
+      <h2
+        className="
+          text-2xl
+          font-black
+          mb-6
+        "
+      >
+        Thông tin sự kiện
+      </h2>
+
+      <p
+        className="
+          text-gray-300
+          whitespace-pre-wrap
+          leading-7
+          md:leading-8
+        "
+      >
+        {event.description}
+      </p>
+
+    </div>
+
+  </div>
+
+  {/* RIGHT */}
+
+  <div>
+
+    <div
+      className="
+        lg:sticky
+        lg:top-28
+
+        bg-[#0B1220]
+        border
+        border-white/10
+
+        rounded-3xl
+
+        p-6
+      "
+    >
+
+      <h2
+        className="
+          text-2xl
+          font-black
+          mb-6
+        "
+      >
+        🎟 Chọn suất diễn
+      </h2>
+
+      <div className="space-y-4">
+
+        {showtimes.map((st) => {
 
   const start =
     new Date(st.start_time);
@@ -191,15 +301,15 @@ export default function EventDetail() {
     <div
       key={st.id}
       className={`
-        rounded-3xl
+        rounded-2xl
         overflow-hidden
         border
         transition
 
         ${
           isOpen
-            ? "border-sky-400 bg-[#0B1120]"
-            : "border-white/10 bg-[#0B1120]"
+            ? "border-sky-400"
+            : "border-white/10"
         }
       `}
     >
@@ -213,7 +323,6 @@ export default function EventDetail() {
         className="
           w-full
           p-4
-          md:p-5
           flex
           justify-between
           items-center
@@ -222,7 +331,7 @@ export default function EventDetail() {
 
         <div>
 
-          <div className="font-bold text-lg">
+          <div className="font-bold">
 
             {start.toLocaleDateString(
               "vi-VN"
@@ -230,7 +339,7 @@ export default function EventDetail() {
 
           </div>
 
-          <div className="text-gray-400 mt-1">
+          <div className="text-gray-400 text-sm mt-1">
 
             {start.toLocaleTimeString(
               "vi-VN",
@@ -256,8 +365,8 @@ export default function EventDetail() {
 
         <div
           className={`
-            text-xl
             transition
+
             ${
               isOpen
                 ? "rotate-180"
@@ -291,35 +400,30 @@ export default function EventDetail() {
               <div
                 key={zone.id}
                 className="
-                  m-4
-                  p-5
+                  mx-4
+                  my-4
+
+                  p-4
+
                   rounded-2xl
+
                   bg-white/5
                   border
                   border-white/10
+
                   flex
                   flex-col
-                  md:flex-row
-                  md:items-center
-                  md:justify-between
-                  gap-4
+                  gap-3
                 "
               >
 
                 <div>
 
-                  <div className="font-bold text-lg">
+                  <div className="font-bold">
                     {zone.name}
                   </div>
 
-                  <div
-                    className="
-                      text-sky-400
-                      font-bold
-                      text-lg
-                      mt-1
-                    "
-                  >
+                  <div className="text-sky-400 font-bold mt-1">
                     {price} đ
                   </div>
 
@@ -333,18 +437,18 @@ export default function EventDetail() {
                     )
                   }
                   className={`
-                    px-5
-                    py-2.5
-                    md:px-6
-                    md:py-3
-                    rounded-2xl
+                    w-full
+
+                    py-3
+
+                    rounded-xl
+
                     font-bold
-                    transition
 
                     ${
                       btn.disabled
                         ? "bg-white/10 text-gray-400"
-                        : "bg-gradient-to-r from-sky-500 to-cyan-400 text-black hover:opacity-90"
+                        : "bg-gradient-to-r from-sky-500 to-cyan-400 text-black"
                     }
                   `}
                 >
@@ -367,38 +471,13 @@ export default function EventDetail() {
 
 })}
 
+      </div>
+
+    </div>
+
   </div>
 
 </div>
-
-        {/* Description */}
-
-        <div
-          className="
-            mt-8
-            bg-white/5
-            border
-            border-white/10
-            rounded-3xl
-            p-6
-          "
-        >
-
-          <h2
-            className="
-              text-xl
-              font-bold
-              mb-4
-            "
-          >
-            Thông tin sự kiện
-          </h2>
-
-          <p className="text-gray-300 whitespace-pre-wrap leading-7 md:leading-8">
-            {event.description}
-          </p>
-
-        </div>
 
       </div>
 
