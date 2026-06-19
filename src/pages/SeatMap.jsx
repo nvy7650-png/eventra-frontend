@@ -319,13 +319,13 @@ text-sm
       {/* MAIN */}
 <div
 className="
-max-w-7xl
+max-w-[1600px]
 mx-auto
 
 xl:grid
-xl:grid-cols-[minmax(0,1fr)_380px]
+xl:grid-cols-[minmax(0,1fr)_340px]
 
-gap-6
+gap-8
 
 px-4
 md:px-6
@@ -546,10 +546,6 @@ md:h-10
           <div className="mb-6">
             <div className="mb-6">
 
-  <p className="font-bold text-sky-400 mt-1">
-    {selectedZone?.name}
-  </p>
-
 </div>
 
             <h3 className="font-semibold mb-4">
@@ -564,7 +560,7 @@ md:h-10
 
             ) : (
 
-              <div className="flex flex-wrap gap-3">
+              <div className="flex flex-wrap gap-2">
 
                 {selectedSeats.map((seat) => (
 
