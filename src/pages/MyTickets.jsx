@@ -271,8 +271,18 @@ font-semibold
     </p>
 
     <p className="text-white mt-1">
-      {ticket.showtime}
-    </p>
+  {ticket.start_time
+    ? new Date(
+        ticket.start_time
+      ).toLocaleString(
+        "vi-VN",
+        {
+          dateStyle: "full",
+          timeStyle: "short",
+        }
+      )
+    : "Chưa cập nhật"}
+</p>
 
   </div>
 
