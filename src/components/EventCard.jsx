@@ -136,7 +136,7 @@ export default function EventCard({
             mt-2
           "
         >
-          📅 {formattedDate}
+          {formattedDate}
         </p>
 
         {/* LOCATION */}
@@ -148,7 +148,7 @@ export default function EventCard({
             line-clamp-1
           "
         >
-          📍 {event.location}
+          {event.location}
         </p>
 
         {/* CATEGORY */}
@@ -161,7 +161,7 @@ export default function EventCard({
               mt-1
             "
           >
-            🎵 {event.category_name}
+                {event.category_name}
           </p>
 
         )}
