@@ -19,8 +19,8 @@ const [search,
 
   // GET USER
   const user = JSON.parse(
-    localStorage.getItem("user")
-  );
+  localStorage.getItem("user") || "null"
+);
 
   // LOGOUT
   const handleLogout = () => {
@@ -57,8 +57,7 @@ const [search,
 
           <h1
   className="
-    text-xl
-    md:text-4xl
+    text-xl sm:text-2xl lg:text-4xl
     font-black
     tracking-wide
     text-sky-400
@@ -83,10 +82,7 @@ const [search,
         {/* SEARCH */}
         <div
   className="
-    flex-1
-    mx-4
-    hidden
-    sm:flex
+    flex-1 max-w-xl mx-4 hidden lg:flex
   "
 >
 
@@ -130,7 +126,7 @@ const [search,
 
         {/* MOBILE MENU BUTTON */}
 
-<div className="md:hidden">
+<div className="lg:hidden">
 
   <button
     onClick={() =>
@@ -158,7 +154,7 @@ const [search,
         <div
   className="
     hidden
-    md:flex
+lg:flex
     items-center
     gap-3
   "
@@ -342,7 +338,7 @@ const [search,
                   <button
   onClick={() => {
 
-  setShowMobileMenu(false);
+  setShowMenu(false);
 
   navigate("/profile");
 
@@ -435,7 +431,7 @@ const [search,
 
 <div
   className={`
-  sm:hidden
+  lg:hidden
   px-4
   py-3
   border-t
@@ -460,8 +456,8 @@ const [search,
       if (e.key === "Enter") {
 
         navigate(
-          `/events?keyword=${search}`
-        );
+  `/events?keyword=${encodeURIComponent(search)}`
+);
 
       }
 
@@ -485,7 +481,7 @@ const [search,
 
   <div
     className="
-      md:hidden
+      lg:hidden
       border-t
       border-white/10
       bg-[#0B1220]
@@ -616,9 +612,10 @@ const [search,
   <>
 
     <button
-      onClick={() =>
-        navigate("/my-orders")
-      }
+      onClick={() => {
+  setShowMobileMenu(false);
+  navigate("/my-orders");
+}}
       className="
         w-full
         py-3
@@ -630,9 +627,10 @@ const [search,
     </button>
 
     <button
-      onClick={() =>
-        navigate("/my-tickets")
-      }
+     onClick={() => {
+  setShowMobileMenu(false);
+  navigate("/my-tickets")
+}}
       className="
         w-full
         py-3
