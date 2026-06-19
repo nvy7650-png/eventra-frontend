@@ -729,7 +729,7 @@ if (!holdRes.ok) {
     transition
   "
 >
-  Thanh toán
+  Tiếp tục
 </button>
 
           </div>

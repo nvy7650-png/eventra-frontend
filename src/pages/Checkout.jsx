@@ -107,117 +107,262 @@ export default function Checkout() {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-gray-950 text-white">
+return (
+  <div className="min-h-screen bg-[#050816] text-white">
 
-      <div className="max-w-4xl mx-auto py-12 px-6">
+    <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12">
 
-        <h1 className="text-4xl font-bold text-sky-400 mb-8">
-          Xác nhận đặt vé
-        </h1>
+      <h1
+        className="
+          text-3xl
+          md:text-5xl
+          font-black
+          mb-8
+        "
+      >
+        Xác nhận đơn hàng
+      </h1>
 
-        <div className="bg-gray-900 rounded-3xl p-8 border border-gray-800">
+      <div
+        className="
+          grid
+          grid-cols-1
+          lg:grid-cols-3
+          gap-6
+        "
+      >
 
-          <div className="mb-6">
-            <div className="text-gray-400 mb-2">
-              Sự kiện
-            </div>
+        {/* LEFT */}
 
-            <div className="text-xl font-bold">
+        <div
+          className="
+            lg:col-span-2
+            bg-white/5
+            border
+            border-white/10
+            rounded-3xl
+            overflow-hidden
+          "
+        >
+
+          <img
+            src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
+            alt={event.title}
+            className="
+              w-full
+              h-[220px]
+              md:h-[320px]
+              object-cover
+            "
+          />
+
+          <div className="p-6 md:p-8">
+
+            <h2
+              className="
+                text-2xl
+                md:text-3xl
+                font-black
+                mb-6
+              "
+            >
               {event.title}
-            </div>
-          </div>
+            </h2>
 
-          <div className="mb-6">
-            <div className="text-gray-400 mb-2">
-              Suất diễn
-            </div>
+            <div className="space-y-6">
 
-            <div>
-              {new Date(showtime.start_time).toLocaleString("vi-VN")}
-            </div>
-          </div>
+              <div>
+                <p className="text-gray-500 mb-1">
+                  Suất diễn
+                </p>
 
-          <div className="mb-6">
-            <div className="text-gray-400 mb-2">
-              Khu vực
-            </div>
+                <p className="font-semibold">
+                  {new Date(
+                    showtime.start_time
+                  ).toLocaleString(
+                    "vi-VN",
+                    {
+                      dateStyle: "full",
+                      timeStyle: "short",
+                    }
+                  )}
+                </p>
+              </div>
 
-            <div>
-              {zone?.name}
-            </div>
-          </div>
+              <div>
+                <p className="text-gray-500 mb-1">
+                  Khu vực
+                </p>
 
-          <div className="mb-6">
-            <div className="text-gray-400 mb-2">
-              Ghế đã chọn
-            </div>
-
-            <div className="flex flex-wrap gap-2">
-
-              {seats?.map((seat) => (
-
-                <span
-                  key={seat.id}
+                <p
                   className="
-                    px-3
-                    py-2
-                    rounded-lg
-                    bg-sky-500
-                    text-black
-                    font-semibold
+                    text-sky-400
+                    font-bold
                   "
                 >
-                  {seat.seat_code}
+                  {zone?.name}
+                </p>
+              </div>
+
+              <div>
+
+                <p className="text-gray-500 mb-3">
+                  Ghế đã chọn
+                </p>
+
+                <div className="flex flex-wrap gap-2">
+
+                  {seats?.map((seat) => (
+
+                    <span
+                      key={seat.id}
+                      className="
+                        px-4
+                        py-2
+                        rounded-xl
+                        bg-sky-500/20
+                        border
+                        border-sky-500/30
+                        text-sky-400
+                        font-semibold
+                      "
+                    >
+                      {seat.seat_code}
+                    </span>
+
+                  ))}
+
+                </div>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {/* RIGHT */}
+
+        <div
+          className="
+            bg-white/5
+            border
+            border-white/10
+            rounded-3xl
+            p-6
+
+            h-fit
+            lg:sticky
+            lg:top-6
+          "
+        >
+
+          <h3
+            className="
+              text-xl
+              font-bold
+              mb-6
+            "
+          >
+            Chi tiết thanh toán
+          </h3>
+
+          <div className="space-y-4">
+
+            <div className="flex justify-between">
+
+              <span className="text-gray-400">
+                Số lượng vé
+              </span>
+
+              <span>
+                {seats.length}
+              </span>
+
+            </div>
+
+            <div className="flex justify-between">
+
+              <span className="text-gray-400">
+                Giá mỗi vé
+              </span>
+
+              <span>
+                {Number(
+                  zone.price
+                ).toLocaleString("vi-VN")}đ
+              </span>
+
+            </div>
+
+            <div className="border-t border-white/10 pt-4">
+
+              <div className="flex justify-between items-center">
+
+                <span className="text-lg font-semibold">
+                  Tổng cộng
                 </span>
 
-              ))}
+                <span
+                  className="
+                    text-3xl
+                    font-black
+                    text-sky-400
+                  "
+                >
+                  {Number(
+                    totalPrice
+                  ).toLocaleString("vi-VN")}đ
+                </span>
+
+              </div>
 
             </div>
+
           </div>
 
-          <div className="mb-8">
-            <div className="text-gray-400 mb-2">
-              Tổng tiền
-            </div>
-
-            <div className="text-3xl font-bold text-sky-400">
-              {Number(totalPrice).toLocaleString("vi-VN")}đ
-            </div>
-          </div>
-
-          <div className="flex gap-4">
+          <div className="mt-8 space-y-3">
 
             <button
               onClick={() => navigate(-1)}
               className="
-                flex-1
+                w-full
                 py-4
                 rounded-2xl
-                bg-gray-700
-                hover:bg-gray-600
+                bg-white/10
+                hover:bg-white/15
+                transition
               "
             >
               Quay lại
             </button>
-<button
-  onClick={handleCreateOrder}
-  disabled={loading}
-  className="
-    flex-1
-    py-4
-    rounded-2xl
-    bg-sky-500
-    text-black
-    font-bold
-    hover:bg-sky-400
-    disabled:opacity-50
-  "
->
-  {loading
-    ? "Đang tạo đơn..."
-    : "Xác nhận đặt vé"}
-</button>
+
+            <button
+              onClick={handleCreateOrder}
+              disabled={loading}
+              className="
+                w-full
+                py-4
+                rounded-2xl
+
+                bg-gradient-to-r
+                from-sky-500
+                to-cyan-400
+
+                text-black
+                font-bold
+
+                hover:opacity-90
+                transition
+
+                disabled:opacity-50
+              "
+            >
+              {loading
+                ? "Đang tạo đơn..."
+                : "Tiếp tục thanh toán"}
+            </button>
 
           </div>
 
@@ -226,5 +371,8 @@ export default function Checkout() {
       </div>
 
     </div>
-  );
+
+  </div>
+);
+
 }
