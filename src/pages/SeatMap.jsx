@@ -245,19 +245,30 @@ const formatShowtime = () => {
 };
 
   const getSeatColor = (seat) => {
-    // Selected by current user -> black
-    if (selectedSeats.includes(seat.id)) {
-      return "bg-black text-white";
-    }
 
-    // Sold -> gray
-    if (seat.status === "SOLD") {
-      return "bg-gray-500 cursor-not-allowed text-white";
-    }
+  if (selectedSeats.includes(seat.id)) {
+    return `
+      bg-sky-500
+      text-black
+      border-sky-400
+    `;
+  }
 
-    // Available -> green
-    return "bg-green-500 text-white hover:bg-green-400";
-  };
+  if (seat.status === "SOLD") {
+    return `
+      bg-gray-700
+      text-gray-400
+      cursor-not-allowed
+    `;
+  }
+
+  return `
+    bg-green-500/20
+    text-green-400
+    border-green-500/40
+    hover:bg-green-500/30
+  `;
+};
 
   if (loading) {
 
@@ -277,7 +288,17 @@ const formatShowtime = () => {
     <div className="min-h-screen bg-gray-950 text-white">
 
       {/* HEADER */}
-      <div className="border-b border-gray-800 bg-gray-900">
+      <div
+className="
+sticky
+top-0
+z-30
+backdrop-blur-xl
+bg-[#050816]/90
+border-b
+border-white/10
+"
+>
 
         <div className="max-w-7xl mx-auto px-6 py-8">
 
@@ -306,7 +327,18 @@ const formatShowtime = () => {
       </div>
 
       {/* MAIN */}
-      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-10 px-6 py-10">
+      <div className="
+max-w-7xl
+mx-auto
+grid
+grid-cols-1
+xl:grid-cols-[1fr_380px]
+gap-6
+px-4
+md:px-6
+py-6
+md:py-10
+">
 
         {/* LEFT */}
         <div className="lg:col-span-3">
@@ -315,8 +347,10 @@ const formatShowtime = () => {
           <div className="flex justify-center mb-20">
 
             <div className="
-              w-[600px]
-              h-[140px]
+              w-full
+max-w-[700px]
+h-[90px]
+md:h-[120px]
               bg-gradient-to-b
               from-gray-600
               to-gray-800
@@ -401,8 +435,10 @@ const formatShowtime = () => {
                       "SOLD"
                     }
                     className={`
-                      w-10
-                      h-10
+                      w-9
+h-9
+md:w-10
+md:h-10
                       rounded-lg
                       text-xs
                       font-semibold
@@ -469,7 +505,13 @@ const formatShowtime = () => {
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <div className="bg-gray-900 border border-gray-800 rounded-3xl p-6 h-fit sticky top-6">
+        <div className="bg-white/5
+backdrop-blur-xl
+border
+border-white/10
+ rounded-3xl p-6 h-fit
+xl:sticky
+xl:top-6">
 
           <h2 className="text-2xl font-bold text-sky-400 mb-6">
             Thông tin đặt vé
@@ -479,6 +521,17 @@ const formatShowtime = () => {
 
           {/* SELECTED SEATS */}
           <div className="mb-6">
+            <div className="mb-6">
+
+  <p className="text-gray-500 text-sm">
+    Khu vực
+  </p>
+
+  <p className="font-bold text-sky-400 mt-1">
+    {selectedZone?.name}
+  </p>
+
+</div>
 
             <h3 className="font-semibold mb-4">
               Ghế đã chọn
