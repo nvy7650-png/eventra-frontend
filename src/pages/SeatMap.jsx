@@ -331,15 +331,32 @@ px-4
 md:px-6
 py-6
 md:py-10
+
+pb-28
+lg:pb-10
 "
 >
+ {/* RIGHT SIDEBAR */}
+         <div
+className="
+flex
+flex-col
+lg:grid
+lg:grid-cols-[minmax(0,1fr)_360px]
+gap-8
+"
+>
+          <h2 className="text-2xl font-bold text-sky-400 mb-6">
+            Thông tin đặt vé
+          </h2>
 
+          <div className="mb-6">
+</div>
         {/* LEFT */}
         <div>
 
           {/* STAGE */}
-          <div className="flex justify-center mb-20">
-
+<div className="flex justify-center mb-10 md:mb-20">
             <div className="
 w-full
 max-w-[750px]
@@ -510,40 +527,9 @@ md:h-10
 
         </div>
 
-        {/* RIGHT SIDEBAR */}
-         <div
-  className="
-flex
-flex-col
+       
 
-mt-8
-lg:mt-0
 
-bg-white/5
-backdrop-blur-xl
-
-border
-border-white/10
-
-rounded-3xl
-p-5
-md:p-6
-
-lg:sticky
-lg:top-24
-
-h-fit
-"
->
-
-          <h2 className="text-2xl font-bold text-sky-400 mb-6">
-            Thông tin đặt vé
-          </h2>
-
-          <div className="mb-6">
-</div>
-
-          {/* (removed hold timer UI) */}
 
           {/* SELECTED SEATS */}
           <div className="mb-6">
@@ -750,6 +736,84 @@ console.log("BEFORE NAVIGATE");
 
         </div>
 
+{/* MOBILE CHECKOUT BAR */}
+
+<div
+  className="
+    lg:hidden
+
+    fixed
+    bottom-0
+    left-0
+    right-0
+
+    z-50
+
+    bg-[#081120]/95
+    backdrop-blur-xl
+
+    border-t
+    border-white/10
+
+    p-4
+  "
+>
+
+  <div
+    className="
+      flex
+      items-center
+      justify-between
+      gap-4
+    "
+  >
+
+    <div>
+
+      <p className="text-gray-400 text-sm">
+        {selectedSeats.length} ghế
+      </p>
+
+      <p
+        className="
+          text-sky-400
+          font-black
+          text-xl
+        "
+      >
+        {totalPrice.toLocaleString("vi-VN")}đ
+      </p>
+
+    </div>
+
+    <button
+      onClick={async () => {
+
+        if (selectedSeats.length === 0) {
+          alert("Vui lòng chọn ghế");
+          return;
+        }
+
+        // TẠM THỜI
+        // bước sau mình tách riêng function
+      }}
+      className="
+        px-6
+        py-3
+
+        rounded-2xl
+
+        bg-sky-500
+        text-black
+        font-bold
+      "
+    >
+      Tiếp tục
+    </button>
+
+  </div>
+
+</div>
       </div>
 
     </div>
