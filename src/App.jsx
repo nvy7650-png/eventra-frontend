@@ -45,6 +45,7 @@ import AdminEvents from "./pages/AdminEvents";
 import AdminUsers from "./pages/AdminUsers";
 import AdminUserDetail from "./pages/AdminUserDetail";
 import AdminCategories from "./pages/AdminCategories";
+import Events from "./pages/Events";
 
 function App() {
 
@@ -132,6 +133,11 @@ function App() {
           path="/register"
           element={<Register />}
         />
+
+        <Route
+  path="/events"
+  element={<Events />}
+/>
 
         {/* ORGANIZER REGISTER */}
         <Route

@@ -3,7 +3,13 @@ import {
   useState,
 } from "react";
 
+import {
+  useNavigate
+} from "react-router-dom";
+
 export default function CategoryBar() {
+
+  const navigate = useNavigate();
 
   const [categories,
     setCategories] =
@@ -56,25 +62,31 @@ export default function CategoryBar() {
 
         {categories.map((category) => (
 
-          <button
-            key={category.id}
-            className="
-              px-5
-              py-2
-              rounded-2xl
-              bg-white/5
-              border
-              border-white/10
-              hover:bg-white/10
-              text-gray-300
-              whitespace-nowrap
-              transition
-            "
-          >
+<button
+  key={category.id}
+  onClick={() =>
+    navigate(
+      `/events?category=${category.id}`
+    )
+  }
+  className="
+    px-5
+    py-2
+    rounded-2xl
+    bg-white/5
+    border
+    border-white/10
+    hover:bg-sky-500
+    hover:text-black
+    text-gray-300
+    whitespace-nowrap
+    transition
+  "
+>
 
-            {category.name}
+  {category.name}
 
-          </button>
+</button>
 
         ))}
 
