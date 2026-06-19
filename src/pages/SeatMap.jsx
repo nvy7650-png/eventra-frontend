@@ -306,13 +306,9 @@ text-sm
               {event?.location}
             </span>
 
-            <span>
-              {showtimeDate}
-            </span>
-
-            <span>
-              {showtimeTime}
-            </span>
+<span>
+    {formatShowtime()}
+</span>
 
           </div>
 
@@ -326,7 +322,7 @@ max-w-7xl
 mx-auto
 grid
 grid-cols-1
-xl:grid-cols-[1fr_380px]
+xl:grid-cols-[minmax(0,1fr)_420px]
 gap-6
 px-4
 md:px-6
@@ -511,17 +507,40 @@ md:h-10
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <div className="bg-white/5
+        <div
+className="
+bg-white/5
 backdrop-blur-xl
 border
 border-white/10
- rounded-3xl p-6 h-fit
+rounded-3xl
+p-6
+
 xl:sticky
-xl:top-6">
+xl:top-24
+
+flex
+flex-col
+
+h-fit
+"
+>
 
           <h2 className="text-2xl font-bold text-sky-400 mb-6">
             Thông tin đặt vé
           </h2>
+
+          <div className="mb-6">
+
+  <p className="text-white font-semibold">
+    {event?.title}
+  </p>
+
+  <p className="text-gray-400 text-sm mt-2">
+    {formatShowtime()}
+  </p>
+
+</div>
 
           {/* (removed hold timer UI) */}
 
@@ -561,8 +580,10 @@ xl:top-6">
                       px-4
                       py-2
                       rounded-xl
-                      bg-sky-400
-                      text-black
+                      bg-sky-500/20
+border
+border-sky-500/40
+text-sky-400
                       font-semibold
                     "
                   >
@@ -580,7 +601,7 @@ xl:top-6">
           </div>
 
           {/* PRICE */}
-          <div className="border-t border-gray-800 pt-6">
+          <div className="border-t border-gray-800 pt-6 mt-auto">
 
             <div className="flex justify-between items-center mb-3">
 
@@ -600,7 +621,13 @@ xl:top-6">
                 Tổng tiền
               </span>
 
-              <span className="text-2xl font-bold text-sky-400">
+              <span
+className="
+text-3xl
+font-black
+text-sky-400
+"
+> 
                 {totalPrice.toLocaleString("vi-VN")}đ
               </span>
 
