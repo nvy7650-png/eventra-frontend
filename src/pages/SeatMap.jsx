@@ -693,6 +693,14 @@ if (!holdRes.ok) {
 
 const expiresAt =
   data.expires_at;
+
+  console.log("HOLD RESPONSE:", data);
+console.log("EVENT:", event);
+console.log("SHOWTIME:", showtime);
+console.log("ZONE:", selectedZone);
+console.log("SEATS:", seats);
+console.log("TOTAL:", totalPrice);
+console.log("EXPIRES:", expiresAt);
      navigate("/checkout", {
   state: {
     event,
@@ -706,13 +714,11 @@ const expiresAt =
 
     } catch (err) {
 
-      console.log(err);
+  console.log("FULL ERROR:", err);
 
-      alert(
-        "Lỗi kết nối server"
-      );
+  alert(err?.message || "Lỗi");
 
-    }
+}
 
   }}
   className="
