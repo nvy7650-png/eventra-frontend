@@ -76,11 +76,10 @@ const [search,
         {/* SEARCH */}
         <div
   className="
-    hidden
-    md:flex
     flex-1
-    max-w-md
-    mx-8
+    mx-4
+    hidden
+    sm:flex
   "
 >
 
@@ -128,10 +127,10 @@ const [search,
 
   <button
     onClick={() =>
-      setShowMenu(
-        !showMenu
-      )
-    }
+  setShowMobileMenu(
+    !showMobileMenu
+  )
+}
     className="
       px-4
       py-2
@@ -148,14 +147,6 @@ const [search,
 
 {/* AUTH DESKTOP */}
 
-<div
-  className="
-    hidden
-    md:flex
-    items-center
-    gap-3
-  "
-></div>
 
         {/* AUTH */}
         <div
@@ -392,8 +383,185 @@ const [search,
         </div>
 
       </div>
+      {/* MOBILE SEARCH */}
+
+<div
+  className="
+    sm:hidden
+    px-4
+    py-3
+    border-t
+    border-white/10
+    bg-[#081120]
+  "
+>
+
+  <input
+    value={search}
+    onChange={(e) =>
+      setSearch(e.target.value)
+    }
+    onKeyDown={(e) => {
+
+      if (e.key === "Enter") {
+
+        navigate(
+          `/events?keyword=${search}`
+        );
+
+      }
+
+    }}
+    placeholder="Tìm sự kiện..."
+    className="
+      w-full
+      px-4
+      py-3
+      rounded-2xl
+      bg-[#111827]
+      border
+      border-white/10
+      text-white
+    "
+  />
+
+</div>
+
+{showMobileMenu && (
+
+  <div
+    className="
+      md:hidden
+      border-t
+      border-white/10
+      bg-[#0B1220]
+      p-4
+      flex
+      flex-col
+      gap-3
+    "
+  >
+
+    {!user ? (
+
+      <>
+
+        <button
+          onClick={() =>
+            navigate("/login")
+          }
+          className="
+            w-full
+            py-3
+            rounded-xl
+            border
+            border-white/10
+          "
+        >
+          Đăng nhập
+        </button>
+
+        <button
+          onClick={() =>
+            navigate("/register")
+          }
+          className="
+            w-full
+            py-3
+            rounded-xl
+            bg-sky-500
+            text-black
+            font-bold
+          "
+        >
+          Đăng ký
+        </button>
+
+        <button
+          onClick={() =>
+            navigate(
+              "/organizerregister"
+            )
+          }
+          className="
+            w-full
+            py-3
+            rounded-xl
+            bg-purple-500
+            font-bold
+          "
+        >
+          Đăng ký nhà tổ chức
+        </button>
+
+      </>
+
+    ) : (
+
+      <>
+
+        {user.role === "ADMIN" && (
+
+          <button
+            onClick={() =>
+              navigate(
+                "/admin/dashboard"
+              )
+            }
+            className="
+              w-full
+              py-3
+              rounded-xl
+              bg-white/5
+            "
+          >
+            Admin Dashboard
+          </button>
+
+        )}
+
+        {user.role === "ORGANIZER" && (
+
+          <button
+            onClick={() =>
+              navigate(
+                "/organizer/dashboard"
+              )
+            }
+            className="
+              w-full
+              py-3
+              rounded-xl
+              bg-white/5
+            "
+          >
+            Organizer Dashboard
+          </button>
+
+        )}
+
+        <button
+          onClick={handleLogout}
+          className="
+            w-full
+            py-3
+            rounded-xl
+            bg-red-500
+          "
+        >
+          Đăng xuất
+        </button>
+
+      </>
+
+    )}
+
+  </div>
+
+)}
 
     </header>
+    
 
   );
 
