@@ -80,8 +80,9 @@ export default function MyTickets() {
         <div
   className="
     flex
-    flex-wrap
-    gap-3
+overflow-x-auto
+gap-3
+pb-2
     mb-8
   "
 >
@@ -116,7 +117,7 @@ export default function MyTickets() {
         px-6
 py-3
 rounded-2xl
-min-w-[140px]
+min-w-[160px]
 font-semibold
 
         ${
@@ -207,38 +208,102 @@ font-semibold
     border
     border-white/10
     rounded-3xl
-    overflow-hidden
+    p-6
+    md:p-8
     hover:border-sky-500
     transition
   "
 >
 
-              <div className="text-2xl font-bold text-sky-400 mb-3">
-                {ticket.event_title}
-              </div>
+              <h3
+  className="
+    text-xl
+    md:text-2xl
+    font-bold
+    text-white
+    mb-6
+    line-clamp-2
+  "
+>
+  {ticket.event_title}
+</h3>
+<div className="mb-6">
 
-              <div className="space-y-2 text-gray-300">
+  <span
+    className={`
+      px-4
+      py-2
+      rounded-full
+      text-sm
+      font-semibold
 
-  <div>
-    Khu vực:
-    <span className="ml-2 text-white">
-      {ticket.zone_name}
-    </span>
-  </div>
+      ${
+        ticket.status === "VALID"
+          ? "bg-green-500/20 text-green-400"
+          : ticket.status === "USED"
+          ? "bg-gray-500/20 text-gray-300"
+          : "bg-red-500/20 text-red-400"
+      }
+    `}
+  >
+    {
+      ticket.status === "VALID"
+        ? "Còn hiệu lực"
+        : ticket.status === "USED"
+        ? "Đã sử dụng"
+        : "Đã hủy"
+    }
+  </span>
 
-  <div>
-    Ghế:
-    <span className="ml-2 text-white">
-      {ticket.seat_code}
-    </span>
-  </div>
+</div>
 
-  <div>
-    Mã vé:
-    <span className="ml-2 text-sky-400">
-      {ticket.ticket_code}
-    </span>
-  </div>
+             <div
+  className="
+    grid
+    grid-cols-1
+    sm:grid-cols-2
+    gap-4
+    mb-6
+  "
+>
+
+  <div className="bg-white/5 rounded-2xl p-4">
+
+  <p className="text-gray-500 text-sm">
+    Khu vực
+  </p>
+
+  <p className="text-white font-semibold mt-1">
+    {ticket.zone_name}
+  </p>
+
+</div>
+
+  <div
+  className="
+    bg-white/5
+    rounded-2xl
+    p-4
+    sm:col-span-2
+  "
+>
+
+  <p className="text-gray-500 text-sm">
+    Mã vé
+  </p>
+
+  <p
+    className="
+      text-sky-400
+      font-semibold
+      mt-1
+      break-all
+    "
+  >
+    {ticket.ticket_code}
+  </p>
+
+</div>
 
 </div>
 
@@ -279,15 +344,20 @@ font-semibold
   }
   className="
   mt-6
-w-full
-py-4
-rounded-2xl
-bg-sky-500
-hover:bg-sky-400
-text-black
-font-bold
-text-lg
-transition
+  w-full
+  py-4
+  rounded-2xl
+
+  bg-gradient-to-r
+  from-sky-500
+  to-cyan-400
+
+  hover:opacity-90
+
+  text-black
+  font-bold
+  text-lg
+  transition
 "
 >
   Xem vé
