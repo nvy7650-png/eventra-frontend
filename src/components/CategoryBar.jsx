@@ -41,22 +41,25 @@ export default function CategoryBar() {
   return (
 
     <div
-      className="
-        border-t
-        border-white/10
-        bg-[#081120]
-      "
-    >
+  className="
+    sticky
+    top-[72px]
+    z-40
+    border-t
+    border-white/10
+    bg-[#081120]
+  "
+>
 
       <div
         className="
           max-w-6xl
           mx-auto
-          px-6
+          px-4 md:px-6
           py-4
           flex
           gap-4
-          overflow-x-auto
+          overflow-x-auto scrollbar-hide
         "
       >
 
@@ -70,9 +73,10 @@ export default function CategoryBar() {
     )
   }
   className="
-    px-5
-    py-2
-    rounded-2xl
+    px-4 md:px-5
+py-2
+rounded-xl md:rounded-2xl
+text-sm md:text-base
     bg-white/5
     border
     border-white/10
