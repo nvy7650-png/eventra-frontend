@@ -70,12 +70,13 @@ export default function EventCard({
 
     <div
       className="
+      cursor-pointer
         bg-[#0B1220]
         border border-white/10
         rounded-3xl
         overflow-hidden
         hover:border-sky-400
-        hover:-translate-y-1
+        md:hover:-translate-y-1
         transition-all
         duration-300
         flex
@@ -87,7 +88,7 @@ export default function EventCard({
       <div
   className="
     overflow-hidden
-    h-[260px]
+    aspect-video
     bg-[#081120]
   "
 >
@@ -108,17 +109,19 @@ export default function EventCard({
       </div>
 
       {/* CONTENT */}
-      <div className="p-5 flex flex-col flex-1">
+      <div className="p-4 md:p-5 flex flex-col flex-1">
 
 
         {/* TITLE */}
         <h3
           className="
-            text-lg
+            text-base
+            md:text-lg
             font-bold
             text-white
             line-clamp-2
-            min-h-[56px]
+            min-h-[48px]
+            md:min-h-[56px]
           "
         >
           {event.title}
@@ -170,6 +173,8 @@ export default function EventCard({
             className="
               text-green-400
               font-bold
+              text-base
+              md:text-lg
               mt-4
             "
           >
@@ -192,8 +197,10 @@ export default function EventCard({
             mt-auto
             pt-4
             w-full
-            py-3
-            rounded-2xl
+py-2.5
+md:py-3
+rounded-xl
+md:rounded-2xl
             bg-sky-500/10
             text-sky-400
             font-semibold
