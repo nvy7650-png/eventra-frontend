@@ -42,24 +42,32 @@ export default function CategoryBar() {
 
     <div
   className="
-    sticky
-    top-[72px]
-    z-40
-    border-t
-    border-white/10
-    bg-[#081120]
-  "
+sticky
+top-[64px]
+md:top-[72px]
+
+z-40
+
+border-t
+border-white/10
+
+bg-[#081120]/95
+backdrop-blur-md
+"
 >
 
       <div
         className="
-          max-w-6xl
+          max-w-7xl
           mx-auto
           px-4 md:px-6
           py-4
           flex
-          gap-4
-          overflow-x-auto scrollbar-hide
+          gap-2
+md:gap-4
+          overflow-x-auto 
+          overflow-y-hidden
+          scrollbar-hide
         "
       >
 
@@ -73,18 +81,22 @@ export default function CategoryBar() {
     )
   }
   className="
-    px-4 md:px-5
-py-2
+    px-4
+md:px-5
+
+py-2.5
+md:py-2.5
 rounded-xl md:rounded-2xl
 text-sm md:text-base
     bg-white/5
     border
     border-white/10
-    hover:bg-sky-500
-    hover:text-black
+    md:hover:bg-sky-500
+md:hover:text-black
     text-gray-300
     whitespace-nowrap
-    transition
+    transition-all
+duration-300
   "
 >
 
