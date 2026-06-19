@@ -133,7 +133,7 @@ export default function EventCard({
           className="
             text-gray-400
             text-sm
-            mt-3
+            mt-2
           "
         >
           📅 {formattedDate}
@@ -144,7 +144,7 @@ export default function EventCard({
           className="
             text-gray-500
             text-sm
-            mt-2
+            mt-1
             line-clamp-1
           "
         >
@@ -158,7 +158,7 @@ export default function EventCard({
             className="
               text-sky-400
               text-sm
-              mt-2
+              mt-1
             "
           >
             🎵 {event.category_name}
@@ -175,7 +175,7 @@ export default function EventCard({
               font-bold
               text-base
               md:text-lg
-              mt-4
+              mt-3
             "
           >
             Từ{" "}
