@@ -701,6 +701,8 @@ console.log("ZONE:", selectedZone);
 console.log("SEATS:", seats);
 console.log("TOTAL:", totalPrice);
 console.log("EXPIRES:", expiresAt);
+console.log("BEFORE NAVIGATE");
+
      navigate("/checkout", {
   state: {
   event,
