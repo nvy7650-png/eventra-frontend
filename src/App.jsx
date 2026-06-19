@@ -47,6 +47,7 @@ import AdminUserDetail from "./pages/AdminUserDetail";
 import AdminCategories from "./pages/AdminCategories";
 import Events from "./pages/Events";
 import Profile from "./pages/Profile";
+import MyOrders from "./pages/MyOrders";
 
 function App() {
 
@@ -274,6 +275,11 @@ function App() {
   element={
     <AdminUserDetail />
   }
+/>
+
+<Route
+  path="/my-orders"
+  element={<MyOrders />}
 />
 
 <Route
