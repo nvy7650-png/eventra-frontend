@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
+import { QRCodeCanvas } from "qrcode.react";
 
 export default function MyTickets() {
 
@@ -454,20 +455,18 @@ font-semibold
 
 </div>
 
-      <img
-        src={
-          selectedTicket.qr_code
-        }
-        alt="QR Code"
-        className="
-          w-64
-          h-64
-          mx-auto
-          bg-white
-          p-2
-          rounded-2xl
-        "
-      />
+      <div className="flex justify-center">
+
+  <div className="bg-white p-3 rounded-2xl">
+
+    <QRCodeCanvas
+      value={selectedTicket.ticket_code}
+      size={240}
+    />
+
+  </div>
+
+</div>
 
       <div
         className="
