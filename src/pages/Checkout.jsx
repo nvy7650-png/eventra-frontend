@@ -32,15 +32,6 @@ const user = JSON.parse(
   localStorage.getItem("user") || "null"
 );
 
-console.log(
-  "EXPIRES FROM STATE:",
-  expiresAt
-);
-
-console.log(
-  "NOW:",
-  new Date()
-);
 
   useEffect(() => {
 
@@ -65,18 +56,24 @@ const diff =
 
       if (diff <= 0) {
 
-        clearInterval(timer);
+  clearInterval(timer);
 
-        setTimeLeft(0);
+  setTimeLeft(0);
 
-        alert(
-          "Hết thời gian giữ ghế"
-        );
+  (async () => {
 
-        navigate(-1);
+    await releaseHold();
 
-        return;
-      }
+    alert(
+      "Hết thời gian giữ ghế"
+    );
+
+    navigate(-1);
+
+  })();
+
+  return;
+}
 
       setTimeLeft(diff);
 
