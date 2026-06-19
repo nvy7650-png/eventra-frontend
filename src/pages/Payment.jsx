@@ -26,6 +26,7 @@ useState(null);
 
 useEffect(() => {
 
+
 const fetchOrder =
   async () => {
 
@@ -40,9 +41,7 @@ const fetchOrder =
         await res.json();
 
       if (!res.ok) {
-
         return;
-
       }
 
       setOrder(data);
@@ -128,7 +127,6 @@ return (
 
 );
 
-
 }
 
 if (!order) {
@@ -146,7 +144,6 @@ return (
 
 );
 
-
 }
 
 return (
@@ -163,169 +160,185 @@ return (
         mb-8
       "
     >
-      Thanh toán đơn hàng
+      Thanh toán
     </h1>
 
     <div
       className="
         grid
         grid-cols-1
-        lg:grid-cols-3
+        lg:grid-cols-2
         gap-6
       "
     >
 
-      <div
-        className="
-          lg:col-span-2
-
-          bg-white/5
-          border
-          border-white/10
-
-          rounded-3xl
-          p-6
-          md:p-8
-        "
-      >
-
-        <div className="mb-6">
-
-          <div className="text-gray-400 mb-2">
-            Mã đơn hàng
-          </div>
-
-          <div className="text-xl font-bold">
-            #{order.id}
-          </div>
-
-        </div>
-
-        <div className="mb-6">
-
-          <div className="text-gray-400 mb-2">
-            Sự kiện
-          </div>
-
-          <div className="text-2xl font-black">
-            {order.event?.title}
-          </div>
-
-        </div>
-
-        <div className="mb-6">
-
-          <div className="text-gray-400 mb-2">
-            Khu vực
-          </div>
-
-          <div className="font-semibold text-sky-400">
-            {order.zone?.name}
-          </div>
-
-        </div>
-
-        <div>
-
-          <div className="text-gray-400 mb-3">
-            Ghế đã chọn
-          </div>
-
-          <div className="flex flex-wrap gap-2">
-
-            {order.seats?.map(
-              (seat) => (
-
-                <span
-                  key={seat.id}
-                  className="
-                    px-4
-                    py-2
-
-                    rounded-xl
-
-                    bg-sky-500/20
-                    border
-                    border-sky-500/30
-
-                    text-sky-400
-                    font-semibold
-                  "
-                >
-                  {seat.seat_code}
-                </span>
-
-              )
-            )}
-
-          </div>
-
-        </div>
-
-      </div>
+      {/* LEFT */}
 
       <div
         className="
           bg-white/5
           border
           border-white/10
-
           rounded-3xl
           p-6
-
-          h-fit
         "
       >
 
         <h2
           className="
-            text-xl
+            text-2xl
             font-bold
             mb-6
           "
         >
-          Chi tiết thanh toán
+          Quét mã QR
         </h2>
 
-        <div className="space-y-4">
+        <div
+          className="
+            bg-white
+            rounded-3xl
+            p-4
+            max-w-sm
+            mx-auto
+          "
+        >
 
-          <div className="flex justify-between">
+          <img
+            src={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=HOMIETICKET_ORDER_${order.id}`}
+            alt="QR Payment"
+            className="
+              w-full
+            "
+          />
 
-            <span className="text-gray-400">
-              Số lượng vé
-            </span>
+        </div>
 
-            <span>
-              {order.seats?.length || 0}
-            </span>
+        <div
+          className="
+            mt-6
+            p-4
+            rounded-2xl
+            bg-yellow-500/10
+            border
+            border-yellow-500/30
+            text-yellow-300
+          "
+        >
+          Quét mã QR hoặc nhấn nút bên phải để
+          chuyển tới cổng thanh toán VNPay.
+        </div>
+
+      </div>
+
+      {/* RIGHT */}
+
+      <div
+        className="
+          bg-white/5
+          border
+          border-white/10
+          rounded-3xl
+          p-6
+        "
+      >
+
+        <h2
+          className="
+            text-2xl
+            font-bold
+            mb-6
+          "
+        >
+          Thông tin thanh toán
+        </h2>
+
+        <div className="space-y-5">
+
+          <div>
+
+            <div className="text-gray-400">
+              Mã đơn hàng
+            </div>
+
+            <div className="text-xl font-bold">
+              #{order.id}
+            </div>
 
           </div>
 
-          <div className="border-t border-white/10 pt-4">
+          <div>
 
-            <div className="flex justify-between items-center">
-
-              <span className="text-lg font-semibold">
-                Tổng thanh toán
-              </span>
-
-              <span
-                className="
-                  text-3xl
-                  font-black
-                  text-sky-400
-                "
-              >
-                {Number(
-                  order.total_price
-                ).toLocaleString(
-                  "vi-VN"
-                )}
-                đ
-              </span>
-
+            <div className="text-gray-400">
+              Số lượng vé
             </div>
 
+            <div className="text-xl font-bold">
+              {order.seats?.length || 0}
+            </div>
+
+          </div>
+
+          <div>
+
+            <div className="text-gray-400">
+              Nội dung chuyển khoản
+            </div>
+
+            <div
+              className="
+                text-sky-400
+                font-bold
+                break-all
+              "
+            >
+              HOMIETICKET_{order.id}
+            </div>
+
+          </div>
+
+          <div
+            className="
+              border-t
+              border-white/10
+              pt-5
+            "
+          >
+
+            <div className="text-gray-400 mb-2">
+              Tổng thanh toán
+            </div>
+
+            <div
+              className="
+                text-4xl
+                font-black
+                text-sky-400
+              "
+            >
+              {Number(
+                order.total_price
+              ).toLocaleString(
+                "vi-VN"
+              )}đ
+            </div>
+
+          </div>
+
+          <div
+            className="
+              p-4
+              rounded-2xl
+              bg-red-500/10
+              border
+              border-red-500/30
+              text-red-300
+              text-sm
+            "
+          >
+            Sau khi thanh toán thành công,
+            hệ thống sẽ tự động phát hành vé
+            điện tử cho tài khoản của bạn.
           </div>
 
         </div>
@@ -340,21 +353,15 @@ return (
           className="
             w-full
             mt-8
-
             py-4
-
             rounded-2xl
-
             bg-gradient-to-r
             from-sky-500
             to-cyan-400
-
             text-black
             font-bold
-
             hover:opacity-90
             transition
-
             disabled:opacity-50
           "
         >
@@ -370,6 +377,7 @@ return (
   </div>
 
 </div>
+
 
 );
 
