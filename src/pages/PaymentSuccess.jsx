@@ -1,4 +1,4 @@
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 
 export default function PaymentSuccess() {
 
@@ -15,40 +15,44 @@ export default function PaymentSuccess() {
       "vnp_TxnRef"
     );
 
-  const amount =
-    searchParams.get(
-      "vnp_Amount"
-    );
-
-  const transactionNo =
-    searchParams.get(
-      "vnp_TransactionNo"
-    );
-
   const isSuccess =
     responseCode === "00";
 
   return (
 
-    <div className="min-h-screen bg-[#050816] text-white flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#050816] flex items-center justify-center px-4">
 
       <div
         className="
-          max-w-xl
           w-full
+          max-w-2xl
 
           bg-white/5
           border
           border-white/10
 
           rounded-3xl
+
           p-8
+          md:p-12
+
+          text-center
+          text-white
         "
       >
 
+        <div className="text-6xl mb-6">
+
+          {isSuccess
+            ? "🎉"
+            : "❌"}
+
+        </div>
+
         <h1
           className={`
-            text-4xl
+            text-3xl
+            md:text-5xl
             font-black
             mb-6
 
@@ -64,45 +68,144 @@ export default function PaymentSuccess() {
             : "Thanh toán thất bại"}
         </h1>
 
-        <div className="space-y-3">
+        {isSuccess ? (
 
-          <div>
-            Mã đơn:
-            <b>
-              {" "}
-              #{orderId}
-            </b>
-          </div>
+          <>
+            <p
+              className="
+                text-lg
+                text-gray-300
+                mb-3
+              "
+            >
+              Cảm ơn bạn đã đặt vé tại
+              HomieTicket.
+            </p>
 
-          <div>
-            Mã giao dịch:
-            <b>
-              {" "}
-              {transactionNo}
-            </b>
-          </div>
+            <p
+              className="
+                text-gray-400
+                mb-8
+              "
+            >
+              Vé điện tử của bạn đã được
+              tạo thành công.
+            </p>
 
-          <div>
-            Số tiền:
-            <b>
-              {" "}
-              {amount
-                ? Number(
-                    amount / 100
-                  ).toLocaleString(
-                    "vi-VN"
-                  ) + "đ"
-                : ""}
-            </b>
-          </div>
+            <div
+              className="
+                inline-flex
+                px-4
+                py-2
 
-          <div>
-            Response:
-            <b>
-              {" "}
-              {responseCode}
-            </b>
-          </div>
+                rounded-xl
+
+                bg-green-500/10
+                border
+                border-green-500/30
+
+                text-green-400
+                font-semibold
+
+                mb-8
+              "
+            >
+              Đơn hàng #{orderId}
+            </div>
+
+          </>
+
+        ) : (
+
+          <>
+            <p
+              className="
+                text-gray-300
+                mb-8
+              "
+            >
+              Thanh toán chưa hoàn tất.
+              Bạn có thể thử lại hoặc
+              chọn phương thức thanh toán
+              khác.
+            </p>
+          </>
+
+        )}
+
+        <div
+          className="
+            flex
+            flex-col
+            sm:flex-row
+
+            gap-4
+            justify-center
+          "
+        >
+
+          <Link
+            to="/"
+            className="
+              px-6
+              py-3
+
+              rounded-2xl
+
+              bg-white/10
+              border
+              border-white/10
+
+              hover:bg-white/20
+              transition
+            "
+          >
+            Trang chủ
+          </Link>
+
+          {isSuccess ? (
+
+            <Link
+              to="/my-tickets"
+              className="
+                px-6
+                py-3
+
+                rounded-2xl
+
+                bg-gradient-to-r
+                from-sky-500
+                to-cyan-400
+
+                text-black
+                font-bold
+              "
+            >
+              Vé của tôi
+            </Link>
+
+          ) : (
+
+            <Link
+              to={`/payment/${orderId}`}
+              className="
+                px-6
+                py-3
+
+                rounded-2xl
+
+                bg-gradient-to-r
+                from-red-500
+                to-pink-500
+
+                text-white
+                font-bold
+              "
+            >
+              Thử lại
+            </Link>
+
+          )}
 
         </div>
 
