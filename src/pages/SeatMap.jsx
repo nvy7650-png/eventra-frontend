@@ -400,8 +400,7 @@ async () => {
 
           totalPrice,
 
-          expiresAt:
-            holdData.expiresAt,
+          expiresAt: holdData.expires_at
         },
       }
     );
