@@ -1,21 +1,18 @@
 import { useState } from "react";
-import {
-  useNavigate,
-  useLocation
-} from "react-router-dom";
 
 export default function Navbar() {
 
   const navigate = useNavigate();
-
-const location =
-  useLocation();
 
 const [search,
   setSearch] =
   useState("");
 
   const [showMenu, setShowMenu] = useState(false);
+
+  const [showMobileMenu,
+  setShowMobileMenu] =
+  useState(false);
 
   // GET USER
   const user = JSON.parse(
@@ -57,11 +54,12 @@ const [search,
 
           <h1
             className="
-              text-4xl
-              font-black
-              tracking-widest
-              text-sky-400
-            "
+  text-2xl
+  md:text-4xl
+  font-black
+  tracking-widest
+  text-sky-400
+"
           >
             HOMIETICKET
           </h1>
@@ -73,7 +71,15 @@ const [search,
         </div>
 
         {/* SEARCH */}
-        <div className="hidden md:flex flex-1 mx-10">
+        <div
+  className="
+    hidden
+    md:flex
+    flex-1
+    max-w-md
+    mx-8
+  "
+>
 
           <input
   value={search}
@@ -89,8 +95,8 @@ const [search,
     ) {
 
       navigate(
-        `/events?keyword=${search}`
-      );
+  `/events?keyword=${encodeURIComponent(search)}`
+);
 
     }
 
@@ -113,16 +119,9 @@ const [search,
 
         </div>
 
-        {/* AUTH */}
-        <div
-  className="
-    hidden
-    md:flex
-    items-center
-    gap-3
-  "
->
-  <div className="md:hidden">
+        {/* MOBILE MENU BUTTON */}
+
+<div className="md:hidden">
 
   <button
     onClick={() =>
@@ -143,6 +142,27 @@ const [search,
   </button>
 
 </div>
+
+{/* AUTH DESKTOP */}
+
+<div
+  className="
+    hidden
+    md:flex
+    items-center
+    gap-3
+  "
+></div>
+
+        {/* AUTH */}
+        <div
+  className="
+    hidden
+    md:flex
+    items-center
+    gap-3
+  "
+>
 
           {!user ? (
 
