@@ -28,56 +28,19 @@ timeStyle: "short",
 )
 : "Sắp cập nhật";
 
-// STATUS
-const getStatus = () => {
 
-switch (event.status) {
-
-  case "APPROVED":
-    return {
-      text: "Đang mở bán",
-      color:
-        "bg-green-500/20 text-green-400 border-green-500/20",
-    };
-
-  case "PENDING":
-    return {
-      text: "Chờ duyệt",
-      color:
-        "bg-yellow-500/20 text-yellow-400 border-yellow-500/20",
-    };
-
-  case "CANCELLED":
-    return {
-      text: "Đã hủy",
-      color:
-        "bg-red-500/20 text-red-400 border-red-500/20",
-    };
-
-  default:
-    return {
-      text: event.status,
-      color:
-        "bg-gray-500/20 text-gray-400 border-gray-500/20",
-    };
-
-}
-
-};
-
-const status = getStatus();
 
 return (
 
-<section className="max-w-7xl mx-auto px-6 py-8">
-
+<section className="max-w-7xl mx-auto px-4 md:px-6 py-6 md:py-8">
   <div
     className="
       relative
       overflow-hidden
       rounded-3xl
 md:rounded-[36px]
-      h-[500px]
+      h-[420px]
+sm:h-[500px]
 md:h-[560px]
 lg:h-[650px]
       bg-black
@@ -107,8 +70,8 @@ lg:h-[650px]
         inset-0
         bg-gradient-to-r
 from-black
-via-black/90
-to-black/40
+via-black/80
+to-black/30
 
 md:bg-gradient-to-r
 md:from-black
@@ -126,7 +89,8 @@ md:to-transparent
         flex
         flex-col
         justify-center
-        px-6
+        px-5
+sm:px-6
 md:px-12
       "
     >
@@ -139,18 +103,21 @@ md:px-12
 
           <div
             className="
-             px-3
-py-1.5
-text-xs
-md:text-sm
-              rounded-full
-              bg-purple-500/20
-              border
-              border-purple-500/20
-              text-purple-300
-              text-sm
-              font-semibold
-            "
+  px-3
+  py-1.5
+
+  rounded-full
+
+  bg-purple-500/20
+  border
+  border-purple-500/20
+
+  text-purple-300
+  text-xs
+  md:text-sm
+
+  font-semibold
+"
           >
             {event.category_name}
           </div>
@@ -163,7 +130,7 @@ md:text-sm
       {/* TITLE */}
       <h1
         className="
-          text-3xl
+          text-2xl
 sm:text-4xl
 lg:text-6xl
           font-black
@@ -212,10 +179,11 @@ md:text-lg
 
         <p
   className="
-    text-sm
-    md:text-base
-    text-gray-400
-  "
+  text-sm
+  md:text-base
+  text-gray-400
+  line-clamp-2
+"
 >
           {event.location}
         </p>
@@ -241,7 +209,7 @@ md:text-2xl
       </div>
 
       {/* BUTTON */}
-      <div className="mt-10">
+      <div className="mt-8 md:mt-10">
 
         <button
           onClick={() =>
@@ -261,13 +229,11 @@ md:text-lg
 
 rounded-xl
 md:rounded-2xl
-            rounded-2xl
+          
             bg-sky-500
             hover:bg-sky-400
             text-black
             font-bold
-            line-clamp-2
-md:line-clamp-3
             transition
             shadow-lg
             shadow-sky-500/20
