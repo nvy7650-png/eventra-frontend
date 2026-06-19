@@ -104,7 +104,7 @@ export default function EventDetail() {
             alt={event.title}
             className="
               w-full
-              h-[220px]
+              h-[180px]
               md:h-[500px]
               object-cover
             "
@@ -122,260 +122,256 @@ export default function EventDetail() {
           />
         </div>
 
-        {/* Main */}
+       {/* Event Info */}
 
-        <div
-          className="
-            mt-8
-            grid
-            grid-cols-1
-            lg:grid-cols-3
-            gap-6
-          "
-        >
+<div className="mt-8">
 
-          {/* LEFT */}
+  <h1
+    className="
+      text-2xl
+      md:text-5xl
+      font-black
+      leading-tight
+      max-w-4xl
+    "
+  >
+    {event.title}
+  </h1>
 
-          <div
-            className="
-              lg:col-span-1
-              bg-white/5
-              border
-              border-white/10
-              rounded-3xl
-              p-6
-              h-fit
-            "
-          >
+  <div
+    className="
+      mt-4
+      inline-flex
+      items-center
+      gap-2
+      px-4
+      py-2
+      rounded-2xl
+      bg-white/5
+      border
+      border-white/10
+      text-gray-300
+    "
+  >
+    📍 {event.location}
+  </div>
 
-            <h1
-              className="
-                text-3xl
-                md:text-4xl
-                font-black
-                leading-tight
-              "
-            >
-              {event.title}
-            </h1>
+</div>
 
-            <div className="mt-6 space-y-4">
+{/* Ticket Section */}
 
-              <div>
-                <p className="text-gray-500 text-sm">
-                  Địa điểm
-                </p>
+<div className="mt-10">
 
-                <p className="text-white mt-1">
-                  {event.location}
-                </p>
-              </div>
+  <h2
+    className="
+      text-2xl
+      md:text-3xl
+      font-black
+      mb-6
+    "
+  >
+    Mua vé
+  </h2>
 
-            </div>
+  <div className="space-y-4">
+
+```
+{showtimes.map((st) => {
+
+  const start =
+    new Date(st.start_time);
+
+  const end =
+    new Date(st.end_time);
+
+  const isOpen =
+    expandedShowtime === st.id;
+
+  return (
+
+    <div
+      key={st.id}
+      className={`
+        rounded-3xl
+        overflow-hidden
+        border
+        transition
+
+        ${
+          isOpen
+            ? "border-sky-400 bg-[#0B1120]"
+            : "border-white/10 bg-[#0B1120]"
+        }
+      `}
+    >
+
+      <button
+        onClick={() =>
+          setExpandedShowtime(
+            isOpen ? null : st.id
+          )
+        }
+        className="
+          w-full
+          p-4
+          md:p-5
+          flex
+          justify-between
+          items-center
+        "
+      >
+
+        <div>
+
+          <div className="font-bold text-lg">
+
+            {start.toLocaleDateString(
+              "vi-VN"
+            )}
 
           </div>
 
-          {/* RIGHT */}
+          <div className="text-gray-400 mt-1">
 
-          <div className="lg:col-span-2">
+            {start.toLocaleTimeString(
+              "vi-VN",
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            )}
 
-            <h2
-              className="
-                text-2xl
-                md:text-3xl
-                font-black
-                mb-6
-              "
-            >
-              Mua vé
-            </h2>
+            {" - "}
 
-            <div className="space-y-4">
-
-              {showtimes.map((st) => {
-
-                const start = new Date(
-                  st.start_time
-                );
-
-                const end = new Date(
-                  st.end_time
-                );
-
-                const isOpen =
-                  expandedShowtime === st.id;
-
-                return (
-                  <div
-                    key={st.id}
-                    className={`
-                      rounded-3xl
-                      overflow-hidden
-                      border
-                      transition
-                      ${
-                        isOpen
-                          ? "border-sky-400 bg-[#0B1120]"
-                          : "border-white/10 bg-[#0B1120]"
-                      }
-                    `}
-                  >
-
-                    <button
-                      onClick={() =>
-                        setExpandedShowtime(
-                          isOpen ? null : st.id
-                        )
-                      }
-                      className="
-                        w-full
-                        p-5
-                        flex
-                        justify-between
-                        items-center
-                      "
-                    >
-
-                      <div>
-
-                        <div className="font-bold text-lg">
-                          {start.toLocaleDateString(
-                            "vi-VN"
-                          )}
-                        </div>
-
-                        <div className="text-gray-400 mt-1">
-
-                          {start.toLocaleTimeString(
-                            "vi-VN",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}
-
-                          {" - "}
-
-                          {end.toLocaleTimeString(
-                            "vi-VN",
-                            {
-                              hour: "2-digit",
-                              minute: "2-digit",
-                            }
-                          )}
-
-                        </div>
-
-                      </div>
-
-                      <div
-                        className={`
-                          text-xl
-                          transition
-                          ${
-                            isOpen
-                              ? "rotate-180"
-                              : ""
-                          }
-                        `}
-                      >
-                        ▼
-                      </div>
-
-                    </button>
-
-                    {isOpen && (
-
-                      <div className="border-t border-white/10">
-
-                        {zones.map((zone) => {
-
-                          const btn =
-                            getZoneButton(zone);
-
-                          const price =
-                            Number(
-                              zone.price
-                            ).toLocaleString(
-                              "vi-VN"
-                            );
-
-                          return (
-
-                            <div
-                              key={zone.id}
-                              className="
-                                m-4
-                                p-5
-                                rounded-2xl
-                                bg-white/5
-                                border
-                                border-white/10
-                                flex
-                                flex-col
-                                md:flex-row
-                                md:items-center
-                                md:justify-between
-                                gap-4
-                              "
-                            >
-
-                              <div>
-
-                                <div className="font-bold text-lg">
-                                  {zone.name}
-                                </div>
-
-                                <div className="text-sky-400 mt-1 font-semibold">
-                                  {price} đ
-                                </div>
-
-                              </div>
-
-                              <button
-                                disabled={btn.disabled}
-                                onClick={() =>
-                                  navigate(
-                                    `/event/${event.id}/seatmap?zone=${zone.id}&showtime=${st.id}`
-                                  )
-                                }
-                                className={`
-                                  px-6
-                                  py-3
-                                  rounded-2xl
-                                  font-bold
-                                  transition
-
-                                  ${
-                                    btn.disabled
-                                      ? "bg-white/10 text-gray-400"
-                                      : "bg-gradient-to-r from-sky-500 to-cyan-400 text-black hover:opacity-90"
-                                  }
-                                `}
-                              >
-                                {btn.text}
-                              </button>
-
-                            </div>
-
-                          );
-
-                        })}
-
-                      </div>
-
-                    )}
-
-                  </div>
-                );
-
-              })}
-
-            </div>
+            {end.toLocaleTimeString(
+              "vi-VN",
+              {
+                hour: "2-digit",
+                minute: "2-digit",
+              }
+            )}
 
           </div>
 
         </div>
+
+        <div
+          className={`
+            text-xl
+            transition
+            ${
+              isOpen
+                ? "rotate-180"
+                : ""
+            }
+          `}
+        >
+          ▼
+        </div>
+
+      </button>
+
+      {isOpen && (
+
+        <div className="border-t border-white/10">
+
+          {zones.map((zone) => {
+
+            const btn =
+              getZoneButton(zone);
+
+            const price =
+              Number(
+                zone.price
+              ).toLocaleString(
+                "vi-VN"
+              );
+
+            return (
+
+              <div
+                key={zone.id}
+                className="
+                  m-4
+                  p-5
+                  rounded-2xl
+                  bg-white/5
+                  border
+                  border-white/10
+                  flex
+                  flex-col
+                  md:flex-row
+                  md:items-center
+                  md:justify-between
+                  gap-4
+                "
+              >
+
+                <div>
+
+                  <div className="font-bold text-lg">
+                    {zone.name}
+                  </div>
+
+                  <div
+                    className="
+                      text-sky-400
+                      font-bold
+                      text-lg
+                      mt-1
+                    "
+                  >
+                    {price} đ
+                  </div>
+
+                </div>
+
+                <button
+                  disabled={btn.disabled}
+                  onClick={() =>
+                    navigate(
+                      `/event/${event.id}/seatmap?zone=${zone.id}&showtime=${st.id}`
+                    )
+                  }
+                  className={`
+                    px-5
+                    py-2.5
+                    md:px-6
+                    md:py-3
+                    rounded-2xl
+                    font-bold
+                    transition
+
+                    ${
+                      btn.disabled
+                        ? "bg-white/10 text-gray-400"
+                        : "bg-gradient-to-r from-sky-500 to-cyan-400 text-black hover:opacity-90"
+                    }
+                  `}
+                >
+                  {btn.text}
+                </button>
+
+              </div>
+
+            );
+
+          })}
+
+        </div>
+
+      )}
+
+    </div>
+
+  );
+
+})}
+```
+
+  </div>
+
+</div>
 
         {/* Description */}
 
@@ -400,7 +396,7 @@ export default function EventDetail() {
             Thông tin sự kiện
           </h2>
 
-          <p className="text-gray-300 whitespace-pre-wrap leading-8">
+          <p className="text-gray-300 whitespace-pre-wrap leading-7 md:leading-8">
             {event.description}
           </p>
 
