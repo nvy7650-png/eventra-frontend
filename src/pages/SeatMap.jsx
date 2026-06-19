@@ -343,17 +343,23 @@ async () => {
           },
 
           body: JSON.stringify(
-            {
-              user_id:
-                user.id,
+{
+  user_id:
+    user.id,
 
-              showtime_id:
-                showtimeId,
+  event_id:
+    eventId,
 
-              seat_ids:
-                selectedSeats,
-            }
-          ),
+  showtime_id:
+    showtimeId,
+
+  zone_id:
+    zoneId,
+
+  seat_ids:
+    selectedSeats,
+}
+),
         }
       );
 
