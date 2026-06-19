@@ -56,18 +56,25 @@ const [search,
         >
 
           <h1
-            className="
-  text-2xl
-  md:text-4xl
-  font-black
-  tracking-widest
-  text-sky-400
-"
-          >
+  className="
+    text-xl
+    md:text-4xl
+    font-black
+    tracking-wide
+    text-sky-400
+  "
+>
             HOMIETICKET
           </h1>
 
-          <p className="text-sm text-gray-400">
+          <p
+  className="
+    hidden
+    md:block
+    text-sm
+    text-gray-400
+  "
+>
             Event & Ticket Marketplace
           </p>
 
@@ -132,8 +139,7 @@ const [search,
   )
 }
     className="
-      px-4
-      py-2
+      px-3 py-2
       rounded-xl
       bg-sky-500
       text-black
@@ -336,11 +342,11 @@ const [search,
                   <button
   onClick={() => {
 
-    setShowMenu(false);
+  setShowMobileMenu(false);
 
-    navigate("/profile");
+  navigate("/profile");
 
-  }}
+}}
   className="
     w-full
     text-left
@@ -428,14 +434,20 @@ const [search,
       {/* MOBILE SEARCH */}
 
 <div
-  className="
-    sm:hidden
-    px-4
-    py-3
-    border-t
-    border-white/10
-    bg-[#081120]
-  "
+  className={`
+  sm:hidden
+  px-4
+  py-3
+  border-t
+  border-white/10
+  bg-[#081120]
+
+  ${
+    showMobileMenu
+      ? "hidden"
+      : "block"
+  }
+`}
 >
 
   <input
@@ -583,9 +595,13 @@ const [search,
         )}
 
         <button
-  onClick={() =>
-    navigate("/profile")
-  }
+  onClick={() => {
+
+  setShowMobileMenu(false);
+
+  navigate("/profile");
+
+}}
   className="
     w-full
     py-3
@@ -595,6 +611,41 @@ const [search,
 >
   Tài khoản của tôi
 </button>
+{user.role === "USER" && (
+
+  <>
+
+    <button
+      onClick={() =>
+        navigate("/my-orders")
+      }
+      className="
+        w-full
+        py-3
+        rounded-xl
+        bg-white/5
+      "
+    >
+      Đơn hàng của tôi
+    </button>
+
+    <button
+      onClick={() =>
+        navigate("/my-tickets")
+      }
+      className="
+        w-full
+        py-3
+        rounded-xl
+        bg-white/5
+      "
+    >
+      Vé của tôi
+    </button>
+
+  </>
+
+)}
 
         <button
           onClick={handleLogout}
