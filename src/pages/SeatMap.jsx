@@ -703,13 +703,18 @@ console.log("TOTAL:", totalPrice);
 console.log("EXPIRES:", expiresAt);
      navigate("/checkout", {
   state: {
-    event,
-    showtime,
-    zone,
-    seats,
-    totalPrice,
-    expiresAt,
-  },
+  event,
+  showtime,
+  zone: selectedZone,
+  seats: seats.filter(
+    (seat) =>
+      selectedSeats.includes(
+        seat.id
+      )
+  ),
+  totalPrice,
+  expiresAt,
+},
 });
 
     } catch (err) {
