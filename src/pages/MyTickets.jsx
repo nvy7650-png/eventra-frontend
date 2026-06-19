@@ -271,7 +271,7 @@ font-semibold
     </p>
 
     <p className="text-white mt-1">
-      {ticket.showtime}
+      {event.showtime}
     </p>
 
   </div>
@@ -288,7 +288,7 @@ font-semibold
     </p>
 
     <p className="text-white mt-1">
-      {ticket.location}
+      {event.location}
     </p>
 
   </div>
