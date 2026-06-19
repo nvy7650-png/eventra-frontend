@@ -13,20 +13,6 @@ import { useNavigate } from "react-router-dom";
 export default function Events() {
     const navigate = useNavigate();
 
-    const [categories, setCategories] =
-  useState([]);
-
-const [selectedCategory,
-  setSelectedCategory] =
-  useState(categoryId || "");
-
-const [priceFilter,
-  setPriceFilter] =
-  useState("");
-
-const [search, setSearch] =
-  useState("");
-
   const [events, setEvents] =
     useState([]);
 
@@ -40,6 +26,28 @@ const [search, setSearch] =
     searchParams.get(
       "category"
     );
+
+    const [categories, setCategories] =
+  useState([]);
+
+  const [selectedCategory,
+  setSelectedCategory] =
+  useState(categoryId || "");
+
+  const [priceFilter,
+  setPriceFilter] =
+  useState("");
+
+  const [search, setSearch] =
+  useState("");
+
+  useEffect(() => {
+
+  setSelectedCategory(
+    categoryId || ""
+  );
+
+}, [categoryId]);
 
     useEffect(() => {
 
