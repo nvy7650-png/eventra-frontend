@@ -7,6 +7,9 @@ export default function MyTickets() {
   const navigate = useNavigate();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedTicket,
+  setSelectedTicket] =
+  useState(null);
   const [activeTab,
   setActiveTab] =
   useState("ALL");
@@ -338,25 +341,19 @@ font-semibold
 
               <button
   onClick={() =>
-    navigate(`/ticket/${ticket.id}`)
+    setSelectedTicket(ticket)
   }
   className="
-  mt-6
-  w-full
-  py-4
-  rounded-2xl
-
-  bg-gradient-to-r
-  from-sky-500
-  to-cyan-400
-
-  hover:opacity-90
-
-  text-black
-  font-bold
-  text-lg
-  transition
-"
+    mt-6
+    w-full
+    py-4
+    rounded-2xl
+    bg-gradient-to-r
+    from-sky-500
+    to-cyan-400
+    text-black
+    font-bold
+  "
 >
   Xem vé
 </button>
@@ -368,6 +365,128 @@ font-semibold
         </div>
 
       </div>
+      {selectedTicket && (
+
+  <div
+    className="
+      fixed
+      inset-0
+      bg-black/80
+      backdrop-blur-sm
+      z-50
+      flex
+      items-center
+      justify-center
+      p-4
+    "
+  >
+
+    <div
+      className="
+        w-full
+        max-w-lg
+        bg-[#0B1220]
+        rounded-3xl
+        border
+        border-white/10
+        p-6
+        relative
+      "
+    >
+
+      <button
+        onClick={() =>
+          setSelectedTicket(null)
+        }
+        className="
+          absolute
+          top-4
+          right-4
+          text-gray-400
+          text-2xl
+        "
+      >
+        ×
+      </button>
+
+      <h2
+        className="
+          text-2xl
+          font-black
+          text-sky-400
+          mb-4
+        "
+      >
+        Vé điện tử
+      </h2>
+
+      <h3
+        className="
+          text-lg
+          font-bold
+          mb-4
+        "
+      >
+        {selectedTicket.event_title}
+      </h3>
+
+      <img
+        src={
+          selectedTicket.qr_code
+        }
+        alt="QR Code"
+        className="
+          w-64
+          h-64
+          mx-auto
+          bg-white
+          p-2
+          rounded-2xl
+        "
+      />
+
+      <div
+        className="
+          mt-6
+          space-y-3
+        "
+      >
+
+        <div>
+
+          <p className="text-gray-500">
+            Mã vé
+          </p>
+
+          <p className="text-sky-400">
+            {
+              selectedTicket.ticket_code
+            }
+          </p>
+
+        </div>
+
+        <div>
+
+          <p className="text-gray-500">
+            Trạng thái
+          </p>
+
+          <p>
+            {
+              selectedTicket.status
+            }
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+)}
 
     </div>
 
