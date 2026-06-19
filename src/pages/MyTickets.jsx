@@ -7,6 +7,9 @@ export default function MyTickets() {
   const navigate = useNavigate();
   const [tickets, setTickets] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [activeTab,
+  setActiveTab] =
+  useState("ALL");
 
   useEffect(() => {
 
@@ -51,17 +54,88 @@ export default function MyTickets() {
   "
 >
 
-        <h1
+       <div>
+
+  <h1
+    className="
+      text-3xl
+      md:text-4xl
+      font-black
+    "
+  >
+    Vé của tôi
+  </h1>
+
+  <p
+    className="
+      text-gray-400
+      mt-2
+    "
+  >
+    Quản lý tất cả vé đã mua
+  </p>
+
+</div>
+
+        <div
   className="
-    text-2xl
-    md:text-4xl
-    font-black
-    text-sky-400
+    flex
+    flex-wrap
+    gap-3
     mb-8
   "
 >
-          Vé của tôi
-        </h1>
+
+  {[
+    {
+      key: "ALL",
+      label: "Tất cả",
+    },
+    {
+      key: "VALID",
+      label: "Còn hiệu lực",
+    },
+    {
+      key: "USED",
+      label: "Đã sử dụng",
+    },
+    {
+      key: "CANCELLED",
+      label: "Đã hủy",
+    },
+  ].map((tab) => (
+
+    <button
+      key={tab.key}
+      onClick={() =>
+        setActiveTab(
+          tab.key
+        )
+      }
+      className={`
+        px-5
+        py-2
+        rounded-full
+        transition
+
+        ${
+          activeTab ===
+          tab.key
+
+            ? "bg-sky-500 text-black font-bold"
+
+            : "bg-white/5 text-gray-300"
+        }
+      `}
+    >
+
+      {tab.label}
+
+    </button>
+
+  ))}
+
+</div>
 
         {loading && (
           <div>Đang tải...</div>
@@ -83,7 +157,24 @@ export default function MyTickets() {
   "
 >
 
-          {tickets.map((ticket) => (
+          {tickets
+
+.filter((ticket) => {
+
+  if (
+    activeTab === "ALL"
+  ) {
+
+    return true;
+
+  }
+
+  return (
+    ticket.status ===
+    activeTab
+  );
+
+}).map((ticket) => (
 
             <div
               key={ticket.id}
