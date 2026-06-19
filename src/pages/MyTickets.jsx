@@ -430,6 +430,30 @@ font-semibold
         {selectedTicket.event_title}
       </h3>
 
+      <div className="space-y-3 mb-6">
+
+  <div>
+    <p className="text-gray-500">
+      Khu vực
+    </p>
+
+    <p className="text-white">
+      {selectedTicket.zone_name || "-"}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-gray-500">
+      Ghế
+    </p>
+
+    <p className="text-white">
+      {selectedTicket.seat_code || "-"}
+    </p>
+  </div>
+
+</div>
+
       <img
         src={
           selectedTicket.qr_code
