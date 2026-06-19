@@ -28,6 +28,16 @@ const seconds =
   expiresAt,
 } = location.state || {};
 
+console.log(
+  "EXPIRES FROM STATE:",
+  expiresAt
+);
+
+console.log(
+  "NOW:",
+  new Date()
+);
+
   useEffect(() => {
 
   if (!expiresAt) return;
@@ -35,13 +45,19 @@ const seconds =
   const timer =
     setInterval(() => {
 
-      const diff =
-        Math.floor(
-          (
-            new Date(expiresAt) -
-            new Date()
-          ) / 1000
-        );
+      const expireTime =
+  new Date(expiresAt).getTime();
+
+const now =
+  Date.now();
+
+const diff =
+  Math.max(
+    0,
+    Math.floor(
+      (expireTime - now) / 1000
+    )
+  );
 
       if (diff <= 0) {
 
