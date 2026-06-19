@@ -1,20 +1,72 @@
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import {
+  useState,
+  useEffect,
+} from "react";
 
 export default function Checkout() {
+  const [timeLeft, setTimeLeft] =
+  useState(0);
+
+  const minutes =
+  Math.floor(timeLeft / 60);
+
+const seconds =
+  timeLeft % 60;
 
   const location = useLocation();
   const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
 
-  const {
-    event,
-    showtime,
-    zone,
-    seats,
-    totalPrice,
-  } = location.state || {};
+  useEffect(() => {
+
+  if (!expiresAt) return;
+
+  const timer =
+    setInterval(() => {
+
+      const diff =
+        Math.floor(
+          (
+            new Date(expiresAt) -
+            new Date()
+          ) / 1000
+        );
+
+      if (diff <= 0) {
+
+        clearInterval(timer);
+
+        setTimeLeft(0);
+
+        alert(
+          "Hết thời gian giữ ghế"
+        );
+
+        navigate(-1);
+
+        return;
+      }
+
+      setTimeLeft(diff);
+
+    }, 1000);
+
+  return () =>
+    clearInterval(timer);
+
+}, [expiresAt]);
+
+ const {
+  event,
+  showtime,
+  zone,
+  seats,
+  totalPrice,
+  expiresAt,
+} = location.state || {};
 
   const handleCreateOrder = async () => {
 
@@ -267,6 +319,34 @@ return (
           >
             Chi tiết thanh toán
           </h3>
+          <div
+  className="
+    mb-6
+    p-4
+    rounded-2xl
+    bg-red-500/10
+    border
+    border-red-500/30
+  "
+>
+
+  <div className="text-sm text-gray-400">
+    Thời gian giữ ghế
+  </div>
+
+  <div
+    className="
+      text-3xl
+      font-black
+      text-red-400
+    "
+  >
+    {String(minutes).padStart(2, "0")}
+    :
+    {String(seconds).padStart(2, "0")}
+  </div>
+
+</div>
 
           <div className="space-y-4">
 

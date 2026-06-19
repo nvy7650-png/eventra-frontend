@@ -691,20 +691,18 @@ if (!holdRes.ok) {
   return;
 }
 
-      navigate("/checkout", {
-        state: {
-          event,
-          showtime,
-          zone: selectedZone,
-          seats: seats.filter(
-            (seat) =>
-              selectedSeats.includes(
-                seat.id
-              )
-          ),
-          totalPrice,
-        },
-      });
+const expiresAt =
+  data.expires_at;
+     navigate("/checkout", {
+  state: {
+    event,
+    showtime,
+    zone,
+    seats,
+    totalPrice,
+    expiresAt,
+  },
+});
 
     } catch (err) {
 
