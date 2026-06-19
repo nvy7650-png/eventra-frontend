@@ -28,6 +28,10 @@ const seconds =
   expiresAt,
 } = location.state || {};
 
+const user = JSON.parse(
+  localStorage.getItem("user") || "null"
+);
+
 console.log(
   "EXPIRES FROM STATE:",
   expiresAt
@@ -83,7 +87,37 @@ const diff =
 
 }, [expiresAt]);
 
- 
+ const releaseHold = async () => {
+
+  try {
+
+    await fetch(
+      `${import.meta.env.VITE_API_URL}/api/holds/release`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_id: user?.id,
+          showtime_id: showtime.id,
+          seat_ids: seats.map(
+            (seat) => seat.id
+          ),
+        }),
+      }
+    );
+
+  } catch (err) {
+
+    console.log(
+      "Release hold error:",
+      err
+    );
+
+  }
+
+};
 
   const handleCreateOrder = async () => {
 
@@ -422,7 +456,13 @@ return (
           <div className="mt-8 space-y-3">
 
             <button
-              onClick={() => navigate(-1)}
+              onClick={async () => {
+
+    await releaseHold();
+
+    navigate(-1);
+
+  }}
               className="
                 w-full
                 py-4
