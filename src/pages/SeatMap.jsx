@@ -275,7 +275,7 @@ border-white/10
 "
 >
 
-        <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="max-w-7xl mx-auto px-6 py-4 md:py-6">
 
           <h1
 className="
@@ -317,18 +317,22 @@ text-sm
       </div>
 
       {/* MAIN */}
-      <div className="
+<div
+className="
 max-w-7xl
 mx-auto
-grid
-grid-cols-1
-xl:grid-cols-[minmax(0,1fr)_420px]
+
+xl:grid
+xl:grid-cols-[minmax(0,1fr)_380px]
+
 gap-6
+
 px-4
 md:px-6
 py-6
 md:py-10
-">
+"
+>
 
         {/* LEFT */}
         <div className="lg:col-span-3">
@@ -507,39 +511,33 @@ md:h-10
         </div>
 
         {/* RIGHT SIDEBAR */}
-        <div
-className="
-bg-white/5
-backdrop-blur-xl
-border
-border-white/10
-rounded-3xl
-p-6
+         <div
+    className="
+      hidden
+      xl:flex
 
-xl:sticky
-xl:top-24
+      bg-white/5
+      backdrop-blur-xl
+      border
+      border-white/10
 
-flex
-flex-col
+      rounded-3xl
+      p-6
 
-h-fit
-"
->
+      flex-col
+
+      sticky
+      top-24
+
+      h-fit
+    "
+  >
 
           <h2 className="text-2xl font-bold text-sky-400 mb-6">
             Thông tin đặt vé
           </h2>
 
           <div className="mb-6">
-
-  <p className="text-white font-semibold">
-    {event?.title}
-  </p>
-
-  <p className="text-gray-400 text-sm mt-2">
-    {formatShowtime()}
-  </p>
-
 </div>
 
           {/* (removed hold timer UI) */}
@@ -547,10 +545,6 @@ h-fit
           {/* SELECTED SEATS */}
           <div className="mb-6">
             <div className="mb-6">
-
-  <p className="text-gray-500 text-sm">
-    Khu vực
-  </p>
 
   <p className="font-bold text-sky-400 mt-1">
     {selectedZone?.name}
