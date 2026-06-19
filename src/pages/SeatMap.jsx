@@ -341,17 +341,9 @@ lg:pb-10
 className="
 flex
 flex-col
-lg:grid
-lg:grid-cols-[minmax(0,1fr)_360px]
-gap-8
 "
 >
-          <h2 className="text-2xl font-bold text-sky-400 mb-6">
-            Thông tin đặt vé
-          </h2>
 
-          <div className="mb-6">
-</div>
         {/* LEFT */}
         <div>
 
@@ -532,16 +524,22 @@ md:h-10
 
 
           {/* SELECTED SEATS */}
-          <div className="mb-6">
-            <div
-  className="
-    mb-6
-    p-4
-    rounded-2xl
-    bg-white/5
-    border
-    border-white/10
-  "
+          <div
+className="
+lg:sticky
+lg:top-24
+
+h-fit
+
+bg-[#0B1220]
+border
+border-white/10
+
+rounded-3xl
+
+p-5
+md:p-6
+"
 >
 
   <p className="font-bold text-lg">
