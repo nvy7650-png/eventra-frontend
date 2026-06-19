@@ -512,26 +512,29 @@ md:h-10
 
         {/* RIGHT SIDEBAR */}
          <div
-    className="
-hidden
-lg:flex
+  className="
+flex
+flex-col
+
+mt-8
+lg:mt-0
 
 bg-white/5
 backdrop-blur-xl
+
 border
 border-white/10
 
 rounded-3xl
-p-6
+p-5
+md:p-6
 
-flex-col
-
-sticky
-top-24
+lg:sticky
+lg:top-24
 
 h-fit
 "
-  >
+>
 
           <h2 className="text-2xl font-bold text-sky-400 mb-6">
             Thông tin đặt vé
