@@ -322,8 +322,8 @@ className="
 max-w-[1600px]
 mx-auto
 
-xl:grid
-xl:grid-cols-[minmax(0,1fr)_340px]
+lg:grid
+lg:grid-cols-[minmax(0,1fr)_360px]
 
 gap-8
 
@@ -335,7 +335,7 @@ md:py-10
 >
 
         {/* LEFT */}
-        <div className="lg:col-span-3">
+        <div>
 
           {/* STAGE */}
           <div className="flex justify-center mb-20">
@@ -513,24 +513,24 @@ md:h-10
         {/* RIGHT SIDEBAR */}
          <div
     className="
-      hidden
-      xl:flex
+hidden
+lg:flex
 
-      bg-white/5
-      backdrop-blur-xl
-      border
-      border-white/10
+bg-white/5
+backdrop-blur-xl
+border
+border-white/10
 
-      rounded-3xl
-      p-6
+rounded-3xl
+p-6
 
-      flex-col
+flex-col
 
-      sticky
-      top-24
+sticky
+top-24
 
-      h-fit
-    "
+h-fit
+"
   >
 
           <h2 className="text-2xl font-bold text-sky-400 mb-6">
@@ -544,7 +544,28 @@ md:h-10
 
           {/* SELECTED SEATS */}
           <div className="mb-6">
-            <div className="mb-6">
+            <div
+  className="
+    mb-6
+    p-4
+    rounded-2xl
+    bg-white/5
+    border
+    border-white/10
+  "
+>
+
+  <p className="font-bold text-lg">
+    {event?.title}
+  </p>
+
+  <p className="text-gray-400 text-sm mt-2">
+    {formatShowtime()}
+  </p>
+
+  <p className="text-sky-400 mt-3 font-semibold">
+    {selectedZone?.name}
+  </p>
 
 </div>
 
