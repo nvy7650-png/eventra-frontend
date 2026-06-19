@@ -100,10 +100,6 @@ export default function SeatMap() {
     return selectedSeats.includes(seat.id);
   };
 
-  const visibleSeats = seats.filter((seat) => {
-    if (seat.hold_status !== "ACTIVE") return true;
-    return isSeatHeldByCurrentUser(seat);
-  });
 
   // Build groupedSeats by zone_id -> row_label -> seats (use backend fields directly)
   const filteredSeats =
@@ -165,27 +161,6 @@ const totalPrice =
     selectedZone?.price || 0
   );
 
-const showtimeDate =
-  showtime?.start_time
-    ? new Date(
-        showtime.start_time
-      ).toLocaleDateString(
-        "vi-VN"
-      )
-    : "";
-
-const showtimeTime =
-  showtime?.start_time
-    ? new Date(
-        showtime.start_time
-      ).toLocaleTimeString(
-        "vi-VN",
-        {
-          hour: "2-digit",
-          minute: "2-digit",
-        }
-      )
-    : "";
 
 const formatShowtime = () => {
 
@@ -302,11 +277,30 @@ border-white/10
 
         <div className="max-w-7xl mx-auto px-6 py-8">
 
-          <h1 className="text-4xl font-bold text-sky-400 mb-3">
+          <h1
+className="
+text-2xl
+md:text-4xl
+font-black
+text-white
+mb-2
+line-clamp-2
+"
+>
             {event?.title}
           </h1>
 
-          <div className="flex flex-wrap gap-6 text-gray-400 text-sm">
+         <div
+className="
+flex
+flex-col
+md:flex-row
+gap-2
+md:gap-6
+text-gray-400
+text-sm
+"
+>
 
             <span>
               {event?.location}
@@ -347,21 +341,32 @@ md:py-10
           <div className="flex justify-center mb-20">
 
             <div className="
-              w-full
-max-w-[700px]
-h-[90px]
+w-full
+max-w-[750px]
+h-[80px]
 md:h-[120px]
-              bg-gradient-to-b
-              from-gray-600
-              to-gray-800
-              rounded-b-[300px]
-              flex
-              items-center
-              justify-center
-              text-3xl
-              font-bold
-              shadow-2xl
-            ">
+
+bg-gradient-to-b
+from-sky-400/30
+to-sky-600/10
+
+border
+border-sky-400/20
+
+rounded-b-[999px]
+
+flex
+items-center
+justify-center
+
+text-lg
+md:text-2xl
+font-black
+tracking-[0.3em]
+
+shadow-[0_0_50px_rgba(56,189,248,0.15)]
+"
+>
               STAGE
             </div>
 
@@ -439,8 +444,9 @@ md:h-[120px]
 h-9
 md:w-10
 md:h-10
-                      rounded-lg
-                      text-xs
+                      rounded-xl
+                      text-[11px]
+                      shadow-md
                       font-semibold
                       transition
                       border
