@@ -230,84 +230,101 @@ font-semibold
 
              <div
   className="
-    grid
-    grid-cols-1
-    sm:grid-cols-2
-    gap-4
+    space-y-4
     mb-6
   "
 >
 
-  <div className="bg-white/5 rounded-2xl p-4">
+  <div>
 
-  <p className="text-gray-500 text-sm">
-    Khu vực
-  </p>
+    <p
+      className="
+        text-gray-500
+        text-sm
+      "
+    >
+      Mã vé
+    </p>
 
-  <p className="text-white font-semibold mt-1">
-    {ticket.zone_name}
-  </p>
+    <p
+      className="
+        text-sky-400
+        font-semibold
+        mt-1
+        break-all
+      "
+    >
+      {ticket.ticket_code}
+    </p>
+
+  </div>
+
+  <div>
+
+    <p
+      className="
+        text-gray-500
+        text-sm
+      "
+    >
+      Thời gian diễn ra
+    </p>
+
+    <p className="text-white mt-1">
+      {ticket.showtime}
+    </p>
+
+  </div>
+
+  <div>
+
+    <p
+      className="
+        text-gray-500
+        text-sm
+      "
+    >
+      Địa điểm
+    </p>
+
+    <p className="text-white mt-1">
+      {ticket.location}
+    </p>
+
+  </div>
 
 </div>
 
-  <div
-  className="
-    bg-white/5
-    rounded-2xl
-    p-4
-    sm:col-span-2
-  "
->
 
-  <p className="text-gray-500 text-sm">
-    Mã vé
-  </p>
+             <div className="mb-6">
 
-  <p
-    className="
-      text-sky-400
+  <span
+    className={`
+      px-4
+      py-2
+      rounded-full
+      text-sm
       font-semibold
-      mt-1
-      break-all
-    "
+
+      ${
+        ticket.status === "VALID"
+          ? "bg-green-500/20 text-green-400"
+          : ticket.status === "USED"
+          ? "bg-gray-500/20 text-gray-300"
+          : "bg-red-500/20 text-red-400"
+      }
+    `}
   >
-    {ticket.ticket_code}
-  </p>
-
-</div>
-
-</div>
-
-
-              <div className="mb-2">
-                Trạng thái:
-                {" "}
-                <span
-  className={`
-    px-3
-    py-1
-    rounded-full
-    text-xs
-    font-bold
-
-    ${
+    {
       ticket.status === "VALID"
-        ? "bg-green-500/20 text-green-400"
+        ? "Còn hiệu lực"
         : ticket.status === "USED"
-        ? "bg-gray-500/20 text-gray-300"
-        : "bg-red-500/20 text-red-400"
+        ? "Đã sử dụng"
+        : "Đã hủy"
     }
-  `}
->
-  {
-    ticket.status === "VALID"
-      ? "Còn hiệu lực"
-      : ticket.status === "USED"
-      ? "Đã sử dụng"
-      : "Đã hủy"
-  }
-</span>
-              </div>
+  </span>
+
+</div>
 
               <button
   onClick={() =>
