@@ -38,9 +38,6 @@ export default function Events() {
   setPriceFilter] =
   useState("");
 
-  const [search, setSearch] =
-  useState("");
-
   useEffect(() => {
 
   setSelectedCategory(
@@ -244,13 +241,6 @@ export default function Events() {
 
 .filter((event) => {
 
-  const matchSearch =
-
-    event.title
-      ?.toLowerCase()
-      .includes(
-        search.toLowerCase()
-      );
 
   const matchCategory =
 
