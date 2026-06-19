@@ -54,7 +54,7 @@ export default function MyTickets() {
   "
 >
 
-       <div>
+       <div className="mb-8">
 
   <h1
     className="
@@ -113,10 +113,11 @@ export default function MyTickets() {
         )
       }
       className={`
-        px-5
-        py-2
-        rounded-full
-        transition
+        px-6
+py-3
+rounded-2xl
+min-w-[140px]
+font-semibold
 
         ${
           activeTab ===
@@ -143,9 +144,32 @@ export default function MyTickets() {
 
         {!loading &&
           tickets.length === 0 && (
-            <div>
-              Bạn chưa có vé nào
-            </div>
+           <div
+  className="
+    bg-[#0B1220]
+    border
+    border-white/10
+    rounded-3xl
+    p-12
+    text-center
+  "
+>
+
+  <h3
+    className="
+      text-2xl
+      font-bold
+      mb-3
+    "
+  >
+    Chưa có vé nào
+  </h3>
+
+  <p className="text-gray-400">
+    Các vé đã mua sẽ xuất hiện tại đây
+  </p>
+
+</div>
           )}
 
         <div
@@ -176,34 +200,47 @@ export default function MyTickets() {
 
 }).map((ticket) => (
 
-            <div
-              key={ticket.id}
-              className="
-  bg-[#0B1220]
-  border
-  border-white/10
-  rounded-3xl
-  overflow-hidden
-"
-            >
+           <div
+  key={ticket.id}
+  className="
+    bg-[#0B1220]
+    border
+    border-white/10
+    rounded-3xl
+    overflow-hidden
+    hover:border-sky-500
+    transition
+  "
+>
 
               <div className="text-2xl font-bold text-sky-400 mb-3">
                 {ticket.event_title}
               </div>
 
-              <div className="mb-2">
-                Khu vực: {ticket.zone_name}
-              </div>
+              <div className="space-y-2 text-gray-300">
 
-              <div className="mb-2">
-                Ghế: {ticket.seat_code}
-              </div>
+  <div>
+    Khu vực:
+    <span className="ml-2 text-white">
+      {ticket.zone_name}
+    </span>
+  </div>
 
-              <div className="mb-2">
-                Mã vé:
-                {" "}
-                {ticket.ticket_code}
-              </div>
+  <div>
+    Ghế:
+    <span className="ml-2 text-white">
+      {ticket.seat_code}
+    </span>
+  </div>
+
+  <div>
+    Mã vé:
+    <span className="ml-2 text-sky-400">
+      {ticket.ticket_code}
+    </span>
+  </div>
+
+</div>
 
 
               <div className="mb-2">
@@ -241,15 +278,16 @@ export default function MyTickets() {
     navigate(`/ticket/${ticket.id}`)
   }
   className="
-  mt-5
-  w-full
-  py-3
-  rounded-2xl
-  bg-sky-500
-  hover:bg-sky-400
-  text-black
-  font-bold
-  transition
+  mt-6
+w-full
+py-4
+rounded-2xl
+bg-sky-500
+hover:bg-sky-400
+text-black
+font-bold
+text-lg
+transition
 "
 >
   Xem vé
