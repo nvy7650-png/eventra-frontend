@@ -19,6 +19,15 @@ const seconds =
 
   const [loading, setLoading] = useState(false);
 
+  const {
+  event,
+  showtime,
+  zone,
+  seats,
+  totalPrice,
+  expiresAt,
+} = location.state || {};
+
   useEffect(() => {
 
   if (!expiresAt) return;
@@ -58,14 +67,7 @@ const seconds =
 
 }, [expiresAt]);
 
- const {
-  event,
-  showtime,
-  zone,
-  seats,
-  totalPrice,
-  expiresAt,
-} = location.state || {};
+ 
 
   const handleCreateOrder = async () => {
 
