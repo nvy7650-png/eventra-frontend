@@ -509,13 +509,14 @@ return (
 
     {/* HEADER */}
 
-    <div className="mb-8">
+    <div className="
+mb-4
+md:mb-8
+">
 
       <h1
         className="
-          text-2xl
-          md:text-4xl
-
+         text-xl md:text-4xl
           font-black
         "
       >
@@ -558,19 +559,42 @@ return (
           "
         >
 
-          <div
-            className="
-              text-center
+         <div
+className="
+w-full
 
-              text-gray-400
+h-20
+md:h-28
 
-              font-semibold
+rounded-b-[50px]
 
-              mb-8
-            "
-          >
-            STAGE
-          </div>
+bg-gradient-to-b
+from-sky-500/20
+to-sky-500/5
+
+border
+border-sky-500/20
+
+flex
+items-center
+justify-center
+
+mb-8
+"
+>
+  <span
+    className="
+    text-xl
+    md:text-3xl
+
+    font-black
+
+    tracking-[8px]
+    "
+  >
+    STAGE
+  </span>
+</div>
 
           <div className="space-y-8">
 
