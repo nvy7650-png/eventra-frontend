@@ -32,59 +32,7 @@ const user = JSON.parse(
   localStorage.getItem("user") || "null"
 );
 
-
-  useEffect(() => {
-
-  if (!expiresAt) return;
-
-  const timer =
-    setInterval(() => {
-
-      const expireTime =
-  new Date(expiresAt).getTime();
-
-const now =
-  Date.now();
-
-const diff =
-  Math.max(
-    0,
-    Math.floor(
-      (expireTime - now) / 1000
-    )
-  );
-
-      if (diff <= 0) {
-
-  clearInterval(timer);
-
-  setTimeLeft(0);
-
-  (async () => {
-
-    await releaseHold();
-
-    alert(
-      "Hết thời gian giữ ghế"
-    );
-
-    navigate(-1);
-
-  })();
-
-  return;
-}
-
-      setTimeLeft(diff);
-
-    }, 1000);
-
-  return () =>
-    clearInterval(timer);
-
-}, [expiresAt]);
-
- const releaseHold = async () => {
+const releaseHold = async () => {
 
   console.log(
     "RELEASE HOLD START"
@@ -149,6 +97,59 @@ const diff =
   }
 
 };
+
+  useEffect(() => {
+
+  if (!expiresAt) return;
+
+  const timer =
+    setInterval(() => {
+
+      const expireTime =
+  new Date(expiresAt).getTime();
+
+const now =
+  Date.now();
+
+const diff =
+  Math.max(
+    0,
+    Math.floor(
+      (expireTime - now) / 1000
+    )
+  );
+
+      if (diff <= 0) {
+
+  clearInterval(timer);
+
+  setTimeLeft(0);
+
+  (async () => {
+
+    await releaseHold();
+
+    alert(
+      "Hết thời gian giữ ghế"
+    );
+
+    navigate(-1);
+
+  })();
+
+  return;
+}
+
+      setTimeLeft(diff);
+
+    }, 1000);
+
+  return () =>
+    clearInterval(timer);
+
+}, [expiresAt]);
+
+ 
 
   const handleCreateOrder = async () => {
 
@@ -502,6 +503,14 @@ return (
     navigate(-1);
 
   }}
+  className="
+    w-full
+    py-4
+    rounded-2xl
+    bg-white/10
+    hover:bg-white/15
+    transition
+  "
 >
               Quay lại
             </button>
