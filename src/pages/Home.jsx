@@ -163,7 +163,7 @@ return (
   )}
 
   {/* NEWEST EVENTS */}
-  <section className="max-w-7xl mx-auto px-6 pb-12">
+  <section className="max-w-7xl mx-auto px-4 md:px-6 pb-12">
 
     <h2 className="text-2xl md:text-3xl font-black mb-6">
       Sự kiện mới nhất
@@ -214,7 +214,7 @@ gap-6
   </section>
 
   {/* UPCOMING EVENTS */}
-  <section className="max-w-7xl mx-auto px-6 pb-12">
+  <section className="max-w-7xl mx-auto px-4 md:px-6 pb-12">
 
     <h2 className="text-2xl md:text-3xl font-black mb-6">
       Sự kiện sắp diễn ra
@@ -265,15 +265,18 @@ gap-6
   </section>
 
   {/* ALL EVENTS */}
-  <section className="max-w-7xl mx-auto px-6 pb-20">
+  <section className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
 
     <div
       className="
-        flex
-        items-center
-        justify-between
-        mb-6
-      "
+flex
+flex-col
+sm:flex-row
+sm:items-center
+sm:justify-between
+gap-4
+mb-6
+"
     >
 
       <h2 className="text-2xl md:text-3xl font-black">
