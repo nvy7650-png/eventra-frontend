@@ -362,6 +362,16 @@ const [search,
         setShowMenu(false);
         navigate("/my-orders");
       }}
+      className="
+        w-full
+        text-left
+        px-5
+        py-4
+        hover:bg-[#111827]
+        transition
+        text-white
+        font-medium
+      "
     >
       Đơn hàng của tôi
     </button>
@@ -371,6 +381,16 @@ const [search,
         setShowMenu(false);
         navigate("/my-tickets");
       }}
+      className="
+        w-full
+        text-left
+        px-5
+        py-4
+        hover:bg-[#111827]
+        transition
+        text-white
+        font-medium
+      "
     >
       Vé của tôi
     </button>
@@ -563,6 +583,20 @@ const [search,
         )}
 
         <button
+  onClick={() =>
+    navigate("/profile")
+  }
+  className="
+    w-full
+    py-3
+    rounded-xl
+    bg-white/5
+  "
+>
+  Tài khoản của tôi
+</button>
+
+        <button
           onClick={handleLogout}
           className="
             w-full
@@ -573,6 +607,7 @@ const [search,
         >
           Đăng xuất
         </button>
+
 
       </>
 
