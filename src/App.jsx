@@ -48,6 +48,7 @@ import AdminCategories from "./pages/AdminCategories";
 import Events from "./pages/Events";
 import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
+import PaymentSuccess from "./pages/PaymentSuccess";
 
 function App() {
 
@@ -351,6 +352,13 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
 <Route
   path="/profile"
   element={<Profile />}
+/>
+
+<Route
+  path="/payment-success"
+  element={
+    <PaymentSuccess />
+  }
 />
       </Routes>
 
