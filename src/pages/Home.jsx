@@ -37,17 +37,28 @@ fetch(
           event.status === "APPROVED"
       );
 
+      const heroEvents =
+  [...approvedEvents]
+
+    .sort(
+      (a, b) =>
+        (b.sold_count || 0) -
+        (a.sold_count || 0)
+    )
+
+    .slice(0, 8);
+
     setEvents(approvedEvents);
 
     const newest = [...approvedEvents]
 
       .sort(
-        (a, b) =>
-          new Date(b.created_at) -
-          new Date(a.created_at)
-      )
+  (a, b) =>
+    new Date(b.approved_at || b.created_at) -
+    new Date(a.approved_at || a.created_at)
+)
 
-      .slice(0, 6);
+      .slice(0, 8);
 
     setLatestEvents(newest);
 
@@ -67,7 +78,7 @@ fetch(
           new Date(b.first_showtime)
       )
 
-      .slice(0, 6);
+    .slice(0, 8);
 
     setUpcomingEvents(upcoming);
 
@@ -136,19 +147,16 @@ return (
   {(upcomingEvents.length > 0 ||
     latestEvents.length > 0) && (
 
-    <HeroSection
-      event={
-        upcomingEvents[0] ||
-        latestEvents[0]
-      }
-    />
+   <HeroSection
+  event={heroEvents[0]}
+/>
 
   )}
 
   {/* NEWEST EVENTS */}
   <section className="max-w-7xl mx-auto px-6 pb-12">
 
-    <h2 className="text-3xl font-black mb-6">
+    <h2 className="text-2xl md:text-3xl font-black mb-6">
       Sự kiện mới nhất
     </h2>
 
@@ -157,10 +165,10 @@ return (
       <div
         className="
           grid
-          grid-cols-1
-          md:grid-cols-2
-          xl:grid-cols-2
-          gap-8
+grid-cols-1
+sm:grid-cols-2
+xl:grid-cols-3
+gap-6
         "
       >
 
@@ -199,7 +207,7 @@ return (
   {/* UPCOMING EVENTS */}
   <section className="max-w-7xl mx-auto px-6 pb-12">
 
-    <h2 className="text-3xl font-black mb-6">
+    <h2 className="text-2xl md:text-3xl font-black mb-6">
       Sự kiện sắp diễn ra
     </h2>
 
@@ -208,10 +216,10 @@ return (
       <div
         className="
           grid
-          grid-cols-1
-          md:grid-cols-2
-          xl:grid-cols-3
-          gap-8
+grid-cols-1
+sm:grid-cols-2
+xl:grid-cols-3
+gap-6
         "
       >
 
@@ -259,8 +267,8 @@ return (
       "
     >
 
-      <h2 className="text-3xl font-black">
-        Tất cả sự kiện
+      <h2 className="text-2xl md:text-3xl font-black">
+        Khám phá sự kiện
       </h2>
 
       <button
@@ -278,7 +286,7 @@ return (
           transition
         "
       >
-        Xem thêm
+       Xem tất cả →
       </button>
 
     </div>
@@ -288,21 +296,23 @@ return (
       <div
         className="
           grid
-          grid-cols-1
-          md:grid-cols-2
-          xl:grid-cols-3
-          gap-8
+grid-cols-1
+sm:grid-cols-2
+xl:grid-cols-3
+gap-6
         "
       >
 
-        {events.map((event) => (
+        {events
+  .slice(0, 9)
+  .map((event) => (
 
-          <EventCard
-            key={event.id}
-            event={event}
-          />
+    <EventCard
+      key={event.id}
+      event={event}
+    />
 
-        ))}
+))}
 
       </div>
 
