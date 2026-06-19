@@ -46,6 +46,7 @@ import AdminUsers from "./pages/AdminUsers";
 import AdminUserDetail from "./pages/AdminUserDetail";
 import AdminCategories from "./pages/AdminCategories";
 import Events from "./pages/Events";
+import Profile from "./pages/Profile";
 
 function App() {
 
@@ -341,6 +342,10 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
   element={<TicketDetail />}
 />
 
+<Route
+  path="/profile"
+  element={<Profile />}
+/>
       </Routes>
 
 
