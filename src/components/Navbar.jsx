@@ -334,26 +334,48 @@ const [search,
 
                   {/* ACCOUNT */}
                   <button
-                    onClick={() => {
+  onClick={() => {
 
-                      setShowMenu(false);
+    setShowMenu(false);
 
-                      navigate("/");
+    navigate("/profile");
 
-                    }}
-                    className="
-                      w-full
-                      text-left
-                      px-5
-                      py-4
-                      hover:bg-[#111827]
-                      transition
-                      text-white
-                      font-medium
-                    "
-                  >
-                    Tài khoản của tôi
-                  </button>
+  }}
+  className="
+    w-full
+    text-left
+    px-5
+    py-4
+    hover:bg-[#111827]
+    transition
+    text-white
+    font-medium
+  "
+>
+  Tài khoản của tôi
+</button>
+
+                  {user.role === "USER" && (
+  <>
+    <button
+      onClick={() => {
+        setShowMenu(false);
+        navigate("/my-orders");
+      }}
+    >
+      Đơn hàng của tôi
+    </button>
+
+    <button
+      onClick={() => {
+        setShowMenu(false);
+        navigate("/my-tickets");
+      }}
+    >
+      Vé của tôi
+    </button>
+  </>
+)}
 
                   {/* LOGOUT */}
                   <button
