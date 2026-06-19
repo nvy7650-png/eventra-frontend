@@ -48,49 +48,139 @@ export default function EventDetail() {
   const now = new Date();
 
   const getZoneButton = (zone) => {
-    const saleStart = zone.sale_start ? new Date(zone.sale_start) : null;
-    const saleEnd = zone.sale_end ? new Date(zone.sale_end) : null;
 
-    // Priority order:
-    // 1) Not started
-    if (saleStart && now < saleStart) {
-      return { disabled: true, text: "Chưa mở bán", color: "gray" };
-    }
+  const saleStart =
+    zone.sale_start
+      ? new Date(zone.sale_start)
+      : null;
 
-    // 2) Sale finished
-    if (saleEnd && now > saleEnd) {
-      return { disabled: true, text: "Đã kết thúc", color: "red" };
-    }
+  const saleEnd =
+    zone.sale_end
+      ? new Date(zone.sale_end)
+      : null;
 
-    // 3) Sold out (only when sale window is active)
-    const inSaleWindow = (!saleStart || now >= saleStart) && (!saleEnd || now <= saleEnd);
-    if (inSaleWindow && typeof zone.remaining === "number" && zone.remaining <= 0) {
-      return { disabled: true, text: "Hết vé", color: "red" };
-    }
+  if (
+    saleStart &&
+    now < saleStart
+  ) {
 
-    // 4) Available
-    return { disabled: false, text: "Mua vé", color: "green" };
+    return {
+      disabled: true,
+      text: "Chưa mở bán",
+      color: "gray",
+    };
+
+  }
+
+  if (
+    saleEnd &&
+    now > saleEnd
+  ) {
+
+    return {
+      disabled: true,
+      text: "Đã kết thúc",
+      color: "red",
+    };
+
+  }
+
+  if (
+    typeof zone.remaining === "number" &&
+    zone.remaining <= 0
+  ) {
+
+    return {
+      disabled: true,
+      text: "Hết vé",
+      color: "red",
+    };
+
+  }
+
+  return {
+    disabled: false,
+    text: "Mua vé",
+    color: "green",
   };
+
+};
 
   return (
     <div className="min-h-screen bg-[#050816] text-white">
       <Navbar />
 
-      <div className="max-w-6xl mx-auto p-10">
+      <div
+  className="
+    max-w-6xl
+    mx-auto
+    px-4
+    md:px-6
+    py-6
+    md:py-10
+  "
+>
 
         <img
           src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
           alt={event.title}
-          className="w-full h-[400px] object-cover rounded-3xl"
+          className="
+w-full
+h-[220px]
+md:h-[420px]
+object-cover
+rounded-3xl
+"
         />
 
-        <div className="mt-8 flex items-start justify-between gap-6">
+        <div className="mt-8 max-w-4xl">
 
           <div className="flex-1">
-            <h1 className="text-4xl font-black">{event.title}</h1>
-            <p className="text-gray-400 mt-3">{event.category_name}</p>
-            <p className="text-gray-400 mt-2">{event.location}</p>
-            <div className="mt-6 bg-[#0B1120] border border-white/10 rounded-3xl p-6">
+            <h1
+  className="
+    text-3xl
+    md:text-5xl
+    font-black
+    leading-tight
+  "
+>{event.title}</h1>
+            <div
+  className="
+    flex
+    flex-wrap
+    gap-3
+    mt-5
+  "
+>
+
+  <span
+    className="
+      px-4
+      py-2
+      rounded-full
+      bg-sky-500/10
+      text-sky-400
+    "
+  >
+    {event.category_name}
+  </span>
+
+  <span
+    className="
+      px-4
+      py-2
+      rounded-full
+      bg-white/5
+      text-gray-300
+    "
+  >
+    {event.location}
+  </span>
+
+</div>
+            <div className="mt-6 bg-white/5
+backdrop-blur-sm
+ border border-white/10 rounded-3xl p-6">
               <h2 className="text-xl font-bold mb-3">Mô tả</h2>
               <p className="text-gray-300 whitespace-pre-wrap">{event.description}</p>
             </div>
@@ -152,22 +242,20 @@ export default function EventDetail() {
               >
                 <div>
                   <div className="font-bold text-lg">
-                    📅 {start.toLocaleDateString("vi-VN")}
-                  </div>
+  {start.toLocaleDateString("vi-VN")}
+</div>
 
                   <div className="text-gray-400 mt-1">
-                    🕒
-                    {" "}
-                    {start.toLocaleTimeString("vi-VN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                    {" - "}
-                    {end.toLocaleTimeString("vi-VN", {
-                      hour: "2-digit",
-                      minute: "2-digit",
-                    })}
-                  </div>
+  {start.toLocaleTimeString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}
+  {" - "}
+  {end.toLocaleTimeString("vi-VN", {
+    hour: "2-digit",
+    minute: "2-digit",
+  })}
+</div>
                 </div>
 
           <div
@@ -203,22 +291,22 @@ export default function EventDetail() {
 
               return (
                 <div
-                    key={zone.id}
-                    className="
-                      mx-4
-                      my-4
-                      p-5
-                      rounded-2xl
-                      bg-[#081018]
-                      border
-                      border-white/5
-                      hover:border-sky-400/30
-                      transition
-                      flex
-                      justify-between
-                      items-center
-                    "
-                  >
+  className="
+    mx-4
+    my-4
+    p-6
+    rounded-2xl
+    bg-white/5
+    border
+    border-white/10
+    flex
+    flex-col
+    md:flex-row
+    md:items-center
+    md:justify-between
+    gap-4
+  "
+>
 
                   <div>
                     <div className="font-bold">
@@ -238,16 +326,26 @@ export default function EventDetail() {
                       )
                     }
                     className={`
-                      px-5
-                      py-2
-                      rounded-xl
-                      font-semibold
-                      ${
-                        btn.disabled
-                          ? "bg-gray-700 text-gray-400"
-                          : "bg-green-500 text-black"
-                      }
-                    `}
+px-6
+py-3
+rounded-2xl
+font-semibold
+transition
+
+${
+  btn.disabled
+
+    ? "bg-white/10 text-gray-400"
+
+    : `
+      bg-gradient-to-r
+      from-sky-500
+      to-cyan-400
+      text-black
+      hover:opacity-90
+    `
+}
+`}
                   >
                     {btn.text}
                   </button>
