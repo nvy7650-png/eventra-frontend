@@ -12,121 +12,167 @@ import {
 
 export default function SeatMap() {
 
-  const { eventId } =
-    useParams();
+const { eventId } = useParams();
 
-  const navigate = useNavigate();
+const navigate = useNavigate();
 
-  const [searchParams] = useSearchParams();
-  const zoneId = searchParams.get("zone");
+const [searchParams] = useSearchParams();
 
-  const [event, setEvent] =
-    useState(null);
+const zoneId =
+searchParams.get("zone");
 
-  const [zones, setZones] =
-    useState([]);
-  const selectedZone =
-  zones.find(
-    (z) =>
-      String(z.id) === String(zoneId)
-  ) || null;
-  const [seats, setSeats] = useState([]);
+const [event, setEvent] =
+useState(null);
 
-  const [showtimeId, setShowtimeId] = useState(null);
-  const [showtime, setShowtime] = useState(null);
+const [zones, setZones] =
+useState([]);
 
-  const [loading, setLoading] = useState(true);
+const selectedZone =
+zones.find(
+(z) =>
+String(z.id) ===
+String(zoneId)
+) || null;
 
-  const [selectedSeats, setSelectedSeats] = useState([]);
+const [seats, setSeats] =
+useState([]);
 
-  useEffect(() => {
-    setShowtimeId(searchParams.get("showtime"));
-  }, [searchParams]);
+const [showtimeId,
+setShowtimeId] =
+useState(null);
 
-  useEffect(() => {
+const [showtime,
+setShowtime] =
+useState(null);
 
-  if (!showtimeId) return;
+const [loading,
+setLoading] =
+useState(true);
 
-  fetch(
-    `${import.meta.env.VITE_API_URL}/api/events/showtimes/${showtimeId}/seats`
+const [selectedSeats,
+setSelectedSeats] =
+useState([]);
+
+useEffect(() => {
+
+setShowtimeId(
+  searchParams.get(
+    "showtime"
   )
-      .then((res) => res.json())
-      .then((data) => {
-        const normalized = (Array.isArray(data) ? data : []).map((seat) => ({
-          ...seat,
-          id: seat.seat_id ?? seat.id,
-        }));
-        setSeats(normalized);
-      })
-      .catch((err) => {
-        console.log(err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
-  }, [showtimeId]);
-
-  useEffect(() => {
-    if (!eventId || !showtimeId) {
-      setShowtime(null);
-      return;
-    }
-
-    fetch(`${import.meta.env.VITE_API_URL}/api/events/${eventId}`)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log("SEATS:", data);
-        setEvent(data.event || null);
-        setZones(data.zones || []);
-        const match = (data.showtimes || []).find(
-          (st) => String(st.id) === String(showtimeId)
-        );
-        setShowtime(match || null);
-      })
-      .catch((err) => {
-        console.log(err);
-        setShowtime(null);
-      });
-  }, [eventId, showtimeId]);
-
-  const getCurrentUser = () =>
-    JSON.parse(localStorage.getItem("user") || "null");
-
-  const isSeatHeldByCurrentUser = (seat) => {
-    const user = getCurrentUser();
-    if (seat.hold_user_id != null && user?.id != null) {
-      return String(seat.hold_user_id) === String(user.id);
-    }
-    return selectedSeats.includes(seat.id);
-  };
+);
 
 
-  // Build groupedSeats by zone_id -> row_label -> seats (use backend fields directly)
-  const filteredSeats =
-  seats.filter(
-    (seat) =>
-      String(seat.zone_id) ===
-      String(zoneId)
-  );
-  const groupedSeats = filteredSeats.reduce((acc, seat) => {
-    const zoneId = seat.zone_id ?? "default";
-    if (!acc[zoneId]) acc[zoneId] = {};
+}, [searchParams]);
 
-    // Use backend `row_label` directly (do not set fallbacks)
-    const rowLabel = seat.row_label;
-    if (!acc[zoneId][rowLabel]) acc[zoneId][rowLabel] = [];
+useEffect(() => {
 
-    acc[zoneId][rowLabel].push(seat);
+if (!showtimeId) return;
 
-    return acc;
-  }, {});
+fetch(
+  `${import.meta.env.VITE_API_URL}/api/events/showtimes/${showtimeId}/seats`
+)
+  .then((res) => res.json())
+
+  .then((data) => {
+
+    const normalized =
+      (Array.isArray(data)
+        ? data
+        : []
+      ).map((seat) => ({
+        ...seat,
+        id:
+          seat.seat_id ??
+          seat.id,
+      }));
+
+    setSeats(
+      normalized
+    );
+
+  })
+
+  .catch(console.log)
+
+  .finally(() => {
+
+    setLoading(false);
+
+  });
 
 
-  const handleSelectSeat = (seat) => {
+}, [showtimeId]);
+
+useEffect(() => {
+
+
+if (
+  !eventId ||
+  !showtimeId
+) {
+
+  setShowtime(null);
+
+  return;
+
+}
+
+fetch(
+  `${import.meta.env.VITE_API_URL}/api/events/${eventId}`
+)
+
+  .then((res) =>
+    res.json()
+  )
+
+  .then((data) => {
+
+    setEvent(
+      data.event || null
+    );
+
+    setZones(
+      data.zones || []
+    );
+
+    const match =
+      (
+        data.showtimes || []
+      ).find(
+        (st) =>
+          String(st.id) ===
+          String(showtimeId)
+      );
+
+    setShowtime(
+      match || null
+    );
+
+  })
+
+  .catch((err) => {
+
+    console.log(err);
+
+    setShowtime(null);
+
+  });
+
+}, [
+eventId,
+showtimeId,
+]);
+
+const handleSelectSeat =
+(seat) => {
+
 
   if (!seat) return;
 
-  if (seat.status === "SOLD") {
+  if (
+    seat.status ===
+    "SOLD"
+  ) {
     return;
   }
 
@@ -144,6 +190,7 @@ export default function SeatMap() {
     );
 
     return;
+
   }
 
   setSelectedSeats(
@@ -155,454 +202,684 @@ export default function SeatMap() {
 
 };
 
+
 const totalPrice =
-  selectedSeats.length *
-  Number(
-    selectedZone?.price || 0
-  );
+selectedSeats.length *
+Number(
+selectedZone?.price || 0
+);
+
+const filteredSeats =
+seats.filter(
+(seat) =>
+String(
+seat.zone_id
+) ===
+String(zoneId)
+);
+
+const groupedSeats =
+filteredSeats.reduce(
+(acc, seat) => {
 
 
-const formatShowtime = () => {
+    const zone =
+      seat.zone_id ??
+      "default";
+
+    if (!acc[zone]) {
+      acc[zone] = {};
+    }
+
+    const rowLabel =
+      seat.row_label;
+
+    if (
+      !acc[zone][rowLabel]
+    ) {
+
+      acc[zone][rowLabel] =
+        [];
+
+    }
+
+    acc[zone][rowLabel].push(
+      seat
+    );
+
+    return acc;
+
+  },
+  {}
+);
+
+
+const formatShowtime =
+() => {
 
   if (!showtime) {
+
     return showtimeId
       ? `#${showtimeId}`
       : "";
+
   }
 
   const start =
     showtime.start_time
-      ? new Date(showtime.start_time)
+      ? new Date(
+          showtime.start_time
+        )
       : null;
 
   const end =
     showtime.end_time
-      ? new Date(showtime.end_time)
+      ? new Date(
+          showtime.end_time
+        )
       : null;
 
-  const dateText =
-    start
-      ? start.toLocaleDateString("vi-VN")
-      : "";
-
-  const startTime =
-    start
-      ? start.toLocaleTimeString(
-          "vi-VN",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        )
-      : "";
-
-  const endTime =
-    end
-      ? end.toLocaleTimeString(
-          "vi-VN",
-          {
-            hour: "2-digit",
-            minute: "2-digit",
-          }
-        )
-      : "";
-
-  if (
-    dateText &&
-    startTime &&
-    endTime
-  ) {
-    return `${dateText} · ${startTime} - ${endTime}`;
+  if (!start) {
+    return "";
   }
 
-  return `#${showtimeId}`;
+  return `${start.toLocaleDateString(
+    "vi-VN"
+  )} • ${start.toLocaleTimeString(
+    "vi-VN",
+    {
+      hour: "2-digit",
+      minute: "2-digit",
+    }
+  )}${
+    end
+      ? ` - ${end.toLocaleTimeString(
+          "vi-VN",
+          {
+            hour: "2-digit",
+            minute: "2-digit",
+          }
+        )}`
+      : ""
+  }`;
 
 };
 
-  const getSeatColor = (seat) => {
 
-  if (selectedSeats.includes(seat.id)) {
-    return `
-      bg-sky-500
-      text-black
-      border-sky-400
-    `;
+const handleContinue =
+async () => {
+
+
+  if (
+    selectedSeats.length === 0
+  ) {
+
+    alert(
+      "Vui lòng chọn ghế"
+    );
+
+    return;
+
   }
 
-  if (seat.status === "SOLD") {
+  const user =
+    JSON.parse(
+      localStorage.getItem(
+        "user"
+      ) || "null"
+    );
+
+  try {
+
+    const holdRes =
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/api/holds/bulk`,
+        {
+          method: "POST",
+
+          headers: {
+            "Content-Type":
+              "application/json",
+          },
+
+          body: JSON.stringify(
+            {
+              user_id:
+                user.id,
+
+              showtime_id:
+                showtimeId,
+
+              seat_ids:
+                selectedSeats,
+            }
+          ),
+        }
+      );
+
+    const holdData =
+      await holdRes.json();
+
+    if (
+      !holdRes.ok
+    ) {
+
+      alert(
+        holdData.message ||
+          "Một hoặc nhiều ghế đang được thanh toán"
+      );
+
+      return;
+
+    }
+
+    navigate(
+      "/checkout",
+      {
+        state: {
+          event,
+          showtime,
+          zone:
+            selectedZone,
+
+          seats:
+            seats.filter(
+              (
+                seat
+              ) =>
+                selectedSeats.includes(
+                  seat.id
+                )
+            ),
+
+          totalPrice,
+
+          expiresAt:
+            holdData.expiresAt,
+        },
+      }
+    );
+
+  } catch (err) {
+
+    console.log(
+      err
+    );
+
+    alert(
+      "Không thể giữ ghế"
+    );
+
+  }
+
+};
+
+
+const getSeatClass =
+(seat) => {
+
+  if (
+    seat.status ===
+    "SOLD"
+  ) {
+
     return `
       bg-gray-700
       text-gray-400
       cursor-not-allowed
     `;
+
+  }
+
+  if (
+    selectedSeats.includes(
+      seat.id
+    )
+  ) {
+
+    return `
+      bg-sky-500
+      text-white
+      border-sky-400
+    `;
+
   }
 
   return `
-    bg-green-500/20
-    text-green-400
-    border-green-500/40
-    hover:bg-green-500/30
+    bg-[#111827]
+    border-white/10
+    text-white
+
+    hover:border-sky-400
+    hover:bg-sky-500/20
   `;
+
 };
 
-  if (loading) {
 
-    return (
-
-      <div className="min-h-screen bg-gray-950 text-white flex items-center justify-center">
-
-        Đang tải sơ đồ ghế...
-
-      </div>
-
-    );
-
-  }
-
-  return (
-    <div className="min-h-screen bg-gray-950 text-white">
-
-      {/* HEADER */}
-      <div
-className="
-sticky
-top-0
-z-30
-backdrop-blur-xl
-bg-[#050816]/90
-border-b
-border-white/10
-"
->
-
-        <div className="max-w-7xl mx-auto px-6 py-4 md:py-6">
-
-          <h1
-className="
-text-2xl
-md:text-4xl
-font-black
-text-white
-mb-2
-line-clamp-2
-"
->
-            {event?.title}
-          </h1>
-
-         <div
-className="
-flex
-flex-col
-md:flex-row
-gap-2
-md:gap-6
-text-gray-400
-text-sm
-"
->
-
-            <span>
-              {event?.location}
-            </span>
-
-<span>
-    {formatShowtime()}
-</span>
-
-          </div>
-
-        </div>
-
-      </div>
-
-      {/* MAIN */}
-<div
-className="
-max-w-[1600px]
-mx-auto
-
-lg:grid
-lg:grid-cols-[minmax(0,1fr)_360px]
-
-gap-8
-
-px-4
-md:px-6
-py-6
-md:py-10
-
-pb-28
-lg:pb-10
-"
->
- {/* RIGHT SIDEBAR */}
-         <div
-className="
-flex
-flex-col
-"
->
-
-        {/* LEFT */}
-        <div>
-
-          {/* STAGE */}
-<div className="flex justify-center mb-10 md:mb-20">
-            <div className="
-w-full
-max-w-[750px]
-h-[80px]
-md:h-[120px]
-
-bg-gradient-to-b
-from-sky-400/30
-to-sky-600/10
-
-border
-border-sky-400/20
-
-rounded-b-[999px]
-
-flex
-items-center
-justify-center
-
-text-lg
-md:text-2xl
-font-black
-tracking-[0.3em]
-
-shadow-[0_0_50px_rgba(56,189,248,0.15)]
-"
->
-              STAGE
-            </div>
-
-          </div>
+if (loading) {
 
 
-          {/* SEAT MAP */}
+return (
+  <div
+    className="
+      min-h-screen
+      bg-[#050816]
 
-<div className="space-y-12">
+      flex
+      items-center
+      justify-center
 
-  {Object.entries(groupedSeats).map(
-    ([zoneId, rows]) => (
+      text-white
+    "
+  >
+    Đang tải...
+  </div>
+);
 
-      <div
-        key={zoneId}
-        className="mb-10"
+
+}
+
+return (
+
+
+<div className="min-h-screen bg-[#050816] text-white">
+
+  <div
+    className="
+      max-w-7xl
+      mx-auto
+
+      px-4
+      md:px-6
+
+      py-6
+      md:py-10
+
+      pb-32
+      lg:pb-10
+    "
+  >
+
+    {/* HEADER */}
+
+    <div className="mb-8">
+
+      <h1
+        className="
+          text-2xl
+          md:text-4xl
+
+          font-black
+        "
       >
+        {event?.title}
+      </h1>
 
-        <h3 className="text-center text-xl font-bold mb-8 text-sky-400">
-          {
-            zones.find(
-              (z) =>
-                String(z.id) ===
-                String(zoneId)
-            )?.name
-          }
-        </h3>
+      <p
+        className="
+          text-gray-400
+          mt-2
+        "
+      >
+        {formatShowtime()}
+      </p>
 
-        {Object.entries(rows).map(
-          ([rowLabel, rowSeats]) => (
+    </div>
 
-            <div
-              key={rowLabel}
-              className="
-                flex
-                justify-center
-                items-center
-                gap-2
-                mb-3
-              "
-            >
+    <div
+      className="
+        lg:grid
+        lg:grid-cols-[1fr_320px]
+        gap-8
+      "
+    >
 
-              <div
-                className="
-                  w-10
-                  text-center
-                  text-sky-400
-                  font-bold
-                "
-              >
-                {rowLabel}
-              </div>
+      {/* LEFT */}
+      <div>
 
-              {rowSeats
-                .sort(
-                  (a, b) =>
-                    a.seat_number -
-                    b.seat_number
-                )
-                .map((seat) => (
+        <div
+          className="
+            bg-[#0B1220]
 
-                  <button
-                    key={seat.id}
-                    onClick={() =>
-                      handleSelectSeat(
-                        seat
-                      )
-                    }
-                    disabled={
-                      seat.status ===
-                      "SOLD"
-                    }
-                    className={`
-                      w-9
-h-9
-md:w-10
-md:h-10
-                      rounded-xl
-                      text-[11px]
-                      shadow-md
-                      font-semibold
-                      transition
-                      border
-                      border-black/20
-                      ${getSeatColor(
-                        seat
-                      )}
-                    `}
-                  >
-                    {seat.seat_number}
-                  </button>
+            border
+            border-white/10
 
-                ))}
+            rounded-3xl
 
-            </div>
+            p-6
+            md:p-8
+          "
+        >
 
-          )
-        )}
+          <div
+            className="
+              text-center
 
-      </div>
+              text-gray-400
 
-    )
-  )}
+              font-semibold
 
-</div>
-
-          {/* LEGEND */}
-          <div className="flex flex-wrap justify-center gap-8 mt-16">
-
-            <div className="flex items-center gap-3">
-
-              <div className="w-5 h-5 rounded bg-green-500"></div>
-
-              <span className="text-sm text-gray-300">
-                Available
-              </span>
-
-            </div>
-
-            <div className="flex items-center gap-3">
-
-              <div className="w-5 h-5 rounded bg-black"></div>
-
-              <span className="text-sm text-gray-300">
-                Selected
-              </span>
-
-            </div>
-
-            <div className="flex items-center gap-3">
-
-              <div className="w-5 h-5 rounded bg-gray-500"></div>
-
-              <span className="text-sm text-gray-300">
-                Sold
-              </span>
-
-            </div>
-
+              mb-8
+            "
+          >
+            STAGE
           </div>
 
-        </div>
+          <div className="space-y-8">
 
-       
+            {Object.entries(
+              groupedSeats
+            ).map(
+              ([zoneId, rows]) => (
 
+                <div key={zoneId}>
 
+                  {Object.entries(
+                    rows
+                  ).map(
+                    ([rowLabel, rowSeats]) => (
 
-          {/* SELECTED SEATS */}
-          <div
-className="
-lg:sticky
-lg:top-24
+                      <div
+                        key={rowLabel}
+                        className="
+                          flex
+                          items-center
 
-h-fit
+                          gap-3
 
-bg-[#0B1220]
-border
-border-white/10
+                          mb-3
 
-rounded-3xl
+                          overflow-x-auto
+                        "
+                      >
 
-p-5
-md:p-6
-"
->
+                        <div
+                          className="
+                            w-8
 
-  <p className="font-bold text-lg">
-    {event?.title}
-  </p>
+                            text-gray-500
+                            font-semibold
+                          "
+                        >
+                          {rowLabel}
+                        </div>
 
-  <p className="text-gray-400 text-sm mt-2">
-    {formatShowtime()}
-  </p>
+                        <div className="flex gap-2">
 
-  <p className="text-sky-400 mt-3 font-semibold">
-    {selectedZone?.name}
-  </p>
+                          {rowSeats.map(
+                            (seat) => (
 
-</div>
+                              <button
+                                key={seat.id}
 
-            <h3 className="font-semibold mb-4">
-              Ghế đã chọn
-            </h3>
+                                disabled={
+                                  seat.status ===
+                                  "SOLD"
+                                }
 
-            {selectedSeats.length === 0 ? (
+                                onClick={() =>
+                                  handleSelectSeat(
+                                    seat
+                                  )
+                                }
 
-              <p className="text-gray-500 text-sm">
-                Chưa chọn ghế nào
-              </p>
+                                className={`
+                                  w-10
+                                  h-10
 
-            ) : (
+                                  rounded-xl
 
-              <div className="flex flex-wrap gap-2">
+                                  border
 
-                {selectedSeats.map((seat) => (
+                                  text-xs
+                                  font-semibold
 
-                  <div
-                    key={seat}
-                    className="
-                      px-4
-                      py-2
-                      rounded-xl
-                      bg-sky-500/20
-border
-border-sky-500/40
-text-sky-400
-                      font-semibold
-                    "
-                  >
-                    {
-                      seats.find((s) => s.id === seat)?.seat_code || seat
-                    }
-                  </div>
+                                  transition-all
 
-                ))}
+                                  ${getSeatClass(
+                                    seat
+                                  )}
+                                `}
+                              >
+                                {
+                                  seat.seat_number
+                                }
+                              </button>
 
-              </div>
+                            )
+                          )}
 
+                        </div>
+
+                      </div>
+
+                    )
+                  )}
+
+                </div>
+
+              )
             )}
 
           </div>
 
-          {/* PRICE */}
-          <div className="border-t border-gray-800 pt-6 mt-auto">
+          {/* LEGEND */}
 
-            <div className="flex justify-between items-center mb-3">
+          <div
+            className="
+              flex
+              flex-wrap
 
+              gap-6
+
+              mt-10
+              pt-6
+
+              border-t
+              border-white/10
+            "
+          >
+
+            <div className="flex items-center gap-2">
+
+              <div
+                className="
+                  w-5
+                  h-5
+
+                  rounded
+
+                  bg-[#111827]
+                  border
+                  border-white/10
+                "
+              />
+
+              <span className="text-sm">
+                Còn trống
+              </span>
+
+            </div>
+
+            <div className="flex items-center gap-2">
+
+              <div
+                className="
+                  w-5
+                  h-5
+
+                  rounded
+
+                  bg-sky-500
+                "
+              />
+
+              <span className="text-sm">
+                Đang chọn
+              </span>
+
+            </div>
+
+            <div className="flex items-center gap-2">
+
+              <div
+                className="
+                  w-5
+                  h-5
+
+                  rounded
+
+                  bg-gray-700
+                "
+              />
+
+              <span className="text-sm">
+                Đã bán
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* DESKTOP SIDEBAR */}
+
+      <div
+        className="
+          hidden
+          lg:block
+
+          sticky
+          top-24
+
+          h-fit
+        "
+      >
+
+        <div
+          className="
+            bg-[#0B1220]
+
+            border
+            border-white/10
+
+            rounded-3xl
+
+            p-6
+          "
+        >
+
+          <p
+            className="
+              text-lg
+              font-bold
+            "
+          >
+            {selectedZone?.name}
+          </p>
+
+          <p
+            className="
+              text-gray-400
+              text-sm
+
+              mt-2
+            "
+          >
+            {formatShowtime()}
+          </p>
+
+          <div
+            className="
+              mt-6
+              pt-6
+
+              border-t
+              border-white/10
+            "
+          >
+
+            <p
+              className="
+                text-gray-400
+                text-sm
+              "
+            >
+              Ghế đã chọn
+            </p>
+
+            <div
+              className="
+                flex
+                flex-wrap
+
+                gap-2
+
+                mt-3
+              "
+            >
+
+              {selectedSeats.map(
+                (seatId) => {
+
+                  const seat =
+                    seats.find(
+                      (s) =>
+                        s.id ===
+                        seatId
+                    );
+
+                  return (
+                    <div
+                      key={seatId}
+                      className="
+                        px-3
+                        py-2
+
+                        rounded-xl
+
+                        bg-sky-500/20
+                        text-sky-400
+
+                        text-sm
+                        font-semibold
+                      "
+                    >
+                      {
+                        seat?.seat_code
+                      }
+                    </div>
+                  );
+
+                }
+              )}
+
+            </div>
+
+          </div>
+
+          <div
+            className="
+              mt-6
+              pt-6
+
+              border-t
+              border-white/10
+            "
+          >
+
+            <div
+              className="
+                flex
+                justify-between
+
+                mb-3
+              "
+            >
               <span className="text-gray-400">
                 Số lượng vé
               </span>
@@ -610,210 +887,167 @@ text-sky-400
               <span>
                 {selectedSeats.length}
               </span>
-
             </div>
 
-            <div className="flex justify-between items-center mb-6">
-
+            <div
+              className="
+                flex
+                justify-between
+                items-center
+              "
+            >
               <span className="text-gray-400">
                 Tổng tiền
               </span>
 
               <span
-className="
-text-3xl
-font-black
-text-sky-400
-"
-> 
-                {totalPrice.toLocaleString("vi-VN")}đ
+                className="
+                  text-2xl
+                  font-black
+                  text-sky-400
+                "
+              >
+                {totalPrice.toLocaleString(
+                  "vi-VN"
+                )}đ
               </span>
-
             </div>
-
-           <button
-  onClick={async () => {
-
-    if (selectedSeats.length === 0) {
-      alert("Vui lòng chọn ghế");
-      return;
-    }
-
-    const user = JSON.parse(
-      localStorage.getItem("user") || "null"
-    );
-
-    try {
-
-      const holdRes = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/holds/bulk`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            user_id: user?.id,
-            event_id: event.id,
-            showtime_id: showtime.id,
-            zone_id: selectedZone.id,
-            seat_ids: selectedSeats,
-          }),
-        }
-      );
-
-      const data = await holdRes.json();
-if (!holdRes.ok) {
-
-  alert(
-    "Một hoặc nhiều ghế đang được thanh toán.\nVui lòng chọn ghế khác."
-  );
-
-  setSelectedSeats((prev) =>
-    prev.filter(
-      (id) => !(data.seats || []).includes(id)
-    )
-  );
-
-  return;
-}
-
-const expiresAt =
-  data.expires_at;
-
-  console.log("HOLD RESPONSE:", data);
-console.log("EVENT:", event);
-console.log("SHOWTIME:", showtime);
-console.log("ZONE:", selectedZone);
-console.log("SEATS:", seats);
-console.log("TOTAL:", totalPrice);
-console.log("EXPIRES:", expiresAt);
-console.log("BEFORE NAVIGATE");
-
-     navigate("/checkout", {
-  state: {
-  event,
-  showtime,
-  zone: selectedZone,
-  seats: seats.filter(
-    (seat) =>
-      selectedSeats.includes(
-        seat.id
-      )
-  ),
-  totalPrice,
-  expiresAt,
-},
-});
-
-    } catch (err) {
-
-  console.log("FULL ERROR:", err);
-
-  alert(err?.message || "Lỗi");
-
-}
-
-  }}
-  className="
-    w-full
-    py-4
-    rounded-2xl
-    bg-sky-500
-    text-black
-    font-bold
-    text-lg
-    hover:bg-sky-400
-    transition
-  "
->
-  Tiếp tục
-</button>
 
           </div>
 
+          <button
+            onClick={
+              handleContinue
+            }
+            disabled={
+              selectedSeats.length === 0
+            }
+            className="
+              mt-6
+
+              w-full
+
+              py-4
+
+              rounded-2xl
+
+              font-bold
+
+              bg-gradient-to-r
+              from-sky-500
+              to-cyan-400
+
+              text-black
+
+              disabled:opacity-50
+              disabled:cursor-not-allowed
+            "
+          >
+            Tiếp tục
+          </button>
+
         </div>
 
-{/* MOBILE CHECKOUT BAR */}
-
-<div
-  className="
-    lg:hidden
-
-    fixed
-    bottom-0
-    left-0
-    right-0
-
-    z-50
-
-    bg-[#081120]/95
-    backdrop-blur-xl
-
-    border-t
-    border-white/10
-
-    p-4
-  "
->
-
-  <div
-    className="
-      flex
-      items-center
-      justify-between
-      gap-4
-    "
-  >
-
-    <div>
-
-      <p className="text-gray-400 text-sm">
-        {selectedSeats.length} ghế
-      </p>
-
-      <p
-        className="
-          text-sky-400
-          font-black
-          text-xl
-        "
-      >
-        {totalPrice.toLocaleString("vi-VN")}đ
-      </p>
+      </div>
 
     </div>
 
-    <button
-      onClick={async () => {
+  </div>
 
-        if (selectedSeats.length === 0) {
-          alert("Vui lòng chọn ghế");
-          return;
-        }
+  {/* MOBILE BOTTOM BAR */}
 
-        // TẠM THỜI
-        // bước sau mình tách riêng function
-      }}
+  <div
+    className="
+      lg:hidden
+
+      fixed
+      bottom-0
+      left-0
+      right-0
+
+      z-50
+
+      bg-[#081120]/95
+      backdrop-blur-md
+
+      border-t
+      border-white/10
+
+      p-4
+    "
+  >
+
+    <div
       className="
-        px-6
-        py-3
+        flex
+        items-center
+        justify-between
 
-        rounded-2xl
-
-        bg-sky-500
-        text-black
-        font-bold
+        gap-4
       "
     >
-      Tiếp tục
-    </button>
+
+      <div>
+
+        <p
+          className="
+            text-sm
+            text-gray-400
+          "
+        >
+          {selectedSeats.length} ghế
+        </p>
+
+        <p
+          className="
+            text-xl
+            font-black
+            text-sky-400
+          "
+        >
+          {totalPrice.toLocaleString(
+            "vi-VN"
+          )}đ
+        </p>
+
+      </div>
+
+      <button
+        onClick={
+          handleContinue
+        }
+        disabled={
+          selectedSeats.length === 0
+        }
+        className="
+          px-6
+          py-3
+
+          rounded-2xl
+
+          font-bold
+
+          bg-gradient-to-r
+          from-sky-500
+          to-cyan-400
+
+          text-black
+
+          disabled:opacity-50
+          disabled:cursor-not-allowed
+        "
+      >
+        Tiếp tục
+      </button>
+
+    </div>
 
   </div>
 
 </div>
-      </div>
 
-    </div>
-  );
+
+);
+
 }
+
