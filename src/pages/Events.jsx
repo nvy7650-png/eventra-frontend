@@ -13,6 +13,17 @@ import { useNavigate } from "react-router-dom";
 export default function Events() {
     const navigate = useNavigate();
 
+    const [categories, setCategories] =
+  useState([]);
+
+const [selectedCategory,
+  setSelectedCategory] =
+  useState(categoryId || "");
+
+const [priceFilter,
+  setPriceFilter] =
+  useState("");
+
 const [search, setSearch] =
   useState("");
 
@@ -30,6 +41,17 @@ const [search, setSearch] =
       "category"
     );
 
+    useEffect(() => {
+
+  fetch(
+    `${import.meta.env.VITE_API_URL}/api/categories`
+  )
+    .then((res) =>
+      res.json()
+    )
+    .then(setCategories);
+
+}, []);
   useEffect(() => {
 
     let url =
@@ -119,26 +141,103 @@ const [search, setSearch] =
           Tất cả sự kiện
         </h1>
 
-        <input
-          value={search}
-          onChange={(e) =>
-            setSearch(
-              e.target.value
-            )
-          }
-          placeholder="Tìm sự kiện..."
-          className="
-            px-5
-            py-3
-            rounded-2xl
-            bg-[#111827]
-            border
-            border-white/10
-            outline-none
-            w-full
-            md:w-80
-          "
-        />
+        <div
+  className="
+    flex
+    flex-wrap
+    gap-3
+  "
+>
+
+  <input
+    value={search}
+    onChange={(e) =>
+      setSearch(
+        e.target.value
+      )
+    }
+    placeholder="Tìm sự kiện..."
+    className="
+      px-5
+      py-3
+      rounded-2xl
+      bg-[#111827]
+      border
+      border-white/10
+      md:w-72
+    "
+  />
+
+  <select
+    value={selectedCategory}
+    onChange={(e) =>
+      setSelectedCategory(
+        e.target.value
+      )
+    }
+    className="
+      px-5
+      py-3
+      rounded-2xl
+      bg-[#111827]
+      border
+      border-white/10
+    "
+  >
+
+    <option value="">
+      Tất cả danh mục
+    </option>
+
+    {categories.map((c) => (
+
+      <option
+        key={c.id}
+        value={c.id}
+      >
+        {c.name}
+      </option>
+
+    ))}
+
+  </select>
+
+  <select
+    value={priceFilter}
+    onChange={(e) =>
+      setPriceFilter(
+        e.target.value
+      )
+    }
+    className="
+      px-5
+      py-3
+      rounded-2xl
+      bg-[#111827]
+      border
+      border-white/10
+    "
+  >
+
+    <option value="">
+      Tất cả giá vé
+    </option>
+
+    <option value="under100">
+      Dưới 100.000đ
+    </option>
+
+    <option value="100-500">
+      100.000đ - 500.000đ
+    </option>
+
+    <option value="over500">
+      Trên 500.000đ
+    </option>
+
+  </select>
+
+</div>
 
       </div>
 
@@ -153,17 +252,73 @@ const [search, setSearch] =
 
         {events
 
-          .filter((event) =>
+.filter((event) => {
 
-            event.title
-              ?.toLowerCase()
-              .includes(
-                search.toLowerCase()
-              )
+  const matchSearch =
 
-          )
+    event.title
+      ?.toLowerCase()
+      .includes(
+        search.toLowerCase()
+      );
 
-          .map((event) => (
+  const matchCategory =
+
+    !selectedCategory ||
+
+    String(
+      event.category_id
+    ) ===
+    String(
+      selectedCategory
+    );
+
+  let matchPrice = true;
+
+  if (
+    priceFilter ===
+    "under100"
+  ) {
+
+    matchPrice =
+      event.min_price <
+      100000;
+
+  }
+
+  if (
+    priceFilter ===
+    "100-500"
+  ) {
+
+    matchPrice =
+      event.min_price >=
+        100000 &&
+      event.min_price <=
+        500000;
+
+  }
+
+  if (
+    priceFilter ===
+    "over500"
+  ) {
+
+    matchPrice =
+      event.min_price >
+      500000;
+
+  }
+
+  return (
+    matchSearch &&
+    matchCategory &&
+    matchPrice
+  );
+
+})
+
+.map((event) => (
 
             <div
               key={event.id}
