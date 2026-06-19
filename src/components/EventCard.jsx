@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 
 export default function EventCard({
   event,
-  small = false,
 }) {
 
   const navigate = useNavigate();
@@ -27,48 +26,14 @@ export default function EventCard({
       ? `${import.meta.env.VITE_API_URL}${event.image_url}`
       : "/no-image.png";
 
-  // STATUS
-  const getStatus = () => {
-
-    switch (event.status) {
-
-      case "APPROVED":
-        return {
-          text: "Đang mở bán",
-          color:
-            "bg-green-500/20 text-green-400 border border-green-500/20",
-        };
-
-      case "PENDING":
-        return {
-          text: "Chờ duyệt",
-          color:
-            "bg-yellow-500/20 text-yellow-400 border border-yellow-500/20",
-        };
-
-      case "CANCELLED":
-        return {
-          text: "Đã hủy",
-          color:
-            "bg-red-500/20 text-red-400 border border-red-500/20",
-        };
-
-      default:
-        return {
-          text: event.status,
-          color:
-            "bg-gray-500/20 text-gray-400 border border-gray-500/20",
-        };
-
-    }
-
-  };
-
-  const status = getStatus();
 
   return (
+    
 
     <div
+    onClick={() =>
+    navigate(`/event/${event.id}`)
+  }
       className="
       cursor-pointer
         bg-[#0B1220]
@@ -76,13 +41,14 @@ export default function EventCard({
         rounded-3xl
         overflow-hidden
         hover:border-sky-400
-        md:hover:-translate-y-1
+        md:hover:-translate-y-2
         transition-all
         duration-300
         flex
         flex-col
       "
     >
+      
 
       {/* IMAGE */}
       <div
@@ -100,7 +66,7 @@ export default function EventCard({
     w-full
     h-full
     object-cover
-    hover:scale-105
+md:hover:scale-105
     transition
     duration-500
   "
@@ -120,8 +86,8 @@ export default function EventCard({
             font-bold
             text-white
             line-clamp-2
-            min-h-[48px]
-            md:min-h-[56px]
+            h-[52px]
+md:h-[56px]
           "
         >
           {event.title}
@@ -131,10 +97,11 @@ export default function EventCard({
         {/* DATE */}
         <p
           className="
-            text-gray-400
-            text-sm
-            mt-2
-          "
+text-gray-400
+text-sm
+md:text-[15px]
+mt-2
+"
         >
           {formattedDate}
         </p>
@@ -142,11 +109,13 @@ export default function EventCard({
         {/* LOCATION */}
         <p
           className="
-            text-gray-500
-            text-sm
-            mt-1
-            line-clamp-1
-          "
+text-gray-500
+text-sm
+md:text-[15px]
+mt-1
+line-clamp-2
+min-h-[40px]
+"
         >
           {event.location}
         </p>
@@ -156,10 +125,21 @@ export default function EventCard({
 
           <p
             className="
-              text-sky-400
-              text-sm
-              mt-1
-            "
+mt-3
+inline-flex
+w-fit
+
+px-3
+py-1
+
+rounded-full
+
+bg-sky-500/10
+text-sky-400
+
+text-xs
+font-medium
+"
           >
                 {event.category_name}
           </p>
@@ -173,8 +153,8 @@ export default function EventCard({
             className="
               text-green-400
               font-bold
-              text-base
-              md:text-lg
+              text-lg
+md:text-xl
               mt-3
             "
           >
@@ -194,20 +174,27 @@ export default function EventCard({
             navigate(`/event/${event.id}`)
           }
           className="
-            mt-auto
-            pt-4
-            w-full
-py-2.5
-md:py-3
+mt-6
+
+w-full
+
+py-3
+md:py-3.5
+
 rounded-xl
 md:rounded-2xl
-            bg-sky-500/10
-            text-sky-400
-            font-semibold
-            hover:bg-sky-500
-            hover:text-black
-            transition
-          "
+
+bg-sky-500/10
+text-sky-400
+
+font-semibold
+
+md:hover:bg-sky-500
+md:hover:text-black
+
+transition-all
+duration-300
+"
         >
           Xem chi tiết
         </button>
