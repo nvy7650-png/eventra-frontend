@@ -175,7 +175,6 @@ export default function EventDetail() {
 
   <div className="space-y-4">
 
-```
 {showtimes.map((st) => {
 
   const start =
@@ -367,7 +366,6 @@ export default function EventDetail() {
   );
 
 })}
-```
 
   </div>
 
