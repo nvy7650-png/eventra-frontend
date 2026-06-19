@@ -122,8 +122,7 @@ return (
 
       <div
         className="
-          w-12
-          h-12
+          w-10 h-10 md:w-12 md:h-12
           border-4
           border-sky-400
           border-t-transparent
@@ -153,17 +152,16 @@ return (
 
   <CategoryBar />
 
-  {(upcomingEvents.length > 0 ||
-    latestEvents.length > 0) && (
+  {heroEvents.length > 0 && (
 
-   <HeroSection
-  event={heroEvents[0]}
-/>
+  <HeroSection
+    event={heroEvents[0]}
+  />
 
-  )}
+)}
 
   {/* NEWEST EVENTS */}
-  <section className="max-w-7xl mx-auto px-4 md:px-6 pb-12">
+  <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
 
     <h2 className="text-2xl md:text-3xl font-black mb-6">
       Sự kiện mới nhất
@@ -175,7 +173,7 @@ return (
         className="
           grid
 grid-cols-1
-sm:grid-cols-2
+md:grid-cols-2
 xl:grid-cols-3
 gap-6
         "
@@ -200,7 +198,7 @@ gap-6
           border
           border-white/10
           rounded-3xl
-          p-12
+          p-8 md:p-12
           text-center
         "
       >
@@ -214,7 +212,7 @@ gap-6
   </section>
 
   {/* UPCOMING EVENTS */}
-  <section className="max-w-7xl mx-auto px-4 md:px-6 pb-12">
+  <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
 
     <h2 className="text-2xl md:text-3xl font-black mb-6">
       Sự kiện sắp diễn ra
@@ -226,7 +224,7 @@ gap-6
         className="
           grid
 grid-cols-1
-sm:grid-cols-2
+md:grid-cols-2
 xl:grid-cols-3
 gap-6
         "
@@ -251,7 +249,7 @@ gap-6
           border
           border-white/10
           rounded-3xl
-          p-12
+          p-8 md:p-12
           text-center
         "
       >
@@ -265,15 +263,16 @@ gap-6
   </section>
 
   {/* ALL EVENTS */}
-  <section className="max-w-7xl mx-auto px-4 md:px-6 pb-20">
+  <section className="max-w-7xl mx-auto px-4 md:px-6 pb-10 md:pb-14">
 
     <div
       className="
 flex
 flex-col
-sm:flex-row
-sm:items-center
-sm:justify-between
+md:flex-row
+
+md:items-center
+md:justify-between
 gap-4
 mb-6
 "
@@ -287,16 +286,22 @@ mb-6
         onClick={() =>
           navigate("/events")
         }
-        className="
-          px-5
-          py-3
-          rounded-2xl
-          bg-[#0B1220]
-          border
-          border-white/10
-          hover:bg-white/10
-          transition
-        "
+       className="
+  w-full
+  sm:w-auto
+
+  px-5
+  py-3
+
+  rounded-2xl
+
+  bg-[#0B1220]
+  border
+  border-white/10
+
+  hover:bg-white/10
+  transition
+"
       >
        Xem tất cả →
       </button>
@@ -309,7 +314,7 @@ mb-6
         className="
           grid
 grid-cols-1
-sm:grid-cols-2
+md:grid-cols-2
 xl:grid-cols-3
 gap-6
         "
@@ -336,7 +341,7 @@ gap-6
           border
           border-white/10
           rounded-3xl
-          p-16
+          p-8 md:p-16
           text-center
         "
       >
