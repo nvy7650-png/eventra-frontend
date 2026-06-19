@@ -86,29 +86,63 @@ const diff =
 
  const releaseHold = async () => {
 
+  console.log(
+    "RELEASE HOLD START"
+  );
+
+  if (
+    !user ||
+    !showtime ||
+    !seats?.length
+  ) {
+
+    console.log(
+      "MISSING DATA"
+    );
+
+    return;
+  }
+
   try {
 
-    await fetch(
+    console.log({
+      user_id: user.id,
+      showtime_id: showtime.id,
+      seat_ids: seats.map(
+        seat => seat.id
+      ),
+    });
+
+    const res = await fetch(
       `${import.meta.env.VITE_API_URL}/api/holds/release`,
       {
         method: "DELETE",
         headers: {
-          "Content-Type": "application/json",
+          "Content-Type":
+            "application/json",
         },
         body: JSON.stringify({
-          user_id: user?.id,
+          user_id: user.id,
           showtime_id: showtime.id,
           seat_ids: seats.map(
-            (seat) => seat.id
+            seat => seat.id
           ),
         }),
       }
     );
 
+    const data =
+      await res.json();
+
+    console.log(
+      "RELEASE RESPONSE:",
+      data
+    );
+
   } catch (err) {
 
     console.log(
-      "Release hold error:",
+      "RELEASE ERROR:",
       err
     );
 
@@ -453,22 +487,22 @@ return (
           <div className="mt-8 space-y-3">
 
             <button
-              onClick={async () => {
+  onClick={async () => {
+
+    console.log(
+      "CLICK BACK"
+    );
 
     await releaseHold();
+
+    console.log(
+      "AFTER RELEASE"
+    );
 
     navigate(-1);
 
   }}
-              className="
-                w-full
-                py-4
-                rounded-2xl
-                bg-white/10
-                hover:bg-white/15
-                transition
-              "
-            >
+>
               Quay lại
             </button>
 
