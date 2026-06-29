@@ -453,7 +453,7 @@ return (
 
               <span>
                 {Number(
-                  zone.price
+                  zone?.price
                 ).toLocaleString("vi-VN")}đ
               </span>
 
