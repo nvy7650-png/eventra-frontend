@@ -565,7 +565,7 @@ md:mb-8
     >
 
       {/* LEFT */}
-      <div className="h-full">
+      <div>
 
         <div
   className="
