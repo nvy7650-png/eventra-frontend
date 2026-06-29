@@ -49,6 +49,7 @@ import Events from "./pages/Events";
 import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
 import PaymentSuccess from "./pages/PaymentSuccess";
+import OrganizerRevenue from "./pages/OrganizerRevenue";
 
 function App() {
 
@@ -359,6 +360,11 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
   element={
     <PaymentSuccess />
   }
+/>
+
+<Route
+  path="/organizer/revenue"
+  element={<OrganizerRevenue />}
 />
       </Routes>
 
