@@ -42,9 +42,6 @@ useState(true);
 const [selectedSeats,
 setSelectedSeats] =
 useState([]);
-
-const [zoom, setZoom] =
-  useState(0.5);
   
 useEffect(() => {
 
@@ -156,26 +153,7 @@ eventId,
 showtimeId,
 ]);
 
-const handleWheel = (e) => {
 
-  e.preventDefault();
-
-  setZoom(prev => {
-
-    let next =
-      prev +
-      (e.deltaY > 0
-        ? -0.05
-        : 0.05);
-
-    return Math.max(
-      0.3,
-      Math.min(2, next)
-    );
-
-  });
-
-};
 
 const handleSelectSeat =
 (seat) => {
@@ -511,7 +489,6 @@ return (
 <div
   className="
     h-screen
-    overflow-hidden
     bg-[#050816]
     text-white
   "
@@ -519,11 +496,6 @@ return (
 
   <div
   className="
-    max-w-[1700px]
-    mx-auto
-    px-4
-    md:px-6
-    py-4
     h-full
     overflow-hidden
   "
@@ -561,7 +533,6 @@ md:mb-8
     lg:grid
     lg:grid-cols-[1fr_320px]
     gap-8
-    h-[calc(100vh-120px)]
   "
 >
 
@@ -576,9 +547,6 @@ md:mb-8
     rounded-3xl
     p-6
     md:p-8
-    h-[calc(100vh-180px)]
-    flex
-    flex-col
   "
 >
 
@@ -620,11 +588,7 @@ mb-8
 </div>
 
      <div
-  onWheel={handleWheel}
   className="
-    flex-1
-    overflow-auto
-    relative
     border-t
     border-white/10
     pt-6
@@ -636,10 +600,7 @@ mb-8
     mx-auto
     space-y-8
   "
-  style={{
-    transform: `scale(${zoom})`,
-    transformOrigin: "top center",
-  }}
+
 >
            {Object.entries(
   groupedSeats
@@ -708,7 +669,7 @@ mb-8
                           {rowLabel}
                         </div>
 
-                        <div className="flex gap-2">
+                       <div className="flex flex-wrap gap-2">
 
                           {rowSeats.map(
                             (seat) => (
@@ -728,8 +689,10 @@ mb-8
                                 }
 
                                 className={`
-                                  w-8
-h-8
+                                  w-9
+h-9
+md:w-10
+md:h-10
 text-[10px]
 
                                   rounded-xl
