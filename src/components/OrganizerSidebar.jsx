@@ -286,30 +286,27 @@ export default function OrganizerSidebar() {
       {/* LOGOUT */}
       <div className="p-5">
 
-        <button
-          onClick={
-            handleLogout
-          }
-          className="
-            w-full
-            flex
-            items-center
-            justify-center
-            gap-3
-            px-4
-            py-4
-            rounded-2xl
-            bg-red-500
-            hover:bg-red-400
-            font-bold
-          "
-        >
+       <button
+        onClick={logout}
+        className="
+          w-full
+          py-3
+          rounded-2xl
+          bg-red-500
+          hover:bg-red-400
+          flex
+          items-center
+          justify-center
+          gap-2
+          font-semibold
+        "
+      >
 
-          <LogOut size={20} />
+        <LogOut size={18} />
 
-          Đăng xuất
+        Đăng xuất
 
-        </button>
+      </button>
 
       </div>
 
