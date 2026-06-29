@@ -19,6 +19,15 @@ const seconds =
 
   const [loading, setLoading] = useState(false);
 
+  const [coupon, setCoupon] =
+  useState("");
+
+const [discount, setDiscount] =
+  useState(0);
+
+const [finalPrice, setFinalPrice] =
+  useState(totalPrice);
+
   const {
   event,
   showtime,
@@ -149,7 +158,67 @@ const diff =
 
 }, [expiresAt]);
 
- 
+ const applyPromotion =
+  async () => {
+
+    if (!coupon) {
+      alert("Nhập mã khuyến mãi");
+      return;
+    }
+
+    try {
+
+      const res =
+        await fetch(
+          `${import.meta.env.VITE_API_URL}/api/promotions/apply`,
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json",
+            },
+
+            body: JSON.stringify({
+              code: coupon,
+              total_price: totalPrice,
+              event_id: event.id,
+            }),
+          }
+        );
+
+      const data =
+        await res.json();
+
+      if (!res.ok) {
+
+        alert(data.message);
+
+        return;
+
+      }
+
+      setDiscount(
+        data.discount
+      );
+
+      setFinalPrice(
+        data.final_price
+      );
+
+      alert(
+        "Áp dụng thành công"
+      );
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Lỗi áp mã");
+
+    }
+
+  };
 
   const handleCreateOrder = async () => {
 
@@ -213,7 +282,7 @@ const diff =
       showtime,
       zone,
       seats,
-      totalPrice,
+      totalPrice: finalPrice,
     },
   }
 );
@@ -402,6 +471,50 @@ return (
           >
             Chi tiết thanh toán
           </h3>
+
+          <div className="mb-5 space-y-3">
+
+  <div className="text-sm text-gray-400">
+    Mã khuyến mãi
+  </div>
+
+  <div className="flex gap-2">
+
+    <input
+      value={coupon}
+      onChange={(e) =>
+        setCoupon(
+          e.target.value
+        )
+      }
+      placeholder="Nhập mã"
+      className="
+        flex-1
+        px-4
+        py-3
+        rounded-xl
+        bg-black/30
+        border
+        border-white/10
+      "
+    />
+
+    <button
+      onClick={applyPromotion}
+      className="
+        px-4
+        rounded-xl
+        bg-green-500
+        text-black
+        font-bold
+      "
+    >
+      Áp dụng
+    </button>
+
+  </div>
+
+</div>
           <div
   className="
     mb-6
@@ -458,6 +571,22 @@ return (
               </span>
 
             </div>
+            {discount > 0 && (
+
+<div className="flex justify-between">
+
+  <span className="text-green-400">
+    Giảm giá
+  </span>
+
+  <span className="text-green-400">
+    -{Number(discount)
+      .toLocaleString("vi-VN")}đ
+  </span>
+
+</div>
+
+)}
 
             <div className="border-t border-white/10 pt-4">
 
@@ -474,8 +603,7 @@ return (
                     text-sky-400
                   "
                 >
-                  {Number(
-                    totalPrice
+                  {Number(finalPrice
                   ).toLocaleString("vi-VN")}đ
                 </span>
 
