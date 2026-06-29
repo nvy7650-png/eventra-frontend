@@ -43,6 +43,9 @@ const [selectedSeats,
 setSelectedSeats] =
 useState([]);
 
+const [zoom, setZoom] =
+  useState(1);
+  
 useEffect(() => {
 
 setShowtimeId(
@@ -152,6 +155,25 @@ fetch(
 eventId,
 showtimeId,
 ]);
+
+const handleWheel = (e) => {
+  if (!e.ctrlKey) return;
+
+  e.preventDefault();
+
+  setZoom((prev) => {
+    let next =
+      prev +
+      (e.deltaY > 0 ? -0.1 : 0.1);
+
+    next = Math.max(
+      0.5,
+      Math.min(2, next)
+    );
+
+    return next;
+  });
+};
 
 const handleSelectSeat =
 (seat) => {
@@ -591,12 +613,20 @@ mb-8
   </span>
 </div>
 
-         <div
+        <div
+  onWheel={handleWheel}
   className="
-    space-y-8
     overflow-auto
+    max-h-[70vh]
   "
 >
+  <div
+    className="space-y-8 origin-top-left"
+    style={{
+      transform: `scale(${zoom})`,
+      width: "max-content",
+    }}
+  >
            {Object.entries(
   groupedSeats
 ).map(
@@ -712,6 +742,7 @@ mb-8
                         </div>
 
                       </div>
+                    
 
                     )
                   )}
@@ -720,8 +751,9 @@ mb-8
 
               );
             })
-          }
-          </div>
+}
+</div>
+</div>
 
           {/* LEGEND */}
 
