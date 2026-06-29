@@ -170,10 +170,10 @@ const diff =
 
     const items = seats.map((seat) => ({
       showtime_id: showtime.id,
-      zone_id: zone.id,
+      zone_id: seat.zone_id,
       seat_id: seat.id,
       quantity: 1,
-      price: Number(zone.price),
+     price: Number(seat.price),
     }));
 
     const res = await fetch(

@@ -432,10 +432,10 @@ md:h-[550px]
                 <button
                   disabled={btn.disabled}
                   onClick={() =>
-                    navigate(
-                      `/event/${event.id}/seatmap?zone=${zone.id}&showtime=${st.id}`
-                    )
-                  }
+  navigate(
+    `/event/${event.id}/seatmap?showtime=${st.id}`
+  )
+}
                   className={`
                     w-full
 

@@ -18,21 +18,11 @@ const navigate = useNavigate();
 
 const [searchParams] = useSearchParams();
 
-const zoneId =
-searchParams.get("zone");
-
 const [event, setEvent] =
 useState(null);
 
 const [zones, setZones] =
 useState([]);
-
-const selectedZone =
-zones.find(
-(z) =>
-String(z.id) ===
-String(zoneId)
-) || null;
 
 const [seats, setSeats] =
 useState([]);
@@ -204,22 +194,27 @@ const handleSelectSeat =
 
 
 const totalPrice =
-selectedSeats.length *
-Number(
-selectedZone?.price || 0
-);
+selectedSeats.reduce(
+  (total, seatId) => {
 
-const filteredSeats =
-seats.filter(
-(seat) =>
-String(
-seat.zone_id
-) ===
-String(zoneId)
+    const seat =
+      seats.find(
+        s => s.id === seatId
+      );
+
+    return (
+      total +
+      Number(
+        seat?.price || 0
+      )
+    );
+
+  },
+  0
 );
 
 const groupedSeats =
-filteredSeats.reduce(
+seats.reduce(
 (acc, seat) => {
 
 
@@ -353,11 +348,13 @@ async () => {
   showtime_id:
     showtimeId,
 
-  zone_id:
-    zoneId,
-
-  seat_ids:
-    selectedSeats,
+ seats:
+  selectedSeats.map(
+    (seatId) =>
+      seats.find(
+        (s) => s.id === seatId
+      )
+  ),
 }
 ),
         }
@@ -385,8 +382,7 @@ async () => {
         state: {
           event,
           showtime,
-          zone:
-            selectedZone,
+          zone: undefined,
 
           seats:
             seats.filter(
@@ -595,33 +591,67 @@ mb-8
   </span>
 </div>
 
-          <div className="space-y-8">
+         <div
+  className="
+    space-y-8
+    overflow-auto
+  "
+>
+           {Object.entries(
+  groupedSeats
+).map(
+  ([zoneId, rows]) => {
 
-            {Object.entries(
-              groupedSeats
-            ).map(
-              ([zoneId, rows]) => (
+    const zone =
+  zones.find(
+    z =>
+      String(z.id) ===
+      String(zoneId)
+  );
 
-                <div key={zoneId}>
+    return (
+
+      <div key={zoneId}>
+
+        <div className="
+          flex
+          justify-between
+          items-center
+          mb-5
+        ">
+          <h2 className="
+            text-xl
+            font-bold
+            text-sky-400
+          ">
+            {zone?.name}
+          </h2>
+
+          <span className="
+            text-green-400
+            font-bold
+          ">
+            {Number(
+              zone?.price || 0
+            ).toLocaleString("vi-VN")}đ
+          </span>
+        </div>
+                  
 
                   {Object.entries(
                     rows
                   ).map(
                     ([rowLabel, rowSeats]) => (
 
-                      <div
-                        key={rowLabel}
-                        className="
-                          flex
-                          items-center
-
-                          gap-3
-
-                          mb-3
-
-                          overflow-x-auto
-                        "
-                      >
+                     <div
+  key={rowLabel}
+  className="
+    flex
+    items-center
+    gap-3
+    mb-3
+  "
+>
 
                         <div
                           className="
@@ -688,9 +718,9 @@ mb-8
 
                 </div>
 
-              )
-            )}
-
+              );
+            })
+          }
           </div>
 
           {/* LEGEND */}
@@ -802,14 +832,14 @@ mb-8
           "
         >
 
-          <p
-            className="
-              text-lg
-              font-bold
-            "
-          >
-            {selectedZone?.name}
-          </p>
+         <p
+  className="
+    text-lg
+    font-bold
+  "
+>
+  Ghế đã chọn
+</p>
 
           <p
             className="
@@ -879,8 +909,12 @@ mb-8
                       "
                     >
                       {
-                        seat?.seat_code
-                      }
+  seat?.zone_name
+}
+{" - "}
+{
+  seat?.seat_code
+}
                     </div>
                   );
 
