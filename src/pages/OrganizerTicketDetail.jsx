@@ -65,15 +65,14 @@ export default function OrganizerTicketDetail() {
   <OrganizerSidebar />
 
   <div
-    className="
-      ml-80
-      min-h-screen
-      flex
-      items-center
-      justify-center
-    "
-  >
-        <div className="w-full">
+  className="
+    ml-80
+    min-h-screen
+    px-8
+    py-10
+  "
+>
+  <div className="max-w-7xl mx-auto">
           <div
   className="
     flex
