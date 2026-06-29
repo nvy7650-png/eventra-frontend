@@ -50,6 +50,7 @@ import Profile from "./pages/Profile";
 import MyOrders from "./pages/MyOrders";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import OrganizerRevenue from "./pages/OrganizerRevenue";
+import OrganizerPromotion from "./pages/OrganizerPromotion";
 
 function App() {
 
@@ -365,6 +366,11 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
 <Route
   path="/organizer/revenue"
   element={<OrganizerRevenue />}
+/>
+
+<Route
+  path="/organizer/promotions"
+  element={<OrganizerPromotion />}
 />
       </Routes>
 
