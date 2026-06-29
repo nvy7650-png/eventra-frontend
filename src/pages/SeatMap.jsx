@@ -557,15 +557,16 @@ md:mb-8
     </div>
 
     <div
-      className="
-        lg:grid
-        lg:grid-cols-[1fr_320px]
-        gap-8
-      "
-    >
+  className="
+    lg:grid
+    lg:grid-cols-[1fr_320px]
+    gap-8
+    h-[calc(100vh-120px)]
+  "
+>
 
       {/* LEFT */}
-      <div>
+      <div className="h-full">
 
         <div
   className="
@@ -854,29 +855,25 @@ text-[10px]
       {/* DESKTOP SIDEBAR */}
 
       <div
-        className="
-          hidden
-          lg:block
-
-          sticky
-          top-24
-
-          h-fit
-        "
-      >
+  className="
+    hidden
+    lg:block
+    h-full
+  "
+>
 
         <div
-          className="
-            bg-[#0B1220]
-
-            border
-            border-white/10
-
-            rounded-3xl
-
-            p-6
-          "
-        >
+  className="
+    bg-[#0B1220]
+    border
+    border-white/10
+    rounded-3xl
+    p-6
+    h-full
+    flex
+    flex-col
+  "
+>
 
          <p
   className="
