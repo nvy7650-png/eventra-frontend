@@ -518,18 +518,16 @@ return (
 >
 
   <div
-    className="
-      max-w-[1700px]
-      mx-auto
-
-      px-4
-      md:px-6
-
-     py-4
-pb-0
-      lg:pb-10
-    "
-  >
+  className="
+    max-w-[1700px]
+    mx-auto
+    px-4
+    md:px-6
+    py-4
+    h-full
+    overflow-hidden
+  "
+>
 
     {/* HEADER */}
 
@@ -567,21 +565,21 @@ md:mb-8
     >
 
       {/* LEFT */}
-      <div>
+      <div className="h-full">
 
         <div
-          className="
-            bg-[#0B1220]
-
-            border
-            border-white/10
-
-            rounded-3xl
-
-            p-6
-            md:p-8
-          "
-        >
+  className="
+    bg-[#0B1220]
+    border
+    border-white/10
+    rounded-3xl
+    p-6
+    md:p-8
+    h-[calc(100vh-180px)]
+    flex
+    flex-col
+  "
+>
 
          <div
 className="
@@ -620,26 +618,25 @@ mb-8
   </span>
 </div>
 
-       <div
+     <div
   onWheel={handleWheel}
   className="
-    overflow-hidden
-    h-[calc(100vh-260px)]
+    flex-1
+    overflow-auto
     relative
+    border-t
+    border-white/10
+    pt-6
   "
 >
   <div
   className="
-    absolute
-    left-1/2
-    top-0
+    w-fit
+    mx-auto
     space-y-8
   "
   style={{
-    transform: `
-      translateX(-50%)
-      scale(${zoom})
-    `,
+    transform: `scale(${zoom})`,
     transformOrigin: "top center",
   }}
 >
