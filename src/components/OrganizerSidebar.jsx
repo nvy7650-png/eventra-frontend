@@ -107,16 +107,25 @@ export default function OrganizerSidebar() {
   return (
 
     <div
-      className="
-        w-80
-        min-h-screen
-        bg-[#081224]
-        border-r
-        border-white/10
-        flex
-        flex-col
-      "
-    >
+  className="
+    fixed
+    left-0
+    top-0
+
+    w-80
+    h-screen
+
+    bg-[#081224]
+
+    border-r
+    border-white/10
+
+    flex
+    flex-col
+
+    z-50
+  "
+>
 
       {/* LOGO */}
       <div className="px-6 pt-7 pb-6">
