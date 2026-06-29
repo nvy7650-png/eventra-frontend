@@ -25,6 +25,9 @@ const seconds =
 const [discount, setDiscount] =
   useState(0);
 
+  const [promotion, setPromotion] =
+  useState(null);
+
 const [finalPrice, setFinalPrice] =
   useState(totalPrice);
 
@@ -206,6 +209,10 @@ const diff =
         data.final_price
       );
 
+      setPromotion(
+  data.promotion
+);
+
       alert(
         "Áp dụng thành công"
       );
@@ -283,6 +290,7 @@ const diff =
       zone,
       seats,
       totalPrice: finalPrice,
+      promotion,
     },
   }
 );
