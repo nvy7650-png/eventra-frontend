@@ -172,12 +172,18 @@ export default function OrganizerDashboard() {
 
   return (
 
-    <div className="min-h-screen bg-[#050816] text-white flex">
+   <div className="min-h-screen bg-[#050816] text-white flex">
 
      <OrganizerSidebar/>
      
       {/* MAIN */}
-      <main  className="ml-80">
+     <main
+  className="
+    ml-80
+    flex-1
+    min-h-screen
+  "
+>
 
         {/* TOPBAR */}
         <div
