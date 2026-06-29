@@ -512,7 +512,7 @@ return (
 
   <div
     className="
-      max-w-7xl
+      max-w-[1700px]
       mx-auto
 
       px-4
@@ -615,22 +615,29 @@ mb-8
   </span>
 </div>
 
-        <div
+       <div
   onWheel={handleWheel}
   className="
     overflow-hidden
     h-[70vh]
-    flex
-    justify-center
-    items-start
+    relative
   "
 >
   <div
-    className="space-y-8 origin-top-left"
+    className="
+      absolute
+      left-1/2
+      top-0
+      -translate-x-1/2
+      space-y-8
+    "
     style={{
-  transform: `scale(${zoom})`,
-  transformOrigin: "top center",
-}}
+      transform: `
+        translateX(-50%)
+        scale(${zoom})
+      `,
+      transformOrigin: "top center",
+    }}
   >
            {Object.entries(
   groupedSeats
