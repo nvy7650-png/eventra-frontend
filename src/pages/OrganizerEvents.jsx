@@ -198,7 +198,11 @@ export default function OrganizerEvents() {
       <OrganizerSidebar />
 
       <div
-        className="ml-80"
+          className="
+    ml-80
+    flex-1
+    min-h-screen
+  "
       >
 
         <div

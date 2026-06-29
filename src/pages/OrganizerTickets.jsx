@@ -77,7 +77,11 @@ export default function OrganizerTickets() {
     <div className="min-h-screen flex bg-[#050816]">
       <OrganizerSidebar />
 
-      <div className="ml-80">
+      <div   className="
+    ml-80
+    flex-1
+    min-h-screen
+  ">
         <div className="text-white px-6 py-10">
           <div className="max-w-7xl mx-auto">
             {/* HEADER */}
