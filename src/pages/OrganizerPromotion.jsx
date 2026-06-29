@@ -22,7 +22,7 @@ export default function OrganizerPromotion() {
 const [form, setForm] =
   useState({
     code: "",
-    name: "",
+    event_id: "",
     discount_type: "PERCENT",
     discount_value: "",
     quantity: "",
@@ -30,6 +30,7 @@ const [form, setForm] =
     end_date: "",
   });
 
+  
   useEffect(() => {
 
     fetch(
@@ -49,6 +50,27 @@ const [form, setForm] =
       });
 
   }, []);
+
+  useEffect(() => {
+
+  fetch(
+    `${import.meta.env.VITE_API_URL}/api/events/organizer/${user.id}`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+
+      console.log("EVENTS", data);
+
+      setEvents(
+        Array.isArray(data)
+          ? data
+          : []
+      );
+    })
+    .catch(console.log);
+
+}, []);
+
   const createPromotion =
   async () => {
 
@@ -69,13 +91,17 @@ const [form, setForm] =
               user.id,
 
             event_id:
-              null,
+  form.event_id,
+
+name:
+  events.find(
+    e =>
+      e.id ==
+      form.event_id
+  )?.title || "",
 
             code:
               form.code,
-
-            name:
-              form.name,
 
             description:
               "",
