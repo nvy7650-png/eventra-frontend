@@ -508,7 +508,14 @@ return (
 return (
 
 
-<div className="min-h-screen bg-[#050816] text-white">
+<div
+  className="
+    h-screen
+    overflow-hidden
+    bg-[#050816]
+    text-white
+  "
+>
 
   <div
     className="
@@ -518,10 +525,8 @@ return (
       px-4
       md:px-6
 
-      py-6
-      md:py-10
-
-      pb-32
+     py-4
+pb-0
       lg:pb-10
     "
   >
@@ -619,26 +624,25 @@ mb-8
   onWheel={handleWheel}
   className="
     overflow-hidden
-    h-[70vh]
+    h-[calc(100vh-260px)]
     relative
   "
 >
   <div
-    className="
-      absolute
-      left-1/2
-      top-0
-      -translate-x-1/2
-      space-y-8
-    "
-    style={{
-      transform: `
-        translateX(-50%)
-        scale(${zoom})
-      `,
-      transformOrigin: "top center",
-    }}
-  >
+  className="
+    absolute
+    left-1/2
+    top-0
+    space-y-8
+  "
+  style={{
+    transform: `
+      translateX(-50%)
+      scale(${zoom})
+    `,
+    transformOrigin: "top center",
+  }}
+>
            {Object.entries(
   groupedSeats
 ).map(
