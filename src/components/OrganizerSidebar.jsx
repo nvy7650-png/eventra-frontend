@@ -99,7 +99,7 @@ export default function OrganizerSidebar() {
       );
 
       navigate(
-        "/login"
+        "/"
       );
 
     };
