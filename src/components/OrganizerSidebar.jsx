@@ -287,7 +287,7 @@ export default function OrganizerSidebar() {
       <div className="p-5">
 
        <button
-        onClick={logout}
+        onClick={handleLogout}
         className="
           w-full
           py-3
