@@ -44,7 +44,7 @@ setSelectedSeats] =
 useState([]);
 
 const [zoom, setZoom] =
-  useState(1);
+  useState(0.5);
   
 useEffect(() => {
 
@@ -157,22 +157,24 @@ showtimeId,
 ]);
 
 const handleWheel = (e) => {
-  if (!e.ctrlKey) return;
 
   e.preventDefault();
 
-  setZoom((prev) => {
+  setZoom(prev => {
+
     let next =
       prev +
-      (e.deltaY > 0 ? -0.1 : 0.1);
+      (e.deltaY > 0
+        ? -0.05
+        : 0.05);
 
-    next = Math.max(
-      0.5,
+    return Math.max(
+      0.3,
       Math.min(2, next)
     );
 
-    return next;
   });
+
 };
 
 const handleSelectSeat =
@@ -616,16 +618,19 @@ mb-8
         <div
   onWheel={handleWheel}
   className="
-    overflow-auto
-    max-h-[70vh]
+    overflow-hidden
+    h-[70vh]
+    flex
+    justify-center
+    items-start
   "
 >
   <div
     className="space-y-8 origin-top-left"
     style={{
-      transform: `scale(${zoom})`,
-      width: "max-content",
-    }}
+  transform: `scale(${zoom})`,
+  transformOrigin: "top center",
+}}
   >
            {Object.entries(
   groupedSeats
@@ -714,8 +719,9 @@ mb-8
                                 }
 
                                 className={`
-                                  w-10
-                                  h-10
+                                  w-8
+h-8
+text-[10px]
 
                                   rounded-xl
 
