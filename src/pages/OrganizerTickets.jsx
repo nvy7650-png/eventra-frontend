@@ -57,6 +57,14 @@ export default function OrganizerTickets() {
     }
   };
 
+  const getPercent = (sold, total) => {
+  if (!total) return 0;
+
+  return Math.round(
+    (sold / total) * 100
+  );
+};
+
   if (loading) {
     return (
       <div className="min-h-screen bg-[#050816] flex items-center justify-center text-white">
@@ -90,7 +98,28 @@ export default function OrganizerTickets() {
 
             {/* LIST */}
             <div className="grid lg:grid-cols-2 gap-6">
-              {events.map((event) => (
+              {events.map((event) => {
+
+  const sold =
+    Number(event.sold_tickets) || 0;
+
+  const total =
+    Number(event.total_tickets) || 0;
+
+  const checked =
+    Number(event.checked_in) || 0;
+
+  const remaining =
+    total - sold;
+
+  const percent =
+    getPercent(
+      sold,
+      total
+    );
+
+  return (
+                
                 <div
                   key={event.event_id}
                   className="bg-[#0B1120] border border-white/10 rounded-3xl overflow-hidden"
@@ -106,19 +135,75 @@ export default function OrganizerTickets() {
 
                     <h2 className="text-2xl font-bold">{event.title}</h2>
 
-                    <div className="text-gray-400 mt-2">
-                      <div className="flex gap-6 mt-4">
-                        <div>
-                          <div className="text-sm text-gray-400">Tổng vé</div>
-                          <div className="text-lg font-semibold">{event.total_tickets ?? 0}</div>
-                        </div>
+                    <div className="grid grid-cols-2 gap-5 mt-6">
 
-                        <div>
-                          <div className="text-sm text-gray-400">Đã bán</div>
-                          <div className="text-lg font-semibold">{event.sold_tickets ?? 0}</div>
-                        </div>
-                      </div>
-                    </div>
+  <div>
+    <p className="text-sm text-gray-400">
+      Tổng vé
+    </p>
+
+    <p className="text-2xl font-bold">
+      {total}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-sm text-gray-400">
+      Đã bán
+    </p>
+
+    <p className="text-2xl font-bold text-sky-400">
+      {sold}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-sm text-gray-400">
+      Check-in
+    </p>
+
+    <p className="text-2xl font-bold text-green-400">
+      {checked}
+    </p>
+  </div>
+
+  <div>
+    <p className="text-sm text-gray-400">
+      Còn lại
+    </p>
+
+    <p className="text-2xl font-bold text-yellow-400">
+      {remaining}
+    </p>
+  </div>
+
+</div>
+<div className="mt-6">
+
+  <div className="flex justify-between mb-2 text-sm">
+
+    <span className="text-gray-400">
+      Tỷ lệ bán
+    </span>
+
+    <span className="text-sky-400 font-semibold">
+      {percent}%
+    </span>
+
+  </div>
+
+  <div className="h-2 bg-white/10 rounded-full overflow-hidden">
+
+    <div
+      className="h-full bg-sky-500 transition-all"
+      style={{
+        width: `${percent}%`,
+      }}
+    />
+
+  </div>
+
+</div>
 
                     <div className="flex gap-3 mt-6">
                       <button
@@ -130,7 +215,8 @@ export default function OrganizerTickets() {
                     </div>
                   </div>
                 </div>
-              ))}
+  );
+})}
             </div>
           </div>
         </div>
