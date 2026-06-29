@@ -7,6 +7,9 @@ export default function OrganizerPromotion() {
     localStorage.getItem("user") || "{}"
   );
 
+  const [events, setEvents] =
+  useState([]);
+
   const [promotions, setPromotions] =
     useState([]);
 
@@ -446,40 +449,72 @@ const [form, setForm] =
           }
         />
 
-        <input
-          placeholder="Tên chương trình"
-          className="w-full p-4 rounded-xl bg-white/5"
-          value={form.name}
-          onChange={(e) =>
-            setForm({
-              ...form,
-              name:
-                e.target.value,
-            })
-          }
-        />
+       <select
+  className="
+    w-full
+    p-4
+    rounded-xl
+    bg-[#131c31]
+    border
+    border-white/10
+    text-white
+  "
+  value={form.event_id}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      event_id: e.target.value,
+    })
+  }
+>
+  <option value="">
+    Chọn sự kiện
+  </option>
+
+  {events.map((event) => (
+    <option
+      key={event.id}
+      value={event.id}
+      className="bg-[#131c31]"
+    >
+      {event.title}
+    </option>
+  ))}
+</select>
 
         <select
-          className="w-full p-4 rounded-xl bg-white/5"
-          value={
-            form.discount_type
-          }
-          onChange={(e) =>
-            setForm({
-              ...form,
-              discount_type:
-                e.target.value,
-            })
-          }
-        >
-          <option value="PERCENT">
-            Giảm %
-          </option>
+  className="
+    w-full
+    p-4
+    rounded-xl
+    bg-[#131c31]
+    border
+    border-white/10
+    text-white
+    outline-none
+  "
+  value={form.discount_type}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      discount_type: e.target.value,
+    })
+  }
+>
+  <option
+    value="PERCENT"
+    className="bg-[#131c31]"
+  >
+    Giảm %
+  </option>
 
-          <option value="FIXED">
-            Giảm tiền
-          </option>
-        </select>
+  <option
+    value="FIXED"
+    className="bg-[#131c31]"
+  >
+    Giảm tiền
+  </option>
+</select>
 
         <input
           type="number"
