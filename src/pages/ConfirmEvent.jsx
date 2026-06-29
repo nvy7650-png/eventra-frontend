@@ -114,6 +114,7 @@ export default function ConfirmEvent() {
           eventData.seat_mode
         );
 
+        console.log(eventData.image);
         submitData.append(
           "image",
           eventData.image
