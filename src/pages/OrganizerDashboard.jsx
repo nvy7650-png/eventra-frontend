@@ -177,7 +177,7 @@ export default function OrganizerDashboard() {
      <OrganizerSidebar/>
      
       {/* MAIN */}
-      <main className="flex-1">
+      <main  className="ml-80">
 
         {/* TOPBAR */}
         <div

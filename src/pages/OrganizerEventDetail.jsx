@@ -116,7 +116,7 @@ export default function OrganizerEventDetail() {
 
         <OrganizerSidebar />
 
-        <div className="flex-1 flex items-center justify-center">
+        <div className="ml-80 flex items-center justify-center">
 
           Đang tải...
 

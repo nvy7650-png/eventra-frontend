@@ -47,7 +47,7 @@ export default function OrganizerTicketDetail() {
       <div className="min-h-screen flex bg-[#050816] text-white">
         <OrganizerSidebar />
 
-        <div className="flex-1 px-6 py-10">
+        <div className="ml-80 px-6 py-10">
           <div className="max-w-7xl mx-auto flex items-center justify-center">
             Đang tải danh sách vé...
           </div>
