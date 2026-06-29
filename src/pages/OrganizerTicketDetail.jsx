@@ -43,8 +43,8 @@ export default function OrganizerTicketDetail() {
   };
 
   if (loading) {
-    return (
-      <div className="min-h-screen flex bg-[#050816] text-white">
+   return (
+  <div className="min-h-screen bg-[#050816] text-white">
         <OrganizerSidebar />
 
         <div   className="
@@ -61,12 +61,29 @@ export default function OrganizerTicketDetail() {
   }
 
   return (
-    <div className="min-h-screen flex bg-[#050816] text-white">
-      <OrganizerSidebar />
+    <div className="min-h-screen bg-[#050816] text-white">
+  <OrganizerSidebar />
 
-      <div className="flex-1 px-6 py-10">
-        <div className="max-w-7xl mx-auto">
-          <div className="flex items-center justify-between mb-8">
+  <div
+    className="
+      ml-80
+      min-h-screen
+      flex
+      items-center
+      justify-center
+    "
+  >
+        <div className="w-full">
+          <div
+  className="
+    flex
+    flex-wrap
+    items-center
+    justify-between
+    gap-4
+    mb-8
+  "
+>
             <div>
               <h1 className="text-4xl font-black">Danh sách vé</h1>
               <p className="text-gray-400 mt-2">Xem chi tiết các vé theo sự kiện</p>
