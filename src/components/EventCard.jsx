@@ -22,9 +22,24 @@ export default function EventCard({
 
   // IMAGE URL
   const imageUrl =
-    event.image_url
-      ? `${import.meta.env.VITE_API_URL}${event.image_url}`
-      : "/no-image.png";
+  event.image_url ||
+  "/no-image.png";
+
+  <img
+  src={imageUrl}
+  onError={(e) => {
+    e.target.src = "/no-image.png";
+  }}
+  alt={event.title}
+  className="
+    w-full
+    h-full
+    object-cover
+    md:hover:scale-105
+    transition
+    duration-500
+  "
+/>
 
 
   return (
