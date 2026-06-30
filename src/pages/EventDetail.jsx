@@ -18,6 +18,7 @@ export default function EventDetail() {
       .then((res) => res.json())
       .then((data) => {
         setEvent(data.event || null);
+        console.log(data.event);
         setShowtimes(data.showtimes || []);
         setZones(data.zones || []);
       })
@@ -431,11 +432,23 @@ md:h-[550px]
 
                 <button
                   disabled={btn.disabled}
-                  onClick={() =>
-  navigate(
-    `/event/${event.id}/seatmap?showtime=${st.id}`
-  )
-}
+                  onClick={() => {
+
+  if (event.seat_mode === "AUTO") {
+
+    navigate(
+      `/event/${event.id}/booking?showtime=${st.id}`
+    );
+
+  } else {
+
+    navigate(
+      `/event/${event.id}/seatmap?showtime=${st.id}`
+    );
+
+  }
+
+}}
                   className={`
                     w-full
 

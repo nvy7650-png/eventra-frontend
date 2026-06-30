@@ -36,9 +36,13 @@ const [finalPrice, setFinalPrice] =
   showtime,
   zone,
   seats,
+  quantity,
+  items,
   totalPrice,
   expiresAt,
 } = location.state || {};
+const isAuto =
+  !seats?.length;
 
 const user = JSON.parse(
   localStorage.getItem("user") || "null"
@@ -244,13 +248,23 @@ const diff =
 
     setLoading(true);
 
-    const items = seats.map((seat) => ({
-      showtime_id: showtime.id,
-      zone_id: seat.zone_id,
-      seat_id: seat.id,
-      quantity: 1,
-     price: Number(seat.price),
-    }));
+    let orderItems = [];
+
+if (seats?.length) {
+
+  orderItems = seats.map((seat) => ({
+    showtime_id: showtime.id,
+    zone_id: seat.zone_id,
+    seat_id: seat.id,
+    quantity: 1,
+    price: Number(seat.price),
+  }));
+
+} else {
+
+  orderItems = items;
+
+}
 
     const res = await fetch(
       `${import.meta.env.VITE_API_URL}/api/orders`,
@@ -263,7 +277,7 @@ const diff =
           user_id: user.id,
           event_id: event.id,
           showtime_id: showtime.id,
-          items,
+          items: orderItems,
         }),
       }
     );
@@ -418,33 +432,63 @@ return (
 
               <div>
 
-                <p className="text-gray-500 mb-3">
-                  Ghế đã chọn
-                </p>
+               <div>
 
-                <div className="flex flex-wrap gap-2">
+  <p className="text-gray-500 mb-3">
 
-                  {seats?.map((seat) => (
+    {isAuto
+      ? "Số lượng vé"
+      : "Ghế đã chọn"}
 
-                    <span
-                      key={seat.id}
-                      className="
-                        px-4
-                        py-2
-                        rounded-xl
-                        bg-sky-500/20
-                        border
-                        border-sky-500/30
-                        text-sky-400
-                        font-semibold
-                      "
-                    >
-                      {seat.seat_code}
-                    </span>
+  </p>
 
-                  ))}
+  {isAuto ? (
 
-                </div>
+    <div
+      className="
+        px-4
+        py-3
+        rounded-2xl
+        bg-sky-500/20
+        border
+        border-sky-500/30
+        text-sky-400
+        font-bold
+        w-fit
+      "
+    >
+      {location.state.quantity} vé
+    </div>
+
+  ) : (
+
+    <div className="flex flex-wrap gap-2">
+
+      {seats?.map((seat) => (
+
+        <span
+          key={seat.id}
+          className="
+            px-4
+            py-2
+            rounded-xl
+            bg-sky-500/20
+            border
+            border-sky-500/30
+            text-sky-400
+            font-semibold
+          "
+        >
+          {seat.seat_code}
+        </span>
+
+      ))}
+
+    </div>
+
+  )}
+
+</div>
 
               </div>
 
