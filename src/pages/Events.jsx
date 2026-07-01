@@ -22,33 +22,21 @@ export default function Events() {
   const [searchParams] =
     useSearchParams();
 
-  const categoryId =
-    searchParams.get(
-      "category"
-    );
-    const keyword =
-  searchParams.get(
-    "keyword"
-  );
+
+   const keyword =
+  searchParams.get("keyword") || "";
 
     const [categories, setCategories] =
   useState([]);
 
   const [selectedCategory,
-  setSelectedCategory] =
-  useState(categoryId || "");
+setSelectedCategory] =
+useState("");
 
   const [priceFilter,
   setPriceFilter] =
   useState("");
 
-  useEffect(() => {
-
-  setSelectedCategory(
-    categoryId || ""
-  );
-
-}, [selectedCategory]);
 
     useEffect(() => {
 
@@ -63,35 +51,23 @@ export default function Events() {
 }, []);
   useEffect(() => {
 
-    let url =
-      `${import.meta.env.VITE_API_URL}/api/events`;
+  fetch(
+    `${import.meta.env.VITE_API_URL}/api/events`
+  )
+    .then((res) => res.json())
+    .then((data) => {
 
-    if (selectedCategory) {
+      setEvents(data || []);
 
-  url +=
-    `?category=${selectedCategory}`;
+    })
+    .catch(console.log)
+    .finally(() => {
 
-}
+      setLoading(false);
 
-    fetch(url)
-      .then((res) =>
-        res.json()
-      )
-      .then((data) => {
+    });
 
-        setEvents(
-          data || []
-        );
-
-      })
-      .catch(console.log)
-      .finally(() => {
-
-        setLoading(false);
-
-      });
-
-  }, [categoryId]);
+}, []);
 
   if (loading) {
 
