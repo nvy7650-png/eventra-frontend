@@ -887,6 +887,7 @@ text-[10px]
         </div>
 
       </div>
+      </div>
 
       {/* DESKTOP SIDEBAR */}
 
@@ -1187,7 +1188,6 @@ text-[10px]
 
   </div>
 
-</div>
 </div>
 
 
