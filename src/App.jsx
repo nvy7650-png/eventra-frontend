@@ -52,6 +52,7 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import OrganizerRevenue from "./pages/OrganizerRevenue";
 import OrganizerPromotion from "./pages/OrganizerPromotion";
 import AutoBooking from "./pages/AutoBooking";
+import AutoCheckout from "./pages/AutoCheckout";
 
 function App() {
 
@@ -380,6 +381,13 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
     <ProtectedRoute>
       <AutoBooking />
     </ProtectedRoute>
+  }
+/>
+
+<Route
+  path="/checkout-auto"
+  element={
+    <AutoCheckout />
   }
 />
       </Routes>

@@ -133,28 +133,36 @@ const currentZones =
 
     const items = [];
 
-    currentZones.forEach((zone) => {
+   currentZones.forEach((zone) => {
 
-      const qty =
-        quantities[
-          zone.id
-        ] || 0;
+  const qty =
+    quantities[
+      zone.id
+    ] || 0;
 
-      items.push({
+  if (qty <= 0)
+    return;
 
-  zone_id: zone.id,
+  items.push({
 
-  showtime_id:
-    selectedShowtime,
+    zone_id:
+      zone.id,
 
-  quantity: qty,
+    zone_name:
+      zone.name,
 
-  price: zone.price,
+    showtime_id:
+      selectedShowtime,
+
+    quantity:
+      qty,
+
+    price:
+      zone.price,
+
+  });
 
 });
-
-    });
-
     const res = await fetch(
       `${import.meta.env.VITE_API_URL}/api/orders`,
       {
@@ -181,10 +189,45 @@ const currentZones =
     );
 
     const data =
-      await res.json();
+  await res.json();
 
-    navigate(
-  `/checkout/${data.order_id}`
+console.log(data);
+
+if (!res.ok) {
+
+  alert(
+    data.message ||
+    "Tạo đơn thất bại"
+  );
+
+  return;
+
+}
+
+navigate(
+  "/checkout-auto",
+  {
+    state: {
+      orderId:
+        data.order_id,
+
+      event,
+
+      showtime:
+        showtimes.find(
+          s =>
+            s.id ===
+            selectedShowtime
+        ),
+
+      items,
+
+      quantity:
+        totalQuantity,
+
+      totalPrice,
+    },
+  }
 );
 
   } catch (err) {
