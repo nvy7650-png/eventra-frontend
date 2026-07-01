@@ -51,6 +51,7 @@ import MyOrders from "./pages/MyOrders";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import OrganizerRevenue from "./pages/OrganizerRevenue";
 import OrganizerPromotion from "./pages/OrganizerPromotion";
+import AutoBooking from "./pages/AutoBooking";
 
 function App() {
 
@@ -371,6 +372,15 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
 <Route
   path="/organizer/promotions"
   element={<OrganizerPromotion />}
+/>
+
+<Route
+  path="/event/:id/booking"
+  element={
+    <ProtectedRoute>
+      <AutoBooking />
+    </ProtectedRoute>
+  }
 />
       </Routes>
 
