@@ -550,9 +550,10 @@ return (
   className="
     flex-1
     lg:grid
-    lg:grid-cols-[minmax(0,1fr)_320px]
+    lg:grid-cols-[1fr_320px]
     gap-6
     min-h-0
+    overflow-hidden
   "
 >
 
@@ -650,9 +651,10 @@ mb-8
 
 <TransformComponent
   wrapperClass="
-    !w-full
-    !h-full
-  "
+  !w-full
+  !h-full
+  overflow-hidden
+"
 
  contentClass="
   flex
@@ -663,7 +665,8 @@ mb-8
 
 <div
   className="
-    inline-block
+    w-max
+    mx-auto
     space-y-8
     p-10
   "
@@ -887,11 +890,12 @@ text-[10px]
 
       {/* DESKTOP SIDEBAR */}
 
-      <div
+     <div
   className="
     hidden
     lg:block
-    h-full
+    w-[320px]
+    flex-shrink-0
   "
 >
 
