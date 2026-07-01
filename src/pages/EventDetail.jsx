@@ -101,7 +101,7 @@ export default function EventDetail() {
 
         <div className="relative overflow-hidden rounded-3xl">
           <img
-            src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
+             src={event.image_url}
             alt={event.title}
             className="
               w-full
