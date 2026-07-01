@@ -9,6 +9,11 @@ import {
   useNavigate,
 } from "react-router-dom";
 
+import {
+  TransformWrapper,
+  TransformComponent,
+} from "react-zoom-pan-pinch";
+
 
 export default function SeatMap() {
 
@@ -489,24 +494,37 @@ return (
 <div
   className="
     h-screen
+    overflow-hidden
+
     bg-[#050816]
     text-white
   "
 >
 
-  <div
+ <div
   className="
     h-full
+
+    flex
+    flex-col
+
     overflow-hidden
+
+    p-4
+    md:p-6
   "
 >
 
     {/* HEADER */}
 
-    <div className="
-mb-4
-md:mb-8
-">
+   <div
+  className="
+    flex-shrink-0
+
+    mb-4
+    md:mb-6
+  "
+>
 
       <h1
         className="
@@ -530,21 +548,38 @@ md:mb-8
 
     <div
   className="
+    flex-1
+
     lg:grid
     lg:grid-cols-[1fr_320px]
-    gap-8
+
+    gap-6
+
+    min-h-0
   "
 >
 
       {/* LEFT */}
-      <div className="h-full">
+      <div className="
+  h-full
+  min-h-0
+">
 
         <div
   className="
     bg-[#0B1220]
     border
     border-white/10
+
     rounded-3xl
+
+    h-full
+
+    flex
+    flex-col
+
+    overflow-hidden
+
     p-6
     md:p-8
   "
@@ -589,18 +624,59 @@ mb-8
 
      <div
   className="
+    flex-1
+
     border-t
     border-white/10
+
     pt-6
+
+    min-h-0
+
+    overflow-hidden
   "
 >
-  <div
-  className="
-    w-fit
-    mx-auto
-    space-y-8
+  <TransformWrapper
+  initialScale={0.8}
+  centerOnInit
+  limitToBounds={false}
+  minScale={0.5}
+  maxScale={3}
+  wheel={{
+    step: 0.1,
+  }}
+  pinch={{
+    step: 5,
+  }}
+  doubleClick={{
+    disabled: true,
+  }}
+>
+
+<TransformComponent
+  wrapperClass="
+    !w-full
+    !h-full
   "
 
+  contentClass="
+    flex
+    items-center
+    justify-center
+
+    min-w-max
+    min-h-max
+  "
+>
+
+<div
+  className="
+    w-max
+
+    space-y-8
+
+    p-10
+  "
 >
            {Object.entries(
   groupedSeats
@@ -731,7 +807,11 @@ text-[10px]
             })
 }
 </div>
-</div>
+
+</TransformComponent>
+
+
+</TransformWrapper>
 
           {/* LEGEND */}
 
@@ -1114,9 +1194,8 @@ text-[10px]
   </div>
 
 </div>
+</div>
 
 
 );
-
 }
-
