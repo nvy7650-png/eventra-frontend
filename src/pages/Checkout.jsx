@@ -426,49 +426,37 @@ return (
                 </p>
               </div>
 
-              <div>
-
-               <div>
+             <div>
 
   <p className="text-gray-500 mb-3">
-
-    {isAuto
-      ? "Số lượng vé"
-      : "Ghế đã chọn"}
-
+    Ghế đã chọn
   </p>
 
- <p className="text-gray-500 mb-3">
-  Ghế đã chọn
-</p>
+  <div className="flex flex-wrap gap-2">
 
-<div className="flex flex-wrap gap-2">
+    {seats?.map((seat) => (
 
-  {seats?.map((seat) => (
+      <span
+        key={seat.id}
+        className="
+          px-4
+          py-2
+          rounded-xl
+          bg-sky-500/20
+          border
+          border-sky-500/30
+          text-sky-400
+          font-semibold
+        "
+      >
+        {seat.seat_code}
+      </span>
 
-    <span
-      key={seat.id}
-      className="
-        px-4
-        py-2
-        rounded-xl
-        bg-sky-500/20
-        border
-        border-sky-500/30
-        text-sky-400
-        font-semibold
-      "
-    >
-      {seat.seat_code}
-    </span>
+    ))}
 
-  ))}
+  </div>
 
 </div>
-
-</div>
-
-              </div>
 
             </div>
 
