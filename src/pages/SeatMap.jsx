@@ -549,12 +549,9 @@ return (
     <div
   className="
     flex-1
-
     lg:grid
-    lg:grid-cols-[1fr_320px]
-
+    lg:grid-cols-[minmax(0,1fr)_320px]
     gap-6
-
     min-h-0
   "
 >
@@ -563,6 +560,7 @@ return (
       <div className="
   h-full
   min-h-0
+  min-w-0
 ">
 
         <div
@@ -625,15 +623,12 @@ mb-8
      <div
   className="
     flex-1
-
     border-t
     border-white/10
-
     pt-6
-
     min-h-0
-
     overflow-hidden
+    min-w-0
   "
 >
   <TransformWrapper
@@ -659,22 +654,17 @@ mb-8
     !h-full
   "
 
-  contentClass="
-    flex
-    items-center
-    justify-center
-
-    min-w-max
-    min-h-max
-  "
+ contentClass="
+  flex
+  justify-center
+  items-start
+"
 >
 
 <div
   className="
-    w-max
-
+    inline-block
     space-y-8
-
     p-10
   "
 >
