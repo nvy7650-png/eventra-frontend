@@ -192,6 +192,23 @@ const [selectedShowtime,
 
 }
 
+ if (!event) {
+
+  return (
+    <div className="
+      min-h-screen
+      bg-[#050816]
+      flex
+      items-center
+      justify-center
+      text-white
+    ">
+      Đang tải...
+    </div>
+  );
+
+}
+
   return (
 
     <div className="min-h-screen bg-[#050816] text-white">
@@ -209,7 +226,41 @@ const [selectedShowtime,
           </h1>
 
           <p className="text-gray-400 mt-3">
-            <div className="flex flex-wrap gap-3 mt-6">
+            
+            {showtimes.length > 0 && (
+  <>
+    {new Date(
+      showtimes[0].start_time
+    ).toLocaleDateString("vi-VN")}
+
+    {" • "}
+
+    {new Date(
+      showtimes[0].start_time
+    ).toLocaleTimeString(
+      "vi-VN",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    )}
+
+    {" - "}
+
+    {new Date(
+      showtimes[0].end_time
+    ).toLocaleTimeString(
+      "vi-VN",
+      {
+        hour: "2-digit",
+        minute: "2-digit",
+      }
+    )}
+  </>
+)}
+          </p>
+
+          <div className="flex flex-wrap gap-3 mt-6">
 
   {showtimes.map((st) => (
 
@@ -258,38 +309,6 @@ const [selectedShowtime,
   ))}
 
 </div>
-            {showtimes.length > 0 && (
-  <>
-    {new Date(
-      showtimes[0].start_time
-    ).toLocaleDateString("vi-VN")}
-
-    {" • "}
-
-    {new Date(
-      showtimes[0].start_time
-    ).toLocaleTimeString(
-      "vi-VN",
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-      }
-    )}
-
-    {" - "}
-
-    {new Date(
-      showtimes[0].end_time
-    ).toLocaleTimeString(
-      "vi-VN",
-      {
-        hour: "2-digit",
-        minute: "2-digit",
-      }
-    )}
-  </>
-)}
-          </p>
 
         </div>
 
@@ -419,22 +438,7 @@ const [selectedShowtime,
                   if (!qty)
                     return null;
 
-                  if (!event) {
-
-  return (
-    <div className="
-      min-h-screen
-      bg-[#050816]
-      flex
-      items-center
-      justify-center
-      text-white
-    ">
-      Đang tải...
-    </div>
-  );
-
-}
+                 
 
                   return (
 
