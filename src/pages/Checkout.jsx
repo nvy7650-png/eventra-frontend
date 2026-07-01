@@ -28,21 +28,17 @@ const [discount, setDiscount] =
   const [promotion, setPromotion] =
   useState(null);
 
-const [finalPrice, setFinalPrice] =
-  useState(totalPrice);
-
-  const {
+const {
   event,
   showtime,
   zone,
   seats,
-  quantity,
-  items,
   totalPrice,
   expiresAt,
 } = location.state || {};
-const isAuto =
-  !seats?.length;
+
+const [finalPrice, setFinalPrice] =
+  useState(totalPrice || 0);
 
 const user = JSON.parse(
   localStorage.getItem("user") || "null"
@@ -371,16 +367,16 @@ return (
           "
         >
 
-          <img
-            src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
-            alt={event.title}
-            className="
-              w-full
-              h-[220px]
-              md:h-[320px]
-              object-cover
-            "
-          />
+        <img
+  src={event.image_url}
+  alt={event.title}
+  className="
+    w-full
+    h-[220px]
+    md:h-[320px]
+    object-cover
+  "
+/>
 
           <div className="p-6 md:p-8">
 
@@ -442,51 +438,33 @@ return (
 
   </p>
 
-  {isAuto ? (
+ <p className="text-gray-500 mb-3">
+  Ghế đã chọn
+</p>
 
-    <div
+<div className="flex flex-wrap gap-2">
+
+  {seats?.map((seat) => (
+
+    <span
+      key={seat.id}
       className="
         px-4
-        py-3
-        rounded-2xl
+        py-2
+        rounded-xl
         bg-sky-500/20
         border
         border-sky-500/30
         text-sky-400
-        font-bold
-        w-fit
+        font-semibold
       "
     >
-      {location.state.quantity} vé
-    </div>
+      {seat.seat_code}
+    </span>
 
-  ) : (
+  ))}
 
-    <div className="flex flex-wrap gap-2">
-
-      {seats?.map((seat) => (
-
-        <span
-          key={seat.id}
-          className="
-            px-4
-            py-2
-            rounded-xl
-            bg-sky-500/20
-            border
-            border-sky-500/30
-            text-sky-400
-            font-semibold
-          "
-        >
-          {seat.seat_code}
-        </span>
-
-      ))}
-
-    </div>
-
-  )}
+</div>
 
 </div>
 
