@@ -48,7 +48,7 @@ export default function Events() {
     categoryId || ""
   );
 
-}, [categoryId]);
+}, [selectedCategory]);
 
     useEffect(() => {
 
@@ -66,12 +66,12 @@ export default function Events() {
     let url =
       `${import.meta.env.VITE_API_URL}/api/events`;
 
-    if (categoryId) {
+    if (selectedCategory) {
 
-      url +=
-        `?category=${categoryId}`;
+  url +=
+    `?category=${selectedCategory}`;
 
-    }
+}
 
     fetch(url)
       .then((res) =>
@@ -317,7 +317,7 @@ const matchKeyword =
               key={event.id}
               onClick={() =>
                 navigate(
-                  `/events/${event.id}`
+                  `/event/${event.id}`
                 )
               }
               className="
@@ -333,9 +333,7 @@ const matchKeyword =
             >
 
               <img
-  src={
-    `${import.meta.env.VITE_API_URL}${event.image_url}`
-  }
+  src={event.image_url}
   alt={event.title}
   className="
     w-full
