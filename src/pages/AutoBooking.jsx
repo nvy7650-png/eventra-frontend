@@ -86,14 +86,18 @@ const [selectedShowtime,
     }));
 
   };
-  const currentZones =
-  console.log("SHOWTIME:", selectedShowtime);
-console.log("ZONES:", zones);
-  zones.filter(
-    (z) =>
-      z.showtime_id ===
-      selectedShowtime
-  );
+  console.log(
+  "SHOWTIME:",
+  selectedShowtime
+);
+
+console.log(
+  "ZONES:",
+  zones
+);
+
+const currentZones =
+  zones;
 
   const totalQuantity =
     Object.values(
