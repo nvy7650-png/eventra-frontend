@@ -2,7 +2,10 @@ import { useEffect, useState } from "react";
 
 import AdminSidebar from "../components/AdminSidebar";
 
+
 export default function AdminCategories() {
+  const [editingId, setEditingId] =
+  useState(null);
 
   const [categories, setCategories] =
     useState([]);
@@ -44,23 +47,21 @@ export default function AdminCategories() {
 
   const handleCreate = async () => {
 
-    if (!name.trim()) {
+  if (!name.trim()) {
+    alert("Nhập tên danh mục");
+    return;
+  }
 
-      alert("Nhập tên danh mục");
+  try {
 
-      return;
-
-    }
-
-    try {
+    if (editingId) {
 
       await fetch(
-        `${import.meta.env.VITE_API_URL}/api/categories`,
+        `${import.meta.env.VITE_API_URL}/api/categories/${editingId}`,
         {
-          method: "POST",
+          method: "PUT",
           headers: {
-            "Content-Type":
-              "application/json",
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             name,
@@ -69,18 +70,52 @@ export default function AdminCategories() {
         }
       );
 
-      setName("");
-      setDescription("");
+    } else {
 
-      fetchCategories();
-
-    } catch (err) {
-
-      console.log(err);
+      await fetch(
+        `${import.meta.env.VITE_API_URL}/api/categories`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            name,
+            description,
+          }),
+        }
+      );
 
     }
 
-  };
+    setEditingId(null);
+    setName("");
+    setDescription("");
+
+    fetchCategories();
+
+  } catch (err) {
+
+    console.log(err);
+
+  }
+
+};
+
+const handleEdit = (item) => {
+
+  setEditingId(item.id);
+
+  setName(item.name);
+
+  setDescription(item.description || "");
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+
+};
 
   const handleDelete = async (
     id
@@ -217,14 +252,16 @@ export default function AdminCategories() {
         >
 
           <h2
-            className="
-              text-xl
-              font-bold
-              mb-5
-            "
-          >
-            Thêm danh mục
-          </h2>
+  className="
+    text-xl
+    font-bold
+    mb-5
+  "
+>
+  {editingId
+    ? "Sửa danh mục"
+    : "Thêm danh mục"}
+</h2>
 
           <div className="space-y-4">
 
@@ -271,21 +308,21 @@ export default function AdminCategories() {
             />
 
             <button
-              onClick={
-                handleCreate
-              }
-              className="
-                bg-sky-500
-                hover:bg-sky-400
-                text-black
-                px-5
-                py-3
-                rounded-xl
-                font-bold
-              "
-            >
-              Thêm danh mục
-            </button>
+  onClick={handleCreate}
+  className="
+    bg-sky-500
+    hover:bg-sky-400
+    text-black
+    px-5
+    py-3
+    rounded-xl
+    font-bold
+  "
+>
+  {editingId
+    ? "Lưu thay đổi"
+    : "Thêm danh mục"}
+</button>
 
           </div>
 
@@ -381,26 +418,41 @@ export default function AdminCategories() {
 
                       <td className="p-4">
 
-                        <button
-                          onClick={() =>
-                            handleDelete(
-                              item.id
-                            )
-                          }
-                          className="
-                            px-4
-                            py-2
-                            rounded-xl
-                            bg-red-500
-                            hover:bg-red-400
-                            text-white
-                            text-sm
-                            font-bold
-                          "
-                        >
-                          Xóa
-                        </button>
+                       <div className="flex gap-2">
 
+  <button
+    onClick={() => handleEdit(item)}
+    className="
+      px-4
+      py-2
+      rounded-xl
+      bg-yellow-500
+      hover:bg-yellow-400
+      text-black
+      text-sm
+      font-bold
+    "
+  >
+    Sửa
+  </button>
+
+  <button
+    onClick={() => handleDelete(item.id)}
+    className="
+      px-4
+      py-2
+      rounded-xl
+      bg-red-500
+      hover:bg-red-400
+      text-white
+      text-sm
+      font-bold
+    "
+  >
+    Xóa
+  </button>
+
+</div>
                       </td>
 
                     </tr>
