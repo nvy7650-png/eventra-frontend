@@ -3,13 +3,17 @@ import OrganizerSidebar from "../components/OrganizerSidebar";
 
 export default function OrganizerPromotion() {
 
+  // =========================
+  // USER
+  // =========================
+
   const user = JSON.parse(
     localStorage.getItem("user") || "{}"
   );
 
-  // ==========================
+  // =========================
   // STATE
-  // ==========================
+  // =========================
 
   const [loading, setLoading] =
     useState(true);
@@ -20,81 +24,72 @@ export default function OrganizerPromotion() {
   const [showModal, setShowModal] =
     useState(false);
 
-  const [editingPromotion, setEditingPromotion] =
+  const [editingPromotion,
+    setEditingPromotion] =
     useState(null);
 
   const [events, setEvents] =
     useState([]);
 
-  const [promotions, setPromotions] =
+  const [promotions,
+    setPromotions] =
     useState([]);
 
-  const [form, setForm] =
-    useState({
-      code: "",
-      event_id: "",
-      name: "",
-      description: "",
-      discount_type: "PERCENT",
-      discount_value: "",
-      min_order_value: 0,
-      max_discount: "",
-      quantity: "",
-      start_date: "",
-      end_date: "",
-      status: "ACTIVE",
-    });
+  const emptyForm = {
 
-  // ==========================
-  // LOAD DATA
-  // ==========================
+    code: "",
+
+    event_id: "",
+
+    name: "",
+
+    description: "",
+
+    discount_type: "PERCENT",
+
+    discount_value: "",
+
+    min_order_value: 0,
+
+    max_discount: "",
+
+    quantity: "",
+
+    start_date: "",
+
+    end_date: ""
+
+  };
+
+  const [form, setForm] =
+    useState(emptyForm);
+
+  // =========================
+  // LOAD
+  // =========================
 
   useEffect(() => {
 
-    loadPromotions();
-    loadEvents();
+    fetchEvents();
+
+    fetchPromotions();
 
   }, []);
 
-  const loadPromotions =
+  // =========================
+  // GET EVENTS
+  // =========================
+
+  const fetchEvents =
     async () => {
 
       try {
 
         const res =
           await fetch(
-            `${import.meta.env.VITE_API_URL}/api/promotions/organizer/${user.id}`
-          );
 
-        const data =
-          await res.json();
+`${import.meta.env.VITE_API_URL}/api/events/organizer/${user.id}`
 
-        setPromotions(
-          Array.isArray(data)
-            ? data
-            : []
-        );
-
-      } catch (err) {
-
-        console.log(err);
-
-      } finally {
-
-        setLoading(false);
-
-      }
-
-    };
-
-  const loadEvents =
-    async () => {
-
-      try {
-
-        const res =
-          await fetch(
-            `${import.meta.env.VITE_API_URL}/api/events/organizer/${user.id}`
           );
 
         const data =
@@ -106,7 +101,9 @@ export default function OrganizerPromotion() {
             : []
         );
 
-      } catch (err) {
+      }
+
+      catch (err) {
 
         console.log(err);
 
@@ -114,28 +111,67 @@ export default function OrganizerPromotion() {
 
     };
 
-  // ==========================
+  // =========================
+  // GET PROMOTIONS
+  // =========================
+
+  const fetchPromotions =
+    async () => {
+
+      try {
+
+        const res =
+          await fetch(
+
+`${import.meta.env.VITE_API_URL}/api/promotions/organizer/${user.id}`
+
+          );
+
+        const data =
+          await res.json();
+
+        setPromotions(
+
+          Array.isArray(data)
+
+            ? data
+
+            : []
+
+        );
+
+      }
+
+      catch (err) {
+
+        console.log(err);
+
+      }
+
+      finally {
+
+        setLoading(false);
+
+      }
+
+    };
+      // =========================
   // FORM
-  // ==========================
+  // =========================
 
   const resetForm = () => {
 
     setEditingPromotion(null);
 
-    setForm({
-      code: "",
-      event_id: "",
-      name: "",
-      description: "",
-      discount_type: "PERCENT",
-      discount_value: "",
-      min_order_value: 0,
-      max_discount: "",
-      quantity: "",
-      start_date: "",
-      end_date: "",
-      status: "ACTIVE",
-    });
+    setForm(emptyForm);
+
+  };
+
+  const closeModal = () => {
+
+    setShowModal(false);
+
+    resetForm();
 
   };
 
@@ -147,69 +183,69 @@ export default function OrganizerPromotion() {
 
   };
 
-  const openEditModal = (promo) => {
+  const openEditModal = (
+    promotion
+  ) => {
 
-    setEditingPromotion(promo);
+    setEditingPromotion(
+      promotion
+    );
 
     setForm({
 
-      code: promo.code,
+      code:
+        promotion.code,
 
-      event_id: promo.event_id || "",
+      event_id:
+        promotion.event_id || "",
 
-      name: promo.name,
+      name:
+        promotion.name || "",
 
       description:
-        promo.description || "",
+        promotion.description || "",
 
       discount_type:
-        promo.discount_type,
+        promotion.discount_type,
 
       discount_value:
-        promo.discount_value,
+        promotion.discount_value,
 
       min_order_value:
-        promo.min_order_value,
+        promotion.min_order_value,
 
       max_discount:
-        promo.max_discount || "",
+        promotion.max_discount || "",
 
       quantity:
-        promo.quantity,
+        promotion.quantity,
 
-      start_date:
-        promo.start_date
-          ?.slice(0, 16),
+     start_date:
+  new Date(promotion.start_date)
+    .toISOString()
+    .slice(0,16),
 
-      end_date:
-        promo.end_date
-          ?.slice(0, 16),
-
-      status:
-        promo.status,
-
+end_date:
+  new Date(promotion.end_date)
+    .toISOString()
+    .slice(0,16),
     });
 
     setShowModal(true);
 
   };
-    const closeModal = () => {
 
-    setShowModal(false);
-
-    resetForm();
-
-  };
-
-  // ==========================
+  // =========================
   // VALIDATE
-  // ==========================
+  // =========================
 
   const validateForm = () => {
 
     if (!form.code.trim()) {
 
-      alert("Vui lòng nhập mã giảm giá");
+      alert(
+        "Vui lòng nhập mã giảm giá."
+      );
 
       return false;
 
@@ -217,50 +253,79 @@ export default function OrganizerPromotion() {
 
     if (!form.event_id) {
 
-      alert("Vui lòng chọn sự kiện");
+      alert(
+        "Vui lòng chọn sự kiện."
+      );
 
       return false;
 
     }
 
     if (
-      Number(form.discount_value) <= 0
-    ) {
-
-      alert("Giá trị giảm phải lớn hơn 0");
-
-      return false;
-
-    }
-
-    if (
-      form.discount_type === "PERCENT" &&
-      Number(form.discount_value) > 100
-    ) {
-
-      alert("Giảm % không được lớn hơn 100");
-
-      return false;
-
-    }
-
-    if (
-      Number(form.quantity) <= 0
-    ) {
-
-      alert("Số lượng phải lớn hơn 0");
-
-      return false;
-
-    }
-
-    if (
-      new Date(form.end_date) <=
-      new Date(form.start_date)
+      Number(
+        form.discount_value
+      ) <= 0
     ) {
 
       alert(
-        "Ngày kết thúc phải lớn hơn ngày bắt đầu"
+        "Giá trị giảm phải lớn hơn 0."
+      );
+
+      return false;
+
+    }
+
+    if (
+
+      form.discount_type ===
+      "PERCENT"
+
+      &&
+
+      Number(
+        form.discount_value
+      ) > 100
+
+    ) {
+
+      alert(
+        "Giảm % không được lớn hơn 100."
+      );
+
+      return false;
+
+    }
+
+    if (
+
+      Number(
+        form.quantity
+      ) <= 0
+
+    ) {
+
+      alert(
+        "Số lượng phải lớn hơn 0."
+      );
+
+      return false;
+
+    }
+
+    if (
+
+      new Date(
+        form.end_date
+      ) <=
+
+      new Date(
+        form.start_date
+      )
+
+    ) {
+
+      alert(
+        "Ngày kết thúc phải lớn hơn ngày bắt đầu."
       );
 
       return false;
@@ -270,15 +335,15 @@ export default function OrganizerPromotion() {
     return true;
 
   };
-
-  // ==========================
-  // CREATE
-  // ==========================
+    // =========================
+  // CREATE PROMOTION
+  // =========================
 
   const createPromotion =
     async () => {
 
-      if (!validateForm()) return;
+      if (!validateForm())
+        return;
 
       setSaving(true);
 
@@ -286,8 +351,11 @@ export default function OrganizerPromotion() {
 
         const res =
           await fetch(
-            `${import.meta.env.VITE_API_URL}/api/promotions`,
+
+`${import.meta.env.VITE_API_URL}/api/promotions`,
+
             {
+
               method: "POST",
 
               headers: {
@@ -303,15 +371,13 @@ export default function OrganizerPromotion() {
                 event_id:
                   form.event_id,
 
-                name:
-                  events.find(
-                    e =>
-                      e.id ==
-                      form.event_id
-                  )?.title || "",
-
                 code:
-                  form.code,
+                  form.code
+                    .trim()
+                    .toUpperCase(),
+
+                name:
+                  form.name,
 
                 description:
                   form.description,
@@ -320,16 +386,26 @@ export default function OrganizerPromotion() {
                   form.discount_type,
 
                 discount_value:
-                  form.discount_value,
+                  Number(
+                    form.discount_value
+                  ),
 
                 min_order_value:
-                  form.min_order_value,
+                  Number(
+                    form.min_order_value
+                  ),
 
                 max_discount:
-                  form.max_discount || null,
+                  form.max_discount
+                    ? Number(
+                        form.max_discount
+                      )
+                    : null,
 
                 quantity:
-                  form.quantity,
+                  Number(
+                    form.quantity
+                  ),
 
                 start_date:
                   form.start_date,
@@ -340,6 +416,7 @@ export default function OrganizerPromotion() {
               }),
 
             }
+
           );
 
         const data =
@@ -349,28 +426,34 @@ export default function OrganizerPromotion() {
 
           alert(
             data.message ||
-            "Tạo thất bại"
+            "Tạo mã thất bại."
           );
 
           return;
 
         }
 
-        await loadPromotions();
+        await fetchPromotions();
 
         closeModal();
 
         alert(
-          "Tạo mã thành công"
+          "Tạo mã thành công."
         );
 
-      } catch (err) {
+      }
+
+      catch (err) {
 
         console.log(err);
 
-        alert("Lỗi server");
+        alert(
+          "Lỗi server."
+        );
 
-      } finally {
+      }
+
+      finally {
 
         setSaving(false);
 
@@ -378,14 +461,15 @@ export default function OrganizerPromotion() {
 
     };
 
-  // ==========================
-  // UPDATE
-  // ==========================
+  // =========================
+  // UPDATE PROMOTION
+  // =========================
 
   const updatePromotion =
     async () => {
 
-      if (!validateForm()) return;
+      if (!validateForm())
+        return;
 
       setSaving(true);
 
@@ -393,24 +477,32 @@ export default function OrganizerPromotion() {
 
         const res =
           await fetch(
-            `${import.meta.env.VITE_API_URL}/api/promotions/${editingPromotion.id}`,
+
+`${import.meta.env.VITE_API_URL}/api/promotions/${editingPromotion.id}`,
+
             {
 
               method: "PUT",
 
               headers: {
+
                 "Content-Type":
                   "application/json",
+
               },
 
               body: JSON.stringify({
 
+                event_id:
+                  form.event_id,
+
+                code:
+                  form.code
+                    .trim()
+                    .toUpperCase(),
+
                 name:
-                  events.find(
-                    e =>
-                      e.id ==
-                      form.event_id
-                  )?.title || "",
+                  form.name,
 
                 description:
                   form.description,
@@ -419,16 +511,26 @@ export default function OrganizerPromotion() {
                   form.discount_type,
 
                 discount_value:
-                  form.discount_value,
+                  Number(
+                    form.discount_value
+                  ),
 
                 min_order_value:
-                  form.min_order_value,
+                  Number(
+                    form.min_order_value
+                  ),
 
                 max_discount:
-                  form.max_discount || null,
+                  form.max_discount
+                    ? Number(
+                        form.max_discount
+                      )
+                    : null,
 
                 quantity:
-                  form.quantity,
+                  Number(
+                    form.quantity
+                  ),
 
                 start_date:
                   form.start_date,
@@ -436,12 +538,10 @@ export default function OrganizerPromotion() {
                 end_date:
                   form.end_date,
 
-                status:
-                  form.status,
-
               }),
 
             }
+
           );
 
         const data =
@@ -451,37 +551,58 @@ export default function OrganizerPromotion() {
 
           alert(
             data.message ||
-            "Cập nhật thất bại"
+            "Cập nhật thất bại."
           );
 
           return;
 
         }
 
-        await loadPromotions();
+        await fetchPromotions();
 
         closeModal();
 
         alert(
-          "Cập nhật thành công"
+          "Cập nhật thành công."
         );
 
-      } catch (err) {
+      }
+
+      catch (err) {
 
         console.log(err);
 
-        alert("Lỗi server");
+        alert(
+          "Lỗi server."
+        );
 
-      } finally {
+      }
+
+      finally {
 
         setSaving(false);
 
       }
 
     };
-      // ==========================
+      // =========================
   // HELPERS
-  // ==========================
+  // =========================
+
+  const formatDate = (
+    value
+  ) => {
+
+    if (!value)
+      return "--";
+
+    return new Date(
+      value
+    ).toLocaleString(
+      "vi-VN"
+    );
+
+  };
 
   const getStatusColor = (
     status
@@ -518,40 +639,52 @@ export default function OrganizerPromotion() {
 
   };
 
-  const formatDate = (
-    value
+  const getDiscountText = (
+    promotion
   ) => {
 
-    if (!value)
-      return "--";
+    if (
+      promotion.discount_type ===
+      "PERCENT"
+    ) {
 
-    return new Date(
-      value
+      return `${promotion.discount_value}%`;
+
+    }
+
+    return Number(
+      promotion.discount_value
     ).toLocaleString(
       "vi-VN"
-    );
+    ) + " đ";
 
   };
 
-  // ==========================
+  // =========================
   // LOADING
-  // ==========================
+  // =========================
 
   if (loading) {
 
     return (
 
-      <div className="min-h-screen bg-[#050816] text-white">
+      <div
+        className="
+          min-h-screen
+          bg-[#050816]
+          text-white
+        "
+      >
 
         <OrganizerSidebar />
 
         <div
           className="
             ml-80
-            min-h-screen
             flex
-            items-center
             justify-center
+            items-center
+            h-screen
             text-2xl
             font-bold
           "
@@ -567,17 +700,28 @@ export default function OrganizerPromotion() {
 
   }
 
-  // ==========================
+  // =========================
   // JSX
-  // ==========================
+  // =========================
 
   return (
 
-    <div className="min-h-screen bg-[#050816] text-white">
+    <div
+      className="
+        min-h-screen
+        bg-[#050816]
+        text-white
+      "
+    >
 
       <OrganizerSidebar />
 
-      <div className="ml-80 p-10">
+      <div
+        className="
+          ml-80
+          p-10
+        "
+      >
 
         {/* HEADER */}
 
@@ -598,7 +742,10 @@ export default function OrganizerPromotion() {
                 font-black
               "
             >
+
+              Quản lý
               Mã giảm giá
+
             </h1>
 
             <p
@@ -607,27 +754,32 @@ export default function OrganizerPromotion() {
                 mt-2
               "
             >
-              Quản lý chương trình
-              khuyến mãi cho
-              sự kiện của bạn.
+
+              Tạo và quản lý
+              chương trình
+              khuyến mãi.
+
             </p>
 
           </div>
 
           <button
+
             onClick={
               openCreateModal
             }
+
             className="
+              bg-sky-500
+              hover:bg-sky-400
               px-6
               py-3
               rounded-2xl
-              bg-sky-500
-              hover:bg-sky-400
-              transition
-              text-black
               font-bold
+              text-black
+              transition
             "
+
           >
 
             + Tạo mã
@@ -646,6 +798,7 @@ export default function OrganizerPromotion() {
             mb-10
           "
         >
+                  {/* TOTAL */}
 
           <div
             className="
@@ -657,12 +810,10 @@ export default function OrganizerPromotion() {
             "
           >
 
-            <p
-              className="
-                text-gray-400
-              "
-            >
+            <p className="text-gray-400">
+
               Tổng mã
+
             </p>
 
             <h2
@@ -673,12 +824,14 @@ export default function OrganizerPromotion() {
                 mt-4
               "
             >
-              {
-                promotions.length
-              }
+
+              {promotions.length}
+
             </h2>
 
           </div>
+
+          {/* ACTIVE */}
 
           <div
             className="
@@ -690,12 +843,10 @@ export default function OrganizerPromotion() {
             "
           >
 
-            <p
-              className="
-                text-gray-400
-              "
-            >
+            <p className="text-gray-400">
+
               Đang hoạt động
+
             </p>
 
             <h2
@@ -711,9 +862,9 @@ export default function OrganizerPromotion() {
 
                 promotions.filter(
 
-                  p =>
+                  item =>
 
-                    p.status ===
+                    item.status ===
                     "ACTIVE"
 
                 ).length
@@ -723,6 +874,8 @@ export default function OrganizerPromotion() {
             </h2>
 
           </div>
+
+          {/* INACTIVE */}
 
           <div
             className="
@@ -734,12 +887,10 @@ export default function OrganizerPromotion() {
             "
           >
 
-            <p
-              className="
-                text-gray-400
-              "
-            >
+            <p className="text-gray-400">
+
               Hết hiệu lực
+
             </p>
 
             <h2
@@ -755,9 +906,9 @@ export default function OrganizerPromotion() {
 
                 promotions.filter(
 
-                  p =>
+                  item =>
 
-                    p.status ===
+                    item.status ===
                     "INACTIVE"
 
                 ).length
@@ -788,7 +939,7 @@ export default function OrganizerPromotion() {
                   rounded-3xl
                   border
                   border-white/10
-                  p-16
+                  py-20
                   text-center
                 "
               >
@@ -797,19 +948,24 @@ export default function OrganizerPromotion() {
                   className="
                     text-3xl
                     font-black
-                    mb-3
                   "
                 >
+
                   Chưa có mã giảm giá
+
                 </h2>
 
                 <p
                   className="
+                    mt-3
                     text-gray-400
                   "
                 >
-                  Hãy tạo mã đầu tiên
-                  cho sự kiện.
+
+                  Nhấn
+                  "Tạo mã"
+                  để bắt đầu.
+
                 </p>
 
               </div>
@@ -817,236 +973,995 @@ export default function OrganizerPromotion() {
             )
 
           }
-          </div>
+
           {
-  promotions.map((promo) => (
 
-    <div
-      key={promo.id}
-      className="
-        bg-[#0B1120]
-        border
-        border-white/10
-        rounded-3xl
-        p-7
-        hover:border-sky-500/30
-        transition
-      "
-    >
+            promotions.map(
 
-      {/* HEADER */}
+              (promotion) => (
+                              <div
+                key={promotion.id}
+                className="
+                  bg-[#0B1120]
+                  border
+                  border-white/10
+                  rounded-3xl
+                  p-7
+                  hover:border-sky-500/30
+                  transition
+                "
+              >
 
-      <div
-        className="
-          flex
-          justify-between
-          items-start
-        "
-      >
+                {/* HEADER */}
 
-        <div>
+                <div
+                  className="
+                    flex
+                    justify-between
+                    items-start
+                    mb-8
+                  "
+                >
 
-          <h2
-            className="
-              text-3xl
-              font-black
-            "
-          >
-            {promo.code}
-          </h2>
+                  <div>
 
-          <p
-            className="
-              text-gray-400
-              mt-2
-            "
-          >
-            {promo.event_title}
-          </p>
+                    <h2
+                      className="
+                        text-3xl
+                        font-black
+                      "
+                    >
+
+                      {promotion.code}
+
+                    </h2>
+
+                    <p
+  className="
+    text-gray-400
+    mt-2
+  "
+>
+
+  {promotion.event_title || "Không có sự kiện"}
+
+</p>
+
+                  </div>
+
+                  <div
+                    className="
+                      flex
+                      items-center
+                      gap-3
+                    "
+                  >
+
+                    <span
+                      className={`
+                        px-4
+                        py-2
+                        rounded-full
+                        text-sm
+                        font-bold
+                        ${getStatusColor(
+                          promotion.status
+                        )}
+                      `}
+                    >
+
+                      {
+
+                        promotion.status ===
+                        "ACTIVE"
+
+                          ? "Đang hoạt động"
+
+                          : "Hết hiệu lực"
+
+                      }
+
+                    </span>
+
+                    <button
+
+                      onClick={() =>
+                        openEditModal(
+                          promotion
+                        )
+                      }
+
+                      className="
+                        bg-sky-500
+                        hover:bg-sky-400
+                        text-black
+                        font-bold
+                        px-5
+                        py-2
+                        rounded-xl
+                        transition
+                      "
+
+                    >
+
+                      Sửa
+
+                    </button>
+
+                  </div>
+
+                </div>
+
+                {/* BODY */}
+
+                <div
+                  className="
+                    grid
+                    md:grid-cols-4
+                    gap-6
+                  "
+                >
+
+                  <div>
+
+                    <p
+                      className="
+                        text-gray-400
+                        text-sm
+                      "
+                    >
+
+                      Giá trị giảm
+
+                    </p>
+
+                    <p
+                      className="
+                        mt-2
+                        text-2xl
+                        font-black
+                      "
+                    >
+
+                      {
+
+                        getDiscountText(
+                          promotion
+                        )
+
+                      }
+
+                    </p>
+
+                  </div>
+
+                  <div>
+
+                    <p
+                      className="
+                        text-gray-400
+                        text-sm
+                      "
+                    >
+
+                      Đã sử dụng
+
+                    </p>
+
+                    <p
+                      className="
+                        mt-2
+                        text-2xl
+                        font-black
+                      "
+                    >
+
+                      {
+
+                        promotion.used_count
+
+                      }
+
+                      {" / "}
+
+                      {
+
+                        promotion.quantity
+
+                      }
+
+                    </p>
+
+                  </div>
+
+                  <div>
+
+                    <p
+                      className="
+                        text-gray-400
+                        text-sm
+                      "
+                    >
+
+                      Bắt đầu
+
+                    </p>
+
+                    <p
+                      className="
+                        mt-2
+                        font-semibold
+                      "
+                    >
+
+                      {
+
+                        formatDate(
+                          promotion.start_date
+                        )
+
+                      }
+
+                    </p>
+
+                  </div>
+
+                  <div>
+
+                    <p
+                      className="
+                        text-gray-400
+                        text-sm
+                      "
+                    >
+
+                      Kết thúc
+
+                    </p>
+
+                    <p
+                      className="
+                        mt-2
+                        font-semibold
+                      "
+                    >
+
+                      {
+
+                        formatDate(
+                          promotion.end_date
+                        )
+
+                      }
+
+                    </p>
+
+                  </div>
+
+                </div>
+
+              </div>
+
+            )
+
+          )}
 
         </div>
+              {/* =========================
+          MODAL
+      ========================== */}
+
+      {showModal && (
 
         <div
           className="
+            fixed
+            inset-0
+            bg-black/60
+            backdrop-blur-sm
             flex
             items-center
-            gap-3
+            justify-center
+            z-50
+            p-6
           "
         >
 
-          <span
-            className={`
-              px-4
-              py-2
-              rounded-full
-              text-sm
-              font-bold
-              ${getStatusColor(
-                promo.status
-              )}
-            `}
-          >
-
-            {
-              promo.status ===
-              "ACTIVE"
-                ? "Đang hoạt động"
-                : "Hết hiệu lực"
-            }
-
-          </span>
-
-          <button
-            onClick={() =>
-              openEditModal(
-                promo
-              )
-            }
+          <div
             className="
-              px-5
-              py-2
-              rounded-xl
-              bg-sky-500
-              hover:bg-sky-400
-              text-black
-              font-bold
+              w-full
+              max-w-3xl
+              bg-[#0B1120]
+              rounded-3xl
+              border
+              border-white/10
+              p-8
+              max-h-[90vh]
+              overflow-y-auto
             "
           >
 
-            Sửa
+            <div
+              className="
+                flex
+                justify-between
+                items-center
+                mb-8
+              "
+            >
 
-          </button>
+              <h2
+                className="
+                  text-3xl
+                  font-black
+                "
+              >
+
+                {
+
+                  editingPromotion
+
+                    ? "Chỉnh sửa mã giảm giá"
+
+                    : "Tạo mã giảm giá"
+
+                }
+
+              </h2>
+
+              <button
+
+                onClick={closeModal}
+
+                className="
+                  text-3xl
+                  text-gray-400
+                  hover:text-white
+                "
+
+              >
+
+                ×
+
+              </button>
+
+            </div>
+
+            {/* EVENT */}
+
+            <div className="mb-5">
+
+              <label className="block mb-2 font-semibold">
+
+                Sự kiện
+
+              </label>
+
+              <select
+
+                value={form.event_id}
+
+                onChange={(e)=>
+
+                  setForm({
+
+                    ...form,
+
+                    event_id:e.target.value
+
+                  })
+
+                }
+
+                className="
+                  w-full
+                  rounded-xl
+                  bg-[#111827]
+                  border
+                  border-white/10
+                  px-4
+                  py-3
+                "
+
+              >
+
+                <option value="">
+
+                  Chọn sự kiện
+
+                </option>
+
+                {
+
+                  events.map(
+
+                    event=>(
+
+                      <option
+
+                        key={event.id}
+
+                        value={event.id}
+
+                      >
+
+                        {event.title}
+
+                      </option>
+
+                    )
+
+                  )
+
+                }
+
+              </select>
+
+            </div>
+
+            {/* CODE */}
+
+            <div className="mb-5">
+
+              <label className="block mb-2 font-semibold">
+
+                Mã giảm giá
+
+              </label>
+
+              <input
+
+                type="text"
+
+                value={form.code}
+
+                onChange={(e)=>
+
+                  setForm({
+
+                    ...form,
+
+                    code:e.target.value.toUpperCase()
+
+                  })
+
+                }
+
+                className="
+                  w-full
+                  rounded-xl
+                  bg-[#111827]
+                  border
+                  border-white/10
+                  px-4
+                  py-3
+                "
+
+                placeholder="SUMMER2026"
+
+              />
+
+            </div>
+
+            {/* NAME */}
+
+            <div className="mb-5">
+
+              <label className="block mb-2 font-semibold">
+
+                Tên chương trình
+
+              </label>
+
+              <input
+
+                type="text"
+
+                value={form.name}
+
+                onChange={(e)=>
+
+                  setForm({
+
+                    ...form,
+
+                    name:e.target.value
+
+                  })
+
+                }
+
+                className="
+                  w-full
+                  rounded-xl
+                  bg-[#111827]
+                  border
+                  border-white/10
+                  px-4
+                  py-3
+                "
+
+                placeholder="Giảm giá mùa hè"
+
+              />
+
+            </div>
+
+            {/* DESCRIPTION */}
+
+            <div className="mb-6">
+
+              <label className="block mb-2 font-semibold">
+
+                Mô tả
+
+              </label>
+
+              <textarea
+
+                rows={4}
+
+                value={form.description}
+
+                onChange={(e)=>
+
+                  setForm({
+
+                    ...form,
+
+                    description:e.target.value
+
+                  })
+
+                }
+
+                className="
+                  w-full
+                  rounded-xl
+                  bg-[#111827]
+                  border
+                  border-white/10
+                  px-4
+                  py-3
+                "
+
+              />
+
+            </div>
+                        {/* DISCOUNT */}
+
+            <div
+              className="
+                grid
+                md:grid-cols-2
+                gap-6
+                mb-6
+              "
+            >
+
+              <div>
+
+                <label className="block mb-2 font-semibold">
+
+                  Loại giảm
+
+                </label>
+
+                <select
+
+                  value={form.discount_type}
+
+                  onChange={(e)=>
+
+                    setForm({
+
+                      ...form,
+
+                      discount_type:e.target.value
+
+                    })
+
+                  }
+
+                  className="
+                    w-full
+                    rounded-xl
+                    bg-[#111827]
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                  "
+
+                >
+
+                  <option value="PERCENT">
+
+                    Phần trăm (%)
+
+                  </option>
+
+                  <option value="FIXED">
+
+                    Số tiền
+
+                  </option>
+
+                </select>
+
+              </div>
+
+              <div>
+
+                <label className="block mb-2 font-semibold">
+
+                  Giá trị giảm
+
+                </label>
+
+                <input
+
+                  type="number"
+
+                  value={form.discount_value}
+
+                  onChange={(e)=>
+
+                    setForm({
+
+                      ...form,
+
+                      discount_value:e.target.value
+
+                    })
+
+                  }
+
+                  className="
+                    w-full
+                    rounded-xl
+                    bg-[#111827]
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                  "
+
+                />
+
+              </div>
+
+            </div>
+
+            {/* ORDER */}
+
+            <div
+              className="
+                grid
+                md:grid-cols-2
+                gap-6
+                mb-6
+              "
+            >
+
+              <div>
+
+                <label className="block mb-2 font-semibold">
+
+                  Giá trị đơn tối thiểu
+
+                </label>
+
+                <input
+
+                  type="number"
+
+                  value={form.min_order_value}
+
+                  onChange={(e)=>
+
+                    setForm({
+
+                      ...form,
+
+                      min_order_value:e.target.value
+
+                    })
+
+                  }
+
+                  className="
+                    w-full
+                    rounded-xl
+                    bg-[#111827]
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                  "
+
+                />
+
+              </div>
+
+              <div>
+
+                <label className="block mb-2 font-semibold">
+
+                  Giảm tối đa
+
+                </label>
+
+                <input
+
+                  type="number"
+
+                  value={form.max_discount}
+
+                  onChange={(e)=>
+
+                    setForm({
+
+                      ...form,
+
+                      max_discount:e.target.value
+
+                    })
+
+                  }
+
+                  disabled={
+                    form.discount_type ===
+                    "FIXED"
+                  }
+
+                  className="
+                    w-full
+                    rounded-xl
+                    bg-[#111827]
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                    disabled:opacity-40
+                  "
+
+                />
+
+              </div>
+
+            </div>
+
+            {/* QUANTITY */}
+
+            <div className="mb-6">
+
+              <label className="block mb-2 font-semibold">
+
+                Số lượng sử dụng
+
+              </label>
+
+              <input
+
+                type="number"
+
+                value={form.quantity}
+
+                onChange={(e)=>
+
+                  setForm({
+
+                    ...form,
+
+                    quantity:e.target.value
+
+                  })
+
+                }
+
+                className="
+                  w-full
+                  rounded-xl
+                  bg-[#111827]
+                  border
+                  border-white/10
+                  px-4
+                  py-3
+                "
+
+              />
+
+            </div>
+
+            {/* DATE */}
+
+            <div
+              className="
+                grid
+                md:grid-cols-2
+                gap-6
+              "
+            >
+
+              <div>
+
+                <label className="block mb-2 font-semibold">
+
+                  Ngày bắt đầu
+
+                </label>
+
+                <input
+
+                  type="datetime-local"
+
+                  value={form.start_date}
+
+                  onChange={(e)=>
+
+                    setForm({
+
+                      ...form,
+
+                      start_date:e.target.value
+
+                    })
+
+                  }
+
+                  className="
+                    w-full
+                    rounded-xl
+                    bg-[#111827]
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                  "
+
+                />
+
+              </div>
+
+              <div>
+
+                <label className="block mb-2 font-semibold">
+
+                  Ngày kết thúc
+
+                </label>
+
+                <input
+
+                  type="datetime-local"
+
+                  value={form.end_date}
+
+                  onChange={(e)=>
+
+                    setForm({
+
+                      ...form,
+
+                      end_date:e.target.value
+
+                    })
+
+                  }
+
+                  className="
+                    w-full
+                    rounded-xl
+                    bg-[#111827]
+                    border
+                    border-white/10
+                    px-4
+                    py-3
+                  "
+
+                />
+
+              </div>
+
+            </div>
+                        {/* ACTION */}
+
+            <div
+              className="
+                flex
+                justify-end
+                gap-4
+                mt-10
+              "
+            >
+
+              <button
+
+                type="button"
+
+                onClick={closeModal}
+
+                className="
+                  px-6
+                  py-3
+                  rounded-xl
+                  border
+                  border-white/10
+                  hover:bg-white/10
+                  transition
+                "
+
+              >
+
+                Hủy
+
+              </button>
+
+              <button
+
+                type="button"
+
+                disabled={saving}
+
+                onClick={() => {
+
+                  if (editingPromotion) {
+
+                    updatePromotion();
+
+                  }
+
+                  else {
+
+                    createPromotion();
+
+                  }
+
+                }}
+
+                className="
+                  px-8
+                  py-3
+                  rounded-xl
+                  bg-sky-500
+                  hover:bg-sky-400
+                  disabled:opacity-50
+                  transition
+                  text-black
+                  font-bold
+                "
+
+              >
+
+                {
+
+                  saving
+
+                    ? "Đang lưu..."
+
+                    : editingPromotion
+
+                    ? "Cập nhật"
+
+                    : "Tạo mã"
+
+                }
+
+              </button>
+
+            </div>
+
+          </div>
 
         </div>
+      )}
 
-      </div>
-
-      {/* INFO */}
-
-      <div
-        className="
-          grid
-          md:grid-cols-4
-          gap-6
-          mt-8
-        "
-      >
-
-        <div>
-
-          <p
-            className="
-              text-gray-400
-              text-sm
-            "
-          >
-            Giảm giá
-          </p>
-
-          <p
-            className="
-              text-2xl
-              font-black
-              mt-2
-            "
-          >
-
-            {promo.discount_value}
-
-            {
-              promo.discount_type ===
-              "PERCENT"
-                ? "%"
-                : " đ"
-            }
-
-          </p>
-
-        </div>
-
-        <div>
-
-          <p
-            className="
-              text-gray-400
-              text-sm
-            "
-          >
-            Đã sử dụng
-          </p>
-
-          <p
-            className="
-              text-2xl
-              font-black
-              mt-2
-            "
-          >
-
-            {promo.used_count}
-            {" / "}
-            {promo.quantity}
-
-          </p>
-
-        </div>
-
-        <div>
-
-          <p
-            className="
-              text-gray-400
-              text-sm
-            "
-          >
-            Bắt đầu
-          </p>
-
-          <p
-            className="
-              mt-2
-              font-semibold
-            "
-          >
-            {formatDate(
-              promo.start_date
-            )}
-          </p>
-
-        </div>
-
-        <div>
-
-          <p
-            className="
-              text-gray-400
-              text-sm
-            "
-          >
-            Kết thúc
-          </p>
-
-          <p
-            className="
-              mt-2
-              font-semibold
-            "
-          >
-            {formatDate(
-              promo.end_date
-            )}
-          </p>
-
-        </div>
-
-      </div>
-
+</div>
     </div>
 
-  ))
+
+  );
+
 }
 
-</div>
-
-</div>
-  )}
