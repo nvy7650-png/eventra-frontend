@@ -137,8 +137,8 @@ function App() {
         />
 
         <Route
-  path="/login"
-  element={<Login />}
+  path="/forgot-password"
+  element={<ForgotPassword />}
 />
 
         {/* REGISTER */}
