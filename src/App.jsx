@@ -53,6 +53,7 @@ import OrganizerRevenue from "./pages/OrganizerRevenue";
 import OrganizerPromotion from "./pages/OrganizerPromotion";
 import AutoBooking from "./pages/AutoBooking";
 import AutoCheckout from "./pages/AutoCheckout";
+import ForgotPassword from "./pages/ForgotPassword";
 
 function App() {
 
@@ -134,6 +135,11 @@ function App() {
           path="/login"
           element={<Login />}
         />
+
+        <Route
+  path="/login"
+  element={<Login />}
+/>
 
         {/* REGISTER */}
         <Route

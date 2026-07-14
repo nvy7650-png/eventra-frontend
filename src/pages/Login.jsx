@@ -373,20 +373,25 @@ export default function Login() {
 
               </button>
 
-              {/* FORGOT PASSWORD */}
-              <button
-                type="button"
-                className="
-                  text-sm
-                  text-sky-400
-                  hover:text-sky-300
-                  transition
-                "
-              >
+             {/* FORGOT PASSWORD */}
+<button
+  type="button"
 
-                Quên mật khẩu?
+  onClick={() =>
+    navigate("/forgot-password")
+  }
 
-              </button>
+  className="
+    text-sm
+    text-sky-400
+    hover:text-sky-300
+    transition
+  "
+>
+
+  Quên mật khẩu?
+
+</button>
 
             </div>
 
