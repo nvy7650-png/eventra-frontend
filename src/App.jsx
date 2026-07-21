@@ -54,6 +54,7 @@ import OrganizerPromotion from "./pages/OrganizerPromotion";
 import AutoBooking from "./pages/AutoBooking";
 import AutoCheckout from "./pages/AutoCheckout";
 import ForgotPassword from "./pages/ForgotPassword";
+import AdminOrders from "./pages/AdminOrders";
 
 function App() {
 
@@ -395,6 +396,11 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
   element={
     <AutoCheckout />
   }
+/>
+
+<Route
+  path="/admin/orders"
+  element={<AdminOrders />}
 />
       </Routes>
 
