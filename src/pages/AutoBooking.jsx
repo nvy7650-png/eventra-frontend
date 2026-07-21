@@ -163,30 +163,7 @@ const currentZones =
   });
 
 });
-    const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/orders`,
-      {
-        method: "POST",
-
-        headers: {
-          "Content-Type":
-            "application/json",
-        },
-
-        body: JSON.stringify({
-
-          user_id:
-            user.id,
-
-          event_id:
-            Number(id),
-
-          items,
-
-        }),
-
-      }
-    );
+    
 
     const data =
   await res.json();
