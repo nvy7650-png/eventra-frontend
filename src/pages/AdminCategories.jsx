@@ -183,13 +183,14 @@ const handleEdit = (item) => {
       <AdminSidebar />
 
       <main
-        className="
-          flex-1
-          lg:ml-72
-          p-4
-          md:p-10
-        "
-      >
+  className="
+    flex-1
+    lg:ml-72
+    p-4
+    sm:p-6
+    lg:p-10
+  "
+>
 
         <div className="mb-8">
 
@@ -210,16 +211,20 @@ const handleEdit = (item) => {
 
         {/* THỐNG KÊ */}
 
-        <div
-          className="
-            bg-sky-500/10
-            border
-            border-sky-500/20
-            rounded-3xl
-            p-6
-            mb-8
-          "
-        >
+       <div
+  className="
+    bg-gradient-to-r
+    from-sky-500/10
+    to-cyan-500/10
+    border
+    border-sky-500/20
+    rounded-3xl
+    p-5
+    sm:p-6
+    mb-8
+    shadow-lg
+  "
+>
 
           <p className="text-gray-400">
             Tổng danh mục
@@ -240,16 +245,19 @@ const handleEdit = (item) => {
 
         {/* THÊM DANH MỤC */}
 
-        <div
-          className="
-            bg-[#0B1120]
-            border
-            border-white/10
-            rounded-3xl
-            p-6
-            mb-8
-          "
-        >
+       <div
+  className="
+    bg-[#0B1120]
+    border
+    border-white/10
+    rounded-3xl
+    p-5
+    sm:p-6
+    mb-8
+    shadow-lg
+    max-w-3xl
+  "
+>
 
           <h2
   className="
@@ -275,15 +283,19 @@ const handleEdit = (item) => {
               }
               placeholder="Tên danh mục"
               className="
-                w-full
-                bg-black/30
-                border
-                border-white/10
-                rounded-xl
-                px-4
-                py-3
-                outline-none
-              "
+w-full
+bg-black/30
+border
+border-white/10
+rounded-xl
+px-4
+py-3
+outline-none
+transition
+focus:border-sky-500
+focus:ring-2
+focus:ring-sky-500/30
+"
             />
 
             <textarea
@@ -296,28 +308,36 @@ const handleEdit = (item) => {
               }
               placeholder="Mô tả danh mục"
               className="
-                w-full
-                bg-black/30
-                border
-                border-white/10
-                rounded-xl
-                px-4
-                py-3
-                outline-none
-              "
+w-full
+bg-black/30
+border
+border-white/10
+rounded-xl
+px-4
+py-3
+outline-none
+transition
+focus:border-sky-500
+focus:ring-2
+focus:ring-sky-500/30
+"
             />
 
             <button
   onClick={handleCreate}
   className="
-    bg-sky-500
-    hover:bg-sky-400
-    text-black
-    px-5
-    py-3
-    rounded-xl
-    font-bold
-  "
+w-full
+sm:w-auto
+bg-sky-500
+hover:bg-sky-400
+transition
+text-black
+px-6
+py-3
+rounded-xl
+font-bold
+shadow-lg
+"
 >
   {editingId
     ? "Lưu thay đổi"
@@ -346,7 +366,12 @@ const handleEdit = (item) => {
             "
           >
 
-            <table className="w-full">
+           <table
+className="
+min-w-[800px]
+w-full
+"
+>
 
               <thead>
 

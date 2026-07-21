@@ -4,13 +4,17 @@ useState,
 } from "react";
 
 import {
-useParams,
+  useParams,
+  useNavigate,
 } from "react-router-dom";
 
 export default function Payment() {
 
 const { orderId } =
 useParams();
+
+const navigate =
+  useNavigate();
 
 const [loading,
 setLoading] =
@@ -110,6 +114,47 @@ async () => {
   }
 
 };
+
+const handleDemoSuccess =
+  async () => {
+
+    try {
+
+      const res =
+        await fetch(
+          `${import.meta.env.VITE_API_URL}/api/test/payment-success/${order.id}`,
+          {
+            method: "POST",
+          }
+        );
+
+      const data =
+        await res.json();
+
+      if (!res.ok) {
+
+        alert(
+          data.message ||
+          "Demo thất bại"
+        );
+
+        return;
+
+      }
+
+      navigate(
+        `/payment-success?orderId=${order.id}`
+      );
+
+    } catch (err) {
+
+      console.log(err);
+
+      alert("Lỗi server");
+
+    }
+
+  };
 
 
 if (loading) {
