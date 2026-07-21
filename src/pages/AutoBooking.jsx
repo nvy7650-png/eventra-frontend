@@ -127,9 +127,7 @@ const currentZones =
 
   try {
 
-    const user = JSON.parse(
-      localStorage.getItem("user")
-    );
+   
 
     const items = [];
 
@@ -165,47 +163,17 @@ const currentZones =
 });
     
 
-    const data =
-  await res.json();
-
-console.log(data);
-
-if (!res.ok) {
-
-  alert(
-    data.message ||
-    "Tạo đơn thất bại"
-  );
-
-  return;
-
-}
-
-navigate(
-  "/checkout-auto",
-  {
-    state: {
-      orderId:
-        data.order_id,
-
-      event,
-
-      showtime:
-        showtimes.find(
-          s =>
-            s.id ===
-            selectedShowtime
-        ),
-
-      items,
-
-      quantity:
-        totalQuantity,
-
-      totalPrice,
-    },
-  }
-);
+navigate("/checkout-auto", {
+  state: {
+    event,
+    showtime: showtimes.find(
+      s => s.id === selectedShowtime
+    ),
+    items,
+    quantity: totalQuantity,
+    totalPrice,
+  },
+});
 
   } catch (err) {
 
