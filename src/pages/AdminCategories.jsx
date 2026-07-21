@@ -182,9 +182,10 @@ const handleEdit = (item) => {
 
       <AdminSidebar />
 
-      <main
+     <main
   className="
     flex-1
+    min-w-0
     lg:ml-72
     p-4
     sm:p-6
@@ -196,7 +197,8 @@ const handleEdit = (item) => {
 
           <h1
             className="
-              text-3xl
+             text-2xl
+              sm:text-3xl
               font-black
             "
           >
@@ -213,6 +215,7 @@ const handleEdit = (item) => {
 
        <div
   className="
+    w-full
     bg-gradient-to-r
     from-sky-500/10
     to-cyan-500/10
@@ -247,6 +250,8 @@ const handleEdit = (item) => {
 
        <div
   className="
+    w-full
+    max-w-3xl
     bg-[#0B1120]
     border
     border-white/10
@@ -255,7 +260,6 @@ const handleEdit = (item) => {
     sm:p-6
     mb-8
     shadow-lg
-    max-w-3xl
   "
 >
 
