@@ -55,6 +55,7 @@ import AutoBooking from "./pages/AutoBooking";
 import AutoCheckout from "./pages/AutoCheckout";
 import ForgotPassword from "./pages/ForgotPassword";
 import AdminOrders from "./pages/AdminOrders";
+import AdminRevenue from "./pages/AdminRevenue";
 
 function App() {
 
@@ -401,6 +402,11 @@ element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
 <Route
   path="/admin/orders"
   element={<AdminOrders />}
+/>
+
+<Route
+  path="/admin/revenue"
+  element={<AdminRevenue />}
 />
       </Routes>
 
