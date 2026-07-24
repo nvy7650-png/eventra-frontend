@@ -1,479 +1,333 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  LayoutDashboard,
+  Users,
+  CalendarDays,
+  Receipt,
+  FolderKanban,
+  Wallet,
+  Settings,
+  LogOut,
+  Menu,
+  X,
+} from "lucide-react";
 
-import AdminSidebar from "../components/AdminSidebar";
+import { useState } from "react";
 
-export default function AdminRevenue() {
+import {
+  useNavigate,
+  useLocation,
+} from "react-router-dom";
 
-  const [payments, setPayments] =
-    useState([]);
+export default function AdminSidebar() {
 
-  const [stats, setStats] =
-    useState(null);
+  const navigate = useNavigate();
+  const location = useLocation();
 
-  const [loading, setLoading] =
-    useState(true);
+const [open, setOpen] =
+  useState(false);
 
-  const [search, setSearch] =
-    useState("");
+  const user =
+    JSON.parse(
+      localStorage.getItem("user")
+    );
 
-  const fetchRevenue = async () => {
+  const logout = () => {
 
-    try {
+    localStorage.removeItem("user");
 
-      const [statsRes, paymentRes] =
-        await Promise.all([
+    navigate("/");
 
-          fetch(
-            `${import.meta.env.VITE_API_URL}/api/admin/stats`
-          ),
-
-          fetch(
-            `${import.meta.env.VITE_API_URL}/api/admin/revenue`
-          ),
-
-        ]);
-
-      const statsData =
-        await statsRes.json();
-
-      const paymentData =
-        await paymentRes.json();
-
-      setStats(statsData);
-
-      setPayments(
-        paymentData || []
-      );
-
-    } catch (err) {
-
-      console.log(err);
-
-    } finally {
-
-      setLoading(false);
-
-    }
+    window.location.reload();
 
   };
 
-  useEffect(() => {
+  const menus = [
 
-    fetchRevenue();
+    {
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/admin/dashboard",
+    },
 
-  }, []);
+    {
+      label: "Quản lý sự kiện",
+      icon: CalendarDays,
+      path: "/admin/events",
+    },
 
-  const filteredPayments =
-    useMemo(() => {
+    {
+      label: "Quản lý tài khoản",
+      icon: Users,
+      path: "/admin/users",
+    },
 
-      return payments.filter(
-        (item) =>
+    {
+      label: "Quản lý đơn hàng",
+      icon: Receipt,
+      path: "/admin/orders",
+    },
 
-          item.order_id
-            .toString()
-            .includes(search)
+    {
+      label: "Quản lý danh mục",
+      icon: FolderKanban,
+      path: "/admin/categories",
+    },
 
-          ||
+    {
+      label: "Doanh thu",
+      icon: Wallet,
+      path: "/admin/revenue",
+    },
 
-          item.event_title
-            ?.toLowerCase()
-            .includes(
-              search.toLowerCase()
-            )
+    {
+      label: "Cài đặt",
+      icon: Settings,
+      path: "/admin/settings",
+    },
 
-      );
+  ];
 
-    }, [payments, search]);
-
-  const formatPrice = (value) =>
-
-    Number(value).toLocaleString(
-      "vi-VN"
-    ) + "đ";
-
-  const formatDate = (date) =>
-
-    date
-      ? new Date(date)
-          .toLocaleDateString("vi-VN")
-      : "--";
-
-  if (loading) {
-
-    return (
-
-      <div
-        className="
-          min-h-screen
-          bg-[#050816]
-          text-white
-          flex
-          items-center
-          justify-center
-        "
-      >
-        Đang tải...
-      </div>
-
-    );
-
-  }
+ 
 
   return (
 
-    <div
+  <>
+
+    <button
+      onClick={() =>
+        setOpen(true)
+      }
       className="
-        min-h-screen
-        bg-[#050816]
-        text-white
-        flex
+  lg:hidden
+
+  fixed
+  top-5
+  right-5
+
+        z-[1100]
+
+        p-3
+
+        rounded-xl
+
+        bg-sky-500
+
+        text-black
+
+        shadow-lg
       "
     >
 
-      <AdminSidebar />
+      <Menu size={22} />
 
-      <main
-        className="
-          flex-1
-          min-w-0
-          lg:ml-72
-          p-4
-          sm:p-6
-          lg:p-10
-        "
-      >
+    </button>
 
-        <div className="mb-8">
+{open && (
 
-          <h1
-            className="
-              text-2xl
-              sm:text-3xl
-              font-black
-            "
-          >
-            Quản lý doanh thu
-          </h1>
+  <div
+    onClick={() =>
+      setOpen(false)
+    }
+    className="
+      lg:hidden
 
-          <p className="text-gray-400 mt-2">
-            Theo dõi doanh thu hệ thống
-          </p>
+      fixed
+      inset-0
 
-        </div>
+      bg-black/60
 
-        {/* CARD */}
+      z-[999]
+    "
+  />
 
-        <div
-          className="
-            w-full
-            bg-gradient-to-r
-            from-green-500/10
-            to-emerald-500/10
-            border
-            border-green-500/20
-            rounded-3xl
-            p-5
-            sm:p-6
-            mb-8
-            shadow-lg
-          "
-        >
+)}
 
-          <p className="text-gray-400">
-            Tổng doanh thu
-          </p>
+  <aside
+  className={`
+    fixed
+    lg:fixed
 
-          <h2
-            className="
-              text-4xl
-              font-black
-              text-green-400
-              mt-2
-            "
-          >
-            {formatPrice(
-              stats?.revenue || 0
-            )}
-          </h2>
+    top-0
+    left-0
 
-        </div>
+    z-[1000]
 
-        {/* SEARCH */}
+    h-screen
 
-        <div
-          className="
-            bg-[#0B1120]
-            border
-            border-white/10
-            rounded-3xl
-            p-5
-            sm:p-6
-            mb-8
-          "
-        >
+    w-72
 
-          <input
-            type="text"
-            value={search}
-            onChange={(e) =>
-              setSearch(
-                e.target.value
-              )
-            }
-            placeholder="Tìm theo mã đơn hoặc tên sự kiện..."
-            className="
-              w-full
-              bg-black/30
-              border
-              border-white/10
-              rounded-xl
-              px-4
-              py-3
-              outline-none
-              transition
-              focus:border-green-500
-              focus:ring-2
-              focus:ring-green-500/30
-            "
-          />
+    bg-[#0B1120]
+
+    border-r
+    border-white/10
+
+    flex
+    flex-col
+    justify-between
+
+    p-5
+
+    transition-all
+    duration-300
+
+    ${
+      open
+        ? "translate-x-0"
+        : "-translate-x-full lg:translate-x-0"
+    }
+  `}
+>
+
+      <div>
+
+        <div className="mb-10 flex items-start justify-between">
+
+  <div>
+
+    <h1 className="text-3xl font-black text-sky-400">
+      HOMIETICKET
+    </h1>
+
+    <p className="text-gray-400 text-sm">
+      Admin Center
+    </p>
+    
+
+  </div>
+
+          <button
+  onClick={() =>
+    setOpen(false)
+  }
+  className="
+    lg:hidden
+    p-2
+    rounded-xl
+    hover:bg-white/10
+  "
+>
+  <X size={22} />
+</button>
 
         </div>
 
-        {/* TABLE */}
-
         <div
           className="
-            hidden
-            lg:block
-            bg-[#0B1120]
+            flex
+            items-center
+            gap-3
+            bg-white/5
             border
             border-white/10
-            rounded-3xl
-            overflow-hidden
+            rounded-2xl
+            p-4
+            mb-8
           "
         >
 
-          <div className="overflow-x-auto">
+          <div
+            className="
+              w-12
+              h-12
+              rounded-full
+              bg-sky-500
+              text-black
+              font-bold
+              flex
+              items-center
+              justify-center
+            "
+          >
+            {user?.name?.charAt(0)}
+          </div>
 
-            <table
-              className="
-                min-w-[900px]
-                w-full
-              "
-            >
+          <div>
 
-              <thead>
+            <p className="font-semibold">
+              {user?.name}
+            </p>
 
-                <tr
-                  className="
-                    border-b
-                    border-white/10
-                  "
-                >
-
-                  <th className="text-left p-4">
-                    Đơn hàng
-                  </th>
-
-                  <th className="text-left p-4">
-                    Sự kiện
-                  </th>
-
-                  <th className="text-left p-4">
-                    Phương thức
-                  </th>
-
-                  <th className="text-left p-4">
-                    Doanh thu
-                  </th>
-
-                  <th className="text-left p-4">
-                    Ngày thanh toán
-                  </th>
-
-                </tr>
-
-              </thead>
-
-              <tbody>
-                                {filteredPayments.length === 0 ? (
-
-                  <tr>
-
-                    <td
-                      colSpan={5}
-                      className="
-                        p-10
-                        text-center
-                        text-gray-400
-                      "
-                    >
-                      Chưa có doanh thu.
-                    </td>
-
-                  </tr>
-
-                ) : (
-
-                  filteredPayments.map(
-                    (item) => (
-
-                      <tr
-                        key={item.id}
-                        className="
-                          border-b
-                          border-white/5
-                          hover:bg-white/5
-                          transition
-                        "
-                      >
-
-                        <td className="p-4">
-                          #{item.order_id}
-                        </td>
-
-                        <td className="p-4">
-                          {item.event_title}
-                        </td>
-
-                        <td className="p-4">
-                          {item.payment_method}
-                        </td>
-
-                        <td
-                          className="
-                            p-4
-                            font-semibold
-                            text-green-400
-                          "
-                        >
-                          {formatPrice(item.amount)}
-                        </td>
-
-                        <td className="p-4">
-                          {formatDate(item.paid_at)}
-                        </td>
-
-                      </tr>
-
-                    )
-
-                  )
-
-                )}
-
-              </tbody>
-
-            </table>
+            <p className="text-xs text-gray-400">
+              System Admin
+            </p>
 
           </div>
 
         </div>
 
-        {/* MOBILE */}
+        <div className="space-y-2">
 
-        <div
-          className="
-            lg:hidden
-            space-y-4
-          "
-        >
+          {menus.map((item) => {
 
-          {filteredPayments.length === 0 ? (
+            const Icon = item.icon;
 
-            <div
-              className="
-                bg-[#0B1120]
-                rounded-3xl
-                p-6
-                text-center
-                text-gray-400
-              "
-            >
-              Chưa có doanh thu.
-            </div>
+            return (
 
-          ) : (
+              <button
+  key={item.path}
+ onClick={() => {
 
-            filteredPayments.map(
-              (item) => (
+  navigate(item.path);
 
-                <div
-                  key={item.id}
-                  className="
-                    bg-[#0B1120]
-                    border
-                    border-white/10
-                    rounded-3xl
-                    p-5
-                  "
-                >
+  setOpen(false);
 
-                  <div className="flex justify-between">
+}}
+  className={`
+    w-full
+    flex
+    items-center
+    gap-3
+    px-4
+    py-3
+    rounded-2xl
+    transition
 
-                    <h3 className="font-bold">
-                      Đơn #{item.order_id}
-                    </h3>
+    ${
+      location.pathname === item.path
+        ? "bg-sky-500 text-black font-bold"
+        : "hover:bg-white/5"
+    }
+  `}
+>
 
-                    <span
-                      className="
-                        px-3
-                        py-1
-                        rounded-full
-                        text-xs
-                        bg-green-500/20
-                        text-green-400
-                      "
-                    >
-                      SUCCESS
-                    </span>
+                <Icon size={20} />
 
-                  </div>
+                {item.label}
 
-                  <p className="mt-3 text-gray-300">
-                    {item.event_title}
-                  </p>
+              </button>
 
-                  <div className="mt-4 space-y-2 text-sm">
+            );
 
-                    <p>
-                      <span className="text-gray-400">
-                        Phương thức:
-                      </span>{" "}
-                      {item.payment_method}
-                    </p>
-
-                    <p>
-                      <span className="text-gray-400">
-                        Doanh thu:
-                      </span>{" "}
-                      <span className="text-green-400 font-semibold">
-                        {formatPrice(item.amount)}
-                      </span>
-                    </p>
-
-                    <p>
-                      <span className="text-gray-400">
-                        Thanh toán:
-                      </span>{" "}
-                      {formatDate(item.paid_at)}
-                    </p>
-
-                  </div>
-
-                </div>
-
-              )
-
-            )
-
-          )}
+          })}
 
         </div>
 
-      </main>
+      </div>
 
-    </div>
+      <button
+        onClick={logout}
+        className="
+          w-full
+          py-3
+          rounded-2xl
+          bg-red-500
+          hover:bg-red-400
+          flex
+          items-center
+          justify-center
+          gap-2
+          font-semibold
+        "
+      >
+
+        <LogOut size={18} />
+
+        Đăng xuất
+
+      </button>
+
+    </aside>
+    </>
 
   );
 
