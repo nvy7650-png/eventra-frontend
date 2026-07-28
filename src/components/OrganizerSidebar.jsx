@@ -91,8 +91,6 @@ export default function OrganizerSidebar() {
 
     <>
 
-      {/* MOBILE BUTTON */}
-
       <button
         onClick={() =>
           setOpen(true)
@@ -121,8 +119,6 @@ export default function OrganizerSidebar() {
         <Menu size={22} />
 
       </button>
-
-      {/* OVERLAY */}
 
       {open && (
 
@@ -181,8 +177,6 @@ export default function OrganizerSidebar() {
       >
                 <div>
 
-          {/* HEADER */}
-
           <div className="mb-10 flex items-start justify-between">
 
             <div>
@@ -215,23 +209,16 @@ export default function OrganizerSidebar() {
 
           </div>
 
-          {/* USER */}
-
           <div
             className="
               flex
               items-center
               gap-3
-
               bg-white/5
-
               border
               border-white/10
-
               rounded-2xl
-
               p-4
-
               mb-8
             "
           >
@@ -240,15 +227,10 @@ export default function OrganizerSidebar() {
               className="
                 w-12
                 h-12
-
                 rounded-full
-
                 bg-sky-500
-
                 text-black
-
                 font-bold
-
                 flex
                 items-center
                 justify-center
@@ -262,22 +244,16 @@ export default function OrganizerSidebar() {
             <div>
 
               <p className="font-semibold">
-
                 {user?.name}
-
               </p>
 
               <p className="text-xs text-gray-400">
-
                 Organizer
-
               </p>
 
             </div>
 
           </div>
-
-          {/* MENU */}
 
           <div className="space-y-2">
 
@@ -298,16 +274,12 @@ export default function OrganizerSidebar() {
                   }}
                   className={`
                     w-full
-
                     flex
                     items-center
                     gap-3
-
                     px-4
                     py-3
-
                     rounded-2xl
-
                     transition
 
                     ${
@@ -332,26 +304,18 @@ export default function OrganizerSidebar() {
 
         </div>
 
-        {/* LOGOUT */}
-
         <button
           onClick={logout}
           className="
             w-full
-
             py-3
-
             rounded-2xl
-
             bg-red-500
-
             hover:bg-red-400
-
             flex
             items-center
             justify-center
             gap-2
-
             font-semibold
           "
         >
