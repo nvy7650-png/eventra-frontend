@@ -179,33 +179,59 @@ export default function OrganizerDashboard() {
       {/* MAIN */}
      <main
   className="
-    ml-80
     flex-1
     min-h-screen
+    min-w-0
+
+    lg:ml-72
   "
 >
 
         {/* TOPBAR */}
         <div
-          className="
-            flex
-            items-center
-            justify-between
-            px-10
-            py-6
-            border-b
-            border-white/10
-            bg-[#081120]
-          "
-        >
+  className="
+    flex
+    flex-col
+    sm:flex-row
+    sm:items-center
+    sm:justify-between
+
+    gap-5
+
+    px-4
+    sm:px-6
+    lg:px-10
+
+    py-5
+    lg:py-6
+
+    border-b
+    border-white/10
+
+    bg-[#081120]
+  "
+>
 
           <div>
 
-            <h1 className="text-3xl font-bold">
+           <h1
+  className="
+    text-2xl
+    lg:text-3xl
+    font-bold
+  "
+>
               Organizer Dashboard
             </h1>
 
-            <p className="text-gray-400 mt-1">
+           <p
+  className="
+    mt-1
+    text-sm
+    lg:text-base
+    text-gray-400
+  "
+>
               Quản lý sự kiện và bán vé
             </p>
 
