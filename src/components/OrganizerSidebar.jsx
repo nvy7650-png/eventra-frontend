@@ -226,21 +226,22 @@ const [open, setOpen] =
 
 }}
   className={`
-    w-full
-    flex
-    items-center
-    gap-3
-    px-4
-    py-3
-    rounded-2xl
-    transition
+  w-full
+  flex
+  items-center
+  gap-3
+  px-4
+  py-3
+  rounded-2xl
+  transition
+  text-white
 
-    ${
-      location.pathname === item.path
-        ? "bg-sky-500 text-black font-bold"
-        : "hover:bg-white/5"
-    }
-  `}
+  ${
+    location.pathname === item.path
+      ? "bg-sky-500 font-bold"
+      : "hover:bg-white/5"
+  }
+`}
 >
 
                 <Icon size={20} />
