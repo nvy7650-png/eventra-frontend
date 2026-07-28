@@ -1,15 +1,4 @@
-import {
-  LayoutDashboard,
-  Users,
-  CalendarDays,
-  Receipt,
-  FolderKanban,
-  Wallet,
-  Settings,
-  LogOut,
-  Menu,
-  X,
-} from "lucide-react";
+import { LayoutDashboard, Calendar, Ticket, BadgePercent, Wallet, Settings, LogOut, Menu, X, } from "lucide-react";
 
 import { useState } from "react";
 
