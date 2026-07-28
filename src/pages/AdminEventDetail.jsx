@@ -175,7 +175,16 @@ export default function AdminEventDetail() {
 
       <AdminSidebar />
 
-      <div className="flex-1 p-10">
+      <div
+  className="
+    flex-1
+    lg:ml-72
+    p-4
+    sm:p-6
+    lg:p-10
+    min-w-0
+  "
+>
 
         <div className="max-w-7xl mx-auto">
 
@@ -183,10 +192,13 @@ export default function AdminEventDetail() {
 
           <div className="relative overflow-hidden rounded-3xl">
 
-            <img
-              src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
-              alt={event.title}
-              className="w-full h-[420px] object-cover"
+const imageUrl =
+  event.image_url?.startsWith("http")
+    ? event.image_url
+    : `${import.meta.env.VITE_API_URL}${event.image_url}`;
+           <img
+    src={imageUrl}
+    alt={event.title}
             />
 
             <div
