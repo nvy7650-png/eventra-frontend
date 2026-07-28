@@ -21,6 +21,11 @@ export default function AdminEventDetail() {
 
   const [loading, setLoading] = useState(true);
 
+  const imageUrl =
+  event?.image_url?.startsWith("http")
+    ? event.image_url
+    : `${import.meta.env.VITE_API_URL}${event?.image_url || ""}`;
+
   useEffect(() => {
 
     fetch(
@@ -192,10 +197,6 @@ export default function AdminEventDetail() {
 
           <div className="relative overflow-hidden rounded-3xl">
 
-const imageUrl =
-  event.image_url?.startsWith("http")
-    ? event.image_url
-    : `${import.meta.env.VITE_API_URL}${event.image_url}`;
            <img
     src={imageUrl}
     alt={event.title}
