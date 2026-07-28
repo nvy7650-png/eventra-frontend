@@ -31,53 +31,7 @@ export default function OrganizerSidebar() {
       localStorage.getItem("user")
     );
 
-  const menuItems = [
-
-    {
-      name: "Dashboard",
-      icon: LayoutDashboard,
-      path: "/organizer/dashboard",
-    },
-
-    {
-      name: "Sự kiện của tôi",
-      icon: Calendar,
-      path: "/organizer/events",
-    },
-
-    {
-      name: "Quản lý vé",
-      icon: Ticket,
-      path: "/organizer/tickets",
-    },
-
-    {
-      name: "Check-in vé",
-      icon: Ticket,
-      path: "/organizer/scan",
-    },
-
-    {
-      name: "Khuyến mãi",
-      icon: BadgePercent,
-      path: "/organizer/promotions",
-    },
-
-    {
-      name: "Doanh thu",
-      icon: Wallet,
-      path: "/organizer/revenue",
-    },
-
-    {
-      name: "Cài đặt",
-      icon: Settings,
-      path: "/organizer/settings",
-    },
-
-  ];
-
-  const handleLogout = () => {
+  const logout = () => {
 
     localStorage.removeItem("user");
 
@@ -86,6 +40,52 @@ export default function OrganizerSidebar() {
     window.location.reload();
 
   };
+
+  const menus = [
+
+    {
+      label: "Dashboard",
+      icon: LayoutDashboard,
+      path: "/organizer/dashboard",
+    },
+
+    {
+      label: "Sự kiện của tôi",
+      icon: Calendar,
+      path: "/organizer/events",
+    },
+
+    {
+      label: "Quản lý vé",
+      icon: Ticket,
+      path: "/organizer/tickets",
+    },
+
+    {
+      label: "Check-in vé",
+      icon: Ticket,
+      path: "/organizer/scan",
+    },
+
+    {
+      label: "Khuyến mãi",
+      icon: BadgePercent,
+      path: "/organizer/promotions",
+    },
+
+    {
+      label: "Doanh thu",
+      icon: Wallet,
+      path: "/organizer/revenue",
+    },
+
+    {
+      label: "Cài đặt",
+      icon: Settings,
+      path: "/organizer/settings",
+    },
+
+  ];
 
   return (
 
@@ -144,11 +144,11 @@ export default function OrganizerSidebar() {
 
       )}
 
-      {/* SIDEBAR */}
-
       <aside
         className={`
           fixed
+          lg:fixed
+
           top-0
           left-0
 
@@ -179,8 +179,7 @@ export default function OrganizerSidebar() {
           }
         `}
       >
-
-        <div>
+                <div>
 
           {/* HEADER */}
 
@@ -189,15 +188,11 @@ export default function OrganizerSidebar() {
             <div>
 
               <h1 className="text-3xl font-black text-sky-400">
-
                 HOMIETICKET
-
               </h1>
 
               <p className="text-gray-400 text-sm">
-
                 Organizer Center
-
               </p>
 
             </div>
@@ -286,10 +281,9 @@ export default function OrganizerSidebar() {
 
           <div className="space-y-2">
 
-            {menuItems.map((item) => {
+            {menus.map((item) => {
 
-              const Icon =
-                item.icon;
+              const Icon = item.icon;
 
               return (
 
@@ -297,9 +291,7 @@ export default function OrganizerSidebar() {
                   key={item.path}
                   onClick={() => {
 
-                    navigate(
-                      item.path
-                    );
+                    navigate(item.path);
 
                     setOpen(false);
 
@@ -319,8 +311,7 @@ export default function OrganizerSidebar() {
                     transition
 
                     ${
-                      location.pathname ===
-                      item.path
+                      location.pathname === item.path
                         ? "bg-sky-500 text-black font-bold"
                         : "hover:bg-white/5"
                     }
@@ -329,7 +320,7 @@ export default function OrganizerSidebar() {
 
                   <Icon size={20} />
 
-                  {item.name}
+                  {item.label}
 
                 </button>
 
@@ -344,7 +335,7 @@ export default function OrganizerSidebar() {
         {/* LOGOUT */}
 
         <button
-          onClick={handleLogout}
+          onClick={logout}
           className="
             w-full
 
