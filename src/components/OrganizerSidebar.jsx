@@ -238,7 +238,7 @@ const [open, setOpen] =
 
   ${
     location.pathname === item.path
-      ? "bg-sky-500 font-bold"
+      ? "bg-sky-500 text-black font-bold"
       : "hover:bg-white/5"
   }
 `}
