@@ -578,10 +578,6 @@ return (
 
             <div className="flex justify-between">
 
-              <span className="text-gray-400">
-                Giá mỗi vé
-              </span>
-
               <span>
                 {Number(
                   zone?.price
