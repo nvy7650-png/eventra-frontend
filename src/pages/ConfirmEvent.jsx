@@ -43,32 +43,41 @@ export default function ConfirmEvent() {
   }
 
   // totalTickets removed (ticket_types deprecated)
-  const totalCapacity =
-    zones.reduce((sum, zone) => {
-      if (zone.zone_type === "STANDING") {
-        return sum + Number(zone.capacity || 0);
-      }
-      // seating
-      return (
-        sum +
-        Number(zone.rows || 0) * Number(zone.seatsPerRow || 0)
-      );
-    }, 0);
+  const capacityPerShowtime =
+  zones.reduce((sum, zone) => {
 
-  const totalSeats =
-    zones.reduce(
-      (sum, zone) =>
+    if (zone.zone_type === "STANDING") {
 
-        sum +
-        Number(
-          zone.rows || 0
-        ) *
-        Number(
-          zone.seatsPerRow || 0
-        ),
+      return sum + Number(zone.capacity || 0);
 
-      0
+    }
+
+    return (
+      sum +
+      Number(zone.rows || 0) *
+      Number(zone.seatsPerRow || 0)
     );
+
+  }, 0);
+
+const totalCapacity =
+  capacityPerShowtime *
+  showtimes.length;
+
+ const seatsPerShowtime =
+  zones.reduce(
+    (sum, zone) =>
+
+      sum +
+      Number(zone.rows || 0) *
+      Number(zone.seatsPerRow || 0),
+
+    0
+  );
+
+const totalSeats =
+  seatsPerShowtime *
+  showtimes.length;
 
   const isManual =
     eventData.seat_mode ===
