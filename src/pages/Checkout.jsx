@@ -576,14 +576,6 @@ return (
 
             </div>
 
-            <div className="flex justify-between">
-
-              <span>
-                {Number(
-                  zone?.price
-                ).toLocaleString("vi-VN")}đ
-              </span>
-
             </div>
             {discount > 0 && (
 
