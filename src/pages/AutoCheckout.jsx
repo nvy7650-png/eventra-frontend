@@ -5,6 +5,7 @@ import {
 
 import {
   useState,
+  useEffect,
 } from "react";
 
 import Navbar from "../components/Navbar";
@@ -20,6 +21,20 @@ export default function AutoCheckout() {
 
   const [loading, setLoading] =
     useState(false);
+  // PROMOTION
+const [promoCode, setPromoCode] =
+  useState("");
+
+const [discount, setDiscount] =
+  useState(0);
+
+const [finalPrice, setFinalPrice] =
+  useState(totalPrice || 0);
+
+const [applying, setApplying] =
+  useState(false);
+const [promotions, setPromotions] =
+  useState([]);
 
   const {
     event,
@@ -29,7 +44,27 @@ export default function AutoCheckout() {
     totalPrice,
   } =
     location.state || {};
+    useEffect(() => {
 
+  setFinalPrice(totalPrice || 0);
+
+}, [totalPrice]);
+useEffect(() => {
+
+  if (!event?.id) return;
+
+  fetch(
+    `${import.meta.env.VITE_API_URL}/api/promotions/event/${event.id}`
+  )
+    .then((res) => res.json())
+    .then((data) => {
+
+      setPromotions(data || []);
+
+    })
+    .catch(console.log);
+
+}, [event]);
   const user = JSON.parse(
     localStorage.getItem("user") || "null"
   );
@@ -50,6 +85,75 @@ export default function AutoCheckout() {
     );
 
   }
+  const handleApplyPromotion =
+  async () => {
+
+    if (!promoCode) return;
+
+    try {
+
+      setApplying(true);
+
+      const res =
+        await fetch(
+
+          `${import.meta.env.VITE_API_URL}/api/promotions/apply`,
+
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type": "application/json",
+            },
+
+            body: JSON.stringify({
+
+              code: promoCode,
+
+              total_price: totalPrice,
+
+              event_id: event.id,
+
+            }),
+
+          }
+
+        );
+
+      const data =
+        await res.json();
+
+      if (!res.ok) {
+
+        alert(data.message);
+
+        return;
+
+      }
+
+      setDiscount(
+        data.discount
+      );
+
+      setFinalPrice(
+        data.final_price
+      );
+
+      alert(
+        "Áp dụng mã thành công!"
+      );
+
+    } catch (err) {
+
+      console.log(err);
+
+    } finally {
+
+      setApplying(false);
+
+    }
+
+  };
 
   const handleCheckout =
     async () => {
@@ -78,14 +182,27 @@ export default function AutoCheckout() {
                   "application/json",
               },
               body: JSON.stringify({
-                user_id:
-                  user.id,
-                event_id:
-                  event.id,
-                showtime_id:
-                  showtime.id,
-                items,
-              }),
+
+  user_id:
+    user.id,
+
+  event_id:
+    event.id,
+
+  showtime_id:
+    showtime.id,
+
+  items,
+
+  promotion_code:
+    promoCode || null,
+
+  discount,
+
+  total_price:
+    finalPrice,
+
+}),
             }
           );
 
@@ -104,19 +221,23 @@ export default function AutoCheckout() {
         }
 
         navigate(
-          `/payment/${data.order_id}`,
-          {
-            state: {
-              orderId:
-                data.order_id,
-              event,
-              showtime,
-              quantity,
-              items,
-              totalPrice,
-            },
-          }
-        );
+  `/payment/${data.order_id}`,
+  {
+    state: {
+      orderId: data.order_id,
+
+      event,
+      showtime,
+      quantity,
+      items,
+
+      totalPrice: data.total_price,
+      discount: data.discount,
+      promotion: selectedPromotion,
+
+    },
+  }
+);
 
       } catch (err) {
 
@@ -298,38 +419,167 @@ export default function AutoCheckout() {
                 <span>
                   {quantity}
                 </span>
+
+                {/* PROMOTION */}
+<div>
+
+  <p className="text-gray-400 mb-3">
+    Mã giảm giá
+  </p>
+
+  <select
+    value={promoCode}
+    onChange={(e) =>
+      setPromoCode(e.target.value)
+    }
+    
+    className="
+      w-full
+      px-4
+      py-3
+      rounded-xl
+      bg-black/20
+      border
+      border-white/10
+      outline-none
+      text-white
+    "
+  >
+
+    <option value="">
+      -- Chọn mã giảm giá --
+    </option>
+
+    {promotions.map((promo) => (
+
+      <option
+        key={promo.id}
+        value={promo.code}
+      >
+        {promo.code} - {promo.name}
+      </option>
+
+    ))}
+
+  </select>
+  <button
+  onClick={handleApplyPromotion}
+  disabled={!promoCode || applying}
+  className="
+    mt-3
+    w-full
+    py-3
+    rounded-xl
+
+    bg-sky-500
+    hover:bg-sky-400
+
+    text-black
+    font-bold
+
+    disabled:opacity-50
+  "
+>
+
+  {applying
+    ? "Đang áp dụng..."
+    : "Áp dụng mã"}
+
+</button>
+
+</div>
+
+ 
               </div>
 
-              <div className="
-                border-t
-                border-white/10
-                pt-4
 
-                flex
-                justify-between
-                items-center
-              ">
 
-                <span className="
-                  text-xl
-                  font-bold
-                ">
-                  Tổng tiền
-                </span>
+             <div
+  className="
+    border-t
+    border-white/10
+    pt-4
+    space-y-4
+  "
+>
 
-                <span className="
-                  text-3xl
-                  font-black
-                  text-sky-400
-                ">
-                  {Number(
-                    totalPrice
-                  ).toLocaleString(
-                    "vi-VN"
-                  )}đ
-                </span>
+  {/* Tạm tính */}
 
-              </div>
+  <div
+    className="
+      flex
+      justify-between
+    "
+  >
+
+    <span className="text-gray-400">
+      Tạm tính
+    </span>
+
+    <span>
+      {Number(totalPrice).toLocaleString("vi-VN")}đ
+    </span>
+
+  </div>
+
+  {/* Giảm giá */}
+
+  <div
+    className="
+      flex
+      justify-between
+    "
+  >
+
+    <span className="text-gray-400">
+      Giảm giá
+    </span>
+
+    <span className="text-green-400 font-bold">
+
+      -{Number(discount).toLocaleString("vi-VN")}đ
+
+    </span>
+
+  </div>
+
+  {/* Thành tiền */}
+
+  <div
+    className="
+      flex
+      justify-between
+      items-center
+      border-t
+      border-white/10
+      pt-4
+    "
+  >
+
+    <span
+      className="
+        text-xl
+        font-bold
+      "
+    >
+      Thành tiền
+    </span>
+
+    <span
+      className="
+        text-3xl
+        font-black
+        text-sky-400
+      "
+    >
+
+      {Number(finalPrice).toLocaleString("vi-VN")}đ
+
+    </span>
+
+  </div>
+
+</div>
 
             </div>
 

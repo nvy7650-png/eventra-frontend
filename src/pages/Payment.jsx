@@ -6,6 +6,7 @@ useState,
 import {
   useParams,
   useNavigate,
+  useLocation,
 } from "react-router-dom";
 
 export default function Payment() {
@@ -15,6 +16,15 @@ useParams();
 
 const navigate =
   useNavigate();
+
+const location =
+  useLocation();
+
+const {
+  promotion,
+  discount,
+  totalPrice,
+} = location.state || {};
 
 const [loading,
 setLoading] =
@@ -355,18 +365,18 @@ return (
             </div>
 
             <div
-              className="
-                text-4xl
-                font-black
-                text-sky-400
-              "
-            >
-              {Number(
-                order.total_price
-              ).toLocaleString(
-                "vi-VN"
-              )}đ
-            </div>
+  className="
+    text-4xl
+    font-black
+    text-sky-400
+  "
+>
+  {Number(
+    totalPrice ?? order.total_price
+  ).toLocaleString(
+    "vi-VN"
+  )}đ
+</div>
 
           </div>
 
