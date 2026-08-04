@@ -116,11 +116,20 @@ export default function OrganizerEventDetail() {
 
         <OrganizerSidebar />
 
-        <div   className="
-    ml-80
+       <div
+  className="
     flex-1
+    lg:ml-72
+
     min-h-screen
-   items-center justify-center">
+
+    flex
+    items-center
+    justify-center
+
+    p-4
+"
+>
 
           Đang tải...
 
@@ -157,10 +166,20 @@ export default function OrganizerEventDetail() {
     <div className="min-h-screen flex bg-[#050816] text-white">
 
       <OrganizerSidebar />
-
-      <div className="flex-1">
-
-        <div className="p-10">
+<div
+  className="
+    flex-1
+    lg:ml-72
+    min-w-0
+  "
+>
+        <div
+  className="
+    p-4
+    sm:p-6
+    lg:p-10
+  "
+>
 
           <div className="relative overflow-hidden rounded-3xl">
 
