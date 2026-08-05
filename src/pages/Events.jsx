@@ -26,17 +26,26 @@ export default function Events() {
    const keyword =
   searchParams.get("keyword") || "";
 
+  const categoryFromUrl =
+  searchParams.get("category") || "";
+
     const [categories, setCategories] =
   useState([]);
 
   const [selectedCategory,
 setSelectedCategory] =
-useState("");
+useState(categoryFromUrl);
+
 
   const [priceFilter,
   setPriceFilter] =
   useState("");
 
+useEffect(() => {
+
+  setSelectedCategory(categoryFromUrl);
+
+}, [categoryFromUrl]);
 
     useEffect(() => {
 
