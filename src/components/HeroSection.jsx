@@ -141,22 +141,6 @@ lg:text-6xl
         {event.title}
       </h1>
 
-      {/* DESCRIPTION */}
-      <p
-        className="
-          mt-6
-          text-gray-300
-          text-sm
-md:text-lg
-          max-w-3xl
-          leading-relaxed
-          line-clamp-3
-        "
-      >
-        {event.description ||
-          "Sự kiện đang cập nhật mô tả"}
-      </p>
-
       {/* INFO */}
       <div
   className="
