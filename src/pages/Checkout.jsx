@@ -576,7 +576,7 @@ return (
 
             </div>
 
-            </div>
+          
             {discount > 0 && (
 
 <div className="flex justify-between">
