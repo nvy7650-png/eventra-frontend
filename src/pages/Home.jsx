@@ -27,35 +27,35 @@ const [loading, setLoading] = useState(true);
 
 useEffect(() => {
 
-fetch(
-  `${import.meta.env.VITE_API_URL}/api/events`
-)
-  .then((res) => res.json())
+  Promise.all([
 
-  .then((data) => {
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/events`
+    ),
+
+    fetch(
+      `${import.meta.env.VITE_API_URL}/api/events/hero`
+    ),
+
+  ])
+
+    .then(async ([eventsRes, heroRes]) => {
+
+      const eventsData =
+        await eventsRes.json();
+
+      const heroData =
+        await heroRes.json();
 
     const approvedEvents =
-      data.filter(
-        (event) =>
-          event.status === "APPROVED"
-      );
+  eventsData.filter(
+    (event) =>
+      event.status === "APPROVED"
+  );
 
       setEvents(approvedEvents);
 
-      const topSoldEvents =
-  [...approvedEvents]
-
-    .sort(
-      (a, b) =>
-        (b.sold_count || 0) -
-        (a.sold_count || 0)
-    )
-
-    .slice(0, 8);
-
-setHeroEvents(
-  topSoldEvents
-);
+      setHeroEvents(heroData);
 
     
 
@@ -91,18 +91,21 @@ setHeroEvents(
 
     setUpcomingEvents(upcoming);
 
-  })
+     })
 
-  .catch(console.log)
+    .catch((err) => {
 
-  .finally(() => {
+      console.log(err);
 
-    setLoading(false);
+    })
 
-  });
+    .finally(() => {
+
+      setLoading(false);
+
+    });
 
 }, []);
-
 if (loading) {
 
 return (
