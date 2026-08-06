@@ -9,6 +9,7 @@ import {
   LogOut,
   Menu,
   X,
+  Home,
 } from "lucide-react";
 
 import { useState } from "react";
