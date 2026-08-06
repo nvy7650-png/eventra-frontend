@@ -54,39 +54,50 @@ export default function AdminCategories() {
 
   try {
 
-    if (editingId) {
+    let res;
 
-      await fetch(
-        `${import.meta.env.VITE_API_URL}/api/categories/${editingId}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            description,
-          }),
-        }
-      );
+if (editingId) {
 
-    } else {
-
-      await fetch(
-        `${import.meta.env.VITE_API_URL}/api/categories`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            name,
-            description,
-          }),
-        }
-      );
-
+  res = await fetch(
+    `${import.meta.env.VITE_API_URL}/api/categories/${editingId}`,
+    {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        description,
+      }),
     }
+  );
+
+} else {
+
+  res = await fetch(
+    `${import.meta.env.VITE_API_URL}/api/categories`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name,
+        description,
+      }),
+    }
+  );
+
+}
+
+const data = await res.json();
+
+if (!res.ok) {
+  alert(data.message);
+  return;
+}
+
+alert(data.message);
 
     setEditingId(null);
     setName("");
