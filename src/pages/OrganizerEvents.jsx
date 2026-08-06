@@ -344,14 +344,18 @@ export default function OrganizerEvents() {
               >
 
                 <img
-                  src={`${import.meta.env.VITE_API_URL}${event.image_url}`}
-                  alt={event.title}
-                  className="
-                    w-full
-                    h-56
-                    object-cover
-                  "
-                />
+  src={
+    event.image_url?.startsWith("http")
+      ? event.image_url
+      : `${import.meta.env.VITE_API_URL}${event.image_url}`
+  }
+  alt={event.title}
+  className="
+    w-full
+    h-56
+    object-cover
+  "
+/>
 
                 <div className="p-6">
 
