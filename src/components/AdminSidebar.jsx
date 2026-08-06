@@ -80,10 +80,10 @@ const [open, setOpen] =
     },
 
     {
-      label: "Cài đặt",
-      icon: Settings,
-      path: "/admin/settings",
-    },
+  label: "Trang chủ",
+  icon: Home,
+  path: "/",
+},
 
   ];
 
