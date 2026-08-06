@@ -117,36 +117,43 @@ const handleEdit = (item) => {
 
 };
 
-  const handleDelete = async (
-    id
-  ) => {
+  const handleDelete = async (id) => {
 
-    const confirmDelete =
-      window.confirm(
-        "Bạn có chắc muốn xóa danh mục này?"
-      );
+  const confirmDelete = window.confirm(
+    "Bạn có chắc muốn xóa danh mục này?"
+  );
 
-    if (!confirmDelete)
+  if (!confirmDelete) return;
+
+  try {
+
+    const res = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/categories/${id}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    const data = await res.json();
+
+    if (!res.ok) {
+      alert(data.message);
       return;
-
-    try {
-
-      await fetch(
-        `${import.meta.env.VITE_API_URL}/api/categories/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
-
-      fetchCategories();
-
-    } catch (err) {
-
-      console.log(err);
-
     }
 
-  };
+    alert(data.message);
+
+    fetchCategories();
+
+  } catch (err) {
+
+    console.log(err);
+
+    alert("Có lỗi xảy ra!");
+
+  }
+
+};
 
   if (loading) {
 
