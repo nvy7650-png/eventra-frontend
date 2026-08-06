@@ -199,6 +199,26 @@ const handleSubmit =
       for (let i = 0; i < zones.length; i++) {
 
         const zone = zones[i];
+        // Không cho nhập số âm
+if (Number(zone.price) < 0) {
+  alert(`Khu vực #${i + 1}: Giá vé không được nhỏ hơn 0`);
+  return;
+}
+
+if (Number(zone.rows || 0) < 0) {
+  alert(`Khu vực #${i + 1}: Số hàng không được nhỏ hơn 0`);
+  return;
+}
+
+if (Number(zone.seatsPerRow || 0) < 0) {
+  alert(`Khu vực #${i + 1}: Ghế mỗi hàng không được nhỏ hơn 0`);
+  return;
+}
+
+if (Number(zone.capacity || 0) < 0) {
+  alert(`Khu vực #${i + 1}: Sức chứa không được nhỏ hơn 0`);
+  return;
+}
 
         if (!zone.name || !zone.price || !zone.sale_start || !zone.sale_end) {
 
