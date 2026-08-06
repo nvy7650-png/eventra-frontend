@@ -5,91 +5,72 @@ export default function ScanTicket() {
 
   const qrRef = useRef(null);
 
-  // Chặn callback chạy nhiều lần
-  const scannedRef = useRef(false);
+  const [isScanning, setIsScanning] = useState(false);
 
-  const [result, setResult] = useState(null);
+  const [result, setResult] =
+    useState(null);
 
   useEffect(() => {
 
-    const qr = new Html5Qrcode("reader");
+  const qr =
+    new Html5Qrcode("reader");
 
-    qrRef.current = qr;
+  qrRef.current = qr;
 
-    const startScanner = async () => {
+  setTimeout(() => {
 
-      try {
+    
+    qr.start(
+      {
+        facingMode:
+          "environment",
+      },
+      {
+        fps: 10,
+        qrbox: 250,
+      },
 
-        await qr.start(
-          {
-            facingMode: "environment",
-          },
-          {
-            fps: 10,
-            qrbox: 250,
-          },
+      async (decodedText) => {
 
-          async (decodedText) => {
+        try {
 
-            // Đã quét rồi thì bỏ qua
-            if (scannedRef.current) return;
+          const res =
+            await fetch(
+              `${import.meta.env.VITE_API_URL}/api/tickets/checkin`,
+              {
+                method: "POST",
+                headers: {
+                  "Content-Type":
+                    "application/json",
+                },
+                body: JSON.stringify({
+                  ticket_code:
+                    decodedText,
+                }),
+              }
+            );
 
-            scannedRef.current = true;
+          const data =
+            await res.json();
 
-            try {
+          setResult(data);
 
-              // Dừng camera trước
-              await qr.stop();
+          await qr.stop();
 
-              const res = await fetch(
-                `${import.meta.env.VITE_API_URL}/api/tickets/checkin`,
-                {
-                  method: "POST",
-                  headers: {
-                    "Content-Type": "application/json",
-                  },
-                  body: JSON.stringify({
-                    ticket_code: decodedText,
-                  }),
-                }
-              );
+        } catch (err) {
 
-              const data = await res.json();
+          console.log(err);
 
-              setResult(data);
-
-            } catch (err) {
-
-              console.log(err);
-
-              scannedRef.current = false;
-
-            }
-
-          },
-
-          () => {
-            // Ignore scan errors
-          }
-
-        );
-
-      } catch (err) {
-
-        console.log(err);
+        }
 
       }
+    );
 
-    };
-
-    startScanner();
+  }, 300);
 
     return () => {
 
-      if (
-        qrRef.current &&
-        qrRef.current.isScanning
-      ) {
+      if (qrRef.current) {
 
         qrRef.current
           .stop()
@@ -98,8 +79,7 @@ export default function ScanTicket() {
       }
 
     };
-
-  }, []);
+}, []);
 
   return (
 
@@ -160,6 +140,7 @@ export default function ScanTicket() {
               rounded-3xl
               p-6
               text-center
+
               ${
                 result.success
                   ? "bg-green-500/10 border border-green-500"
@@ -169,7 +150,11 @@ export default function ScanTicket() {
           >
 
             <div className="text-7xl mb-4">
-              {result.success ? "✅" : "❌"}
+
+              {result.success
+                ? "✅"
+                : "❌"}
+
             </div>
 
             <div
@@ -191,7 +176,9 @@ export default function ScanTicket() {
                 </div>
 
                 <div className="mb-5">
-                  Ghế: {result.ticket.seat_code}
+                  Ghế:
+                  {" "}
+                  {result.ticket.seat_code}
                 </div>
 
               </>
