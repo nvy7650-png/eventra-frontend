@@ -29,7 +29,7 @@ const [discount, setDiscount] =
   useState(0);
 
 const [finalPrice, setFinalPrice] =
-  useState(totalPrice || 0);
+  useState(0);
 
 const [applying, setApplying] =
   useState(false);
