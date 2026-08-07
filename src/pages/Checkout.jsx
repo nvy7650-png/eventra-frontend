@@ -81,13 +81,19 @@ const releaseHold = async () => {
           "Content-Type":
             "application/json",
         },
-        body: JSON.stringify({
-          user_id: user.id,
-          showtime_id: showtime.id,
-          seat_ids: seats.map(
-            seat => seat.id
-          ),
-        }),
+       body: JSON.stringify({
+
+  user_id: user.id,
+
+  event_id: event.id,
+
+  showtime_id: showtime.id,
+
+  promotion_id: promotion?.id || null,
+
+  items: orderItems,
+
+}),
       }
     );
 
@@ -290,17 +296,27 @@ if (seats?.length) {
       return;
     }
 
-    navigate(
+   navigate(
   `/payment/${data.order_id}`,
   {
     state: {
+
       orderId: data.order_id,
+
       event,
+
       showtime,
+
       zone,
+
       seats,
-      totalPrice: finalPrice,
+
+      totalPrice: data.total_price,
+
+      discount: data.discount,
+
       promotion,
+
     },
   }
 );

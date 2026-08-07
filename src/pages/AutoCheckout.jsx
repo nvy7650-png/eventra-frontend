@@ -35,6 +35,7 @@ const [applying, setApplying] =
   useState(false);
 const [promotions, setPromotions] =
   useState([]);
+const [selectedPromotion, setSelectedPromotion] = useState(null);
 
   const {
     event,
@@ -139,6 +140,8 @@ useEffect(() => {
         data.final_price
       );
 
+      setSelectedPromotion(data.promotion);
+
       alert(
         "Áp dụng mã thành công!"
       );
@@ -194,8 +197,7 @@ useEffect(() => {
 
   items,
 
-  promotion_code:
-    promoCode || null,
+  promotion_id: selectedPromotion?.id || null,
 
   discount,
 
