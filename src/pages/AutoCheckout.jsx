@@ -233,7 +233,7 @@ useEffect(() => {
 
       totalPrice: data.total_price,
       discount: data.discount,
-      promotion: selectedPromotion,
+      promotion: promoCode,
 
     },
   }
@@ -408,182 +408,158 @@ useEffect(() => {
               space-y-4
             ">
 
-              <div className="
-                flex
-                justify-between
-              ">
-                <span className="text-gray-400">
-                  Tổng số vé
-                </span>
 
-                <span>
-                  {quantity}
-                </span>
+  <div className="flex gap-3">
 
-                {/* PROMOTION */}
-<div>
+    <select
+      value={promoCode}
+      onChange={(e) =>
+        setPromoCode(e.target.value)
+      }
+      className="
+        flex-1
+        px-4
+        py-3
+        rounded-xl
+        bg-black/20
+        border
+        border-white/10
+        outline-none
+        text-white
+      "
+    >
 
-  <p className="text-gray-400 mb-3">
-    Mã giảm giá
-  </p>
-
-  <select
-    value={promoCode}
-    onChange={(e) =>
-      setPromoCode(e.target.value)
-    }
-    
-    className="
-      w-full
-      px-4
-      py-3
-      rounded-xl
-      bg-black/20
-      border
-      border-white/10
-      outline-none
-      text-white
-    "
-  >
-
-    <option value="">
-      -- Chọn mã giảm giá --
-    </option>
-
-    {promotions.map((promo) => (
-
-      <option
-        key={promo.id}
-        value={promo.code}
-      >
-        {promo.code} - {promo.name}
+      <option value="">
+        Nhập hoặc chọn mã giảm giá
       </option>
 
-    ))}
+      {promotions.map((promo) => (
 
-  </select>
-  <button
-  onClick={handleApplyPromotion}
-  disabled={!promoCode || applying}
-  className="
-    mt-3
-    w-full
-    py-3
-    rounded-xl
+        <option
+          key={promo.id}
+          value={promo.code}
+        >
+          {promo.code}
+        </option>
 
-    bg-sky-500
-    hover:bg-sky-400
+      ))}
 
-    text-black
-    font-bold
+    </select>
 
-    disabled:opacity-50
-  "
->
+    <button
+      onClick={handleApplyPromotion}
+      disabled={!promoCode || applying}
+      className="
+        px-6
+        rounded-xl
+        bg-sky-500
+        hover:bg-sky-400
+        text-black
+        font-bold
+        disabled:opacity-50
+      "
+    >
 
-  {applying
-    ? "Đang áp dụng..."
-    : "Áp dụng mã"}
+      {applying
+        ? "..."
+        : "Áp dụng"}
 
-</button>
+    </button>
 
-</div>
+  </div>
+
 
  
               </div>
 
+              <div
+                className="
+                  border-t
+                  border-white/10
+                  pt-4
+                  space-y-4
+                "
+              >
 
+                {/* Tạm tính */}
 
-             <div
-  className="
-    border-t
-    border-white/10
-    pt-4
-    space-y-4
-  "
->
+                <div
+                  className="
+                    flex
+                    justify-between
+                  "
+                >
 
-  {/* Tạm tính */}
+                  <span className="text-gray-400">
+                    Tạm tính
+                  </span>
 
-  <div
-    className="
-      flex
-      justify-between
-    "
-  >
+                  <span>
+                    {Number(totalPrice).toLocaleString("vi-VN")}đ
+                  </span>
 
-    <span className="text-gray-400">
-      Tạm tính
-    </span>
+                </div>
 
-    <span>
-      {Number(totalPrice).toLocaleString("vi-VN")}đ
-    </span>
+                {/* Giảm giá */}
 
-  </div>
+                <div
+                  className="
+                    flex
+                    justify-between
+                  "
+                >
 
-  {/* Giảm giá */}
+                  <span className="text-gray-400">
+                    Giảm giá
+                  </span>
 
-  <div
-    className="
-      flex
-      justify-between
-    "
-  >
+                  <span className="text-green-400 font-bold">
 
-    <span className="text-gray-400">
-      Giảm giá
-    </span>
+                    -{Number(discount).toLocaleString("vi-VN")}đ
 
-    <span className="text-green-400 font-bold">
+                  </span>
 
-      -{Number(discount).toLocaleString("vi-VN")}đ
+                </div>
 
-    </span>
+                {/* Thành tiền */}
 
-  </div>
+                <div
+                  className="
+                    flex
+                    justify-between
+                    items-center
+                    border-t
+                    border-white/10
+                    pt-4
+                  "
+                >
 
-  {/* Thành tiền */}
+                  <span
+                    className="
+                      text-xl
+                      font-bold
+                    "
+                  >
+                    Thành tiền
+                  </span>
 
-  <div
-    className="
-      flex
-      justify-between
-      items-center
-      border-t
-      border-white/10
-      pt-4
-    "
-  >
+                  <span
+                    className="
+                      text-3xl
+                      font-black
+                      text-sky-400
+                    "
+                  >
 
-    <span
-      className="
-        text-xl
-        font-bold
-      "
-    >
-      Thành tiền
-    </span>
+                    {Number(finalPrice).toLocaleString("vi-VN")}đ
 
-    <span
-      className="
-        text-3xl
-        font-black
-        text-sky-400
-      "
-    >
+                  </span>
 
-      {Number(finalPrice).toLocaleString("vi-VN")}đ
+                </div>
 
-    </span>
+              </div>
 
-  </div>
-
-</div>
-
-            </div>
-
-            <button
+              <button
               onClick={
                 handleCheckout
               }
@@ -621,5 +597,6 @@ useEffect(() => {
       <Footer />
 
     </div>
+
   );
 }
