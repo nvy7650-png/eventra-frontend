@@ -131,43 +131,30 @@ const [open, setOpen] =
     }
     className="
       lg:hidden
-
       fixed
       inset-0
-
       bg-black/60
-
       z-[999]
     "
   />
-
 )}
 
   <aside
   className={`
     fixed
     lg:fixed
-
     top-0
     left-0
-
     z-[1000]
-
     h-screen
-
     w-72
-
     bg-[#0B1120]
-
     border-r
     border-white/10
-
     flex
     flex-col
     justify-between
-
     p-5
-
     transition-all
     duration-300
 
@@ -292,17 +279,11 @@ const [open, setOpen] =
 >
 
                 <Icon size={20} />
-
                 {item.label}
-
               </button>
-
             );
-
           })}
-
         </div>
-
       </div>
 
       <button
@@ -322,14 +303,9 @@ const [open, setOpen] =
       >
 
         <LogOut size={18} />
-
         Đăng xuất
-
       </button>
-
     </aside>
     </>
-
   );
-
 }
