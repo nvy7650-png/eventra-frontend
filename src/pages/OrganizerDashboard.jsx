@@ -1,6 +1,5 @@
 import {
   useEffect,
-  useMemo,
   useState,
 } from "react";
 
@@ -9,14 +8,13 @@ import {
 } from "react-router-dom";
 
 import {
-  Plus,
-  ChevronRight,
   CalendarDays,
   Ticket,
   Wallet,
-  Users,
-  TrendingUp,
   CheckCircle,
+  Plus,
+  ChevronRight,
+  TrendingUp,
 } from "lucide-react";
 
 import OrganizerSidebar
@@ -27,29 +25,29 @@ export default function OrganizerDashboard() {
 
   const navigate = useNavigate();
 
-  // ============================
-  // USER
-  // ============================
-
   const user = JSON.parse(
     localStorage.getItem("user")
   );
 
+  const [stats, setStats] = useState({
 
-  // ============================
-  // STATE
-  // ============================
+    totalEvents: 0,
+    totalTickets: 0,
+    revenue: 0,
+    checkedIn: 0,
 
-  const [events, setEvents] =
-    useState([]);
+    eventRevenue: [],
+    eventTickets: [],
+
+  });
 
   const [loading, setLoading] =
     useState(true);
 
 
-  // ============================
+  // =========================
   // CHECK LOGIN
-  // ============================
+  // =========================
 
   useEffect(() => {
 
@@ -65,9 +63,9 @@ export default function OrganizerDashboard() {
   }, []);
 
 
-  // ============================
-  // GET ORGANIZER STATISTICS
-  // ============================
+  // =========================
+  // GET DASHBOARD DATA
+  // =========================
 
   useEffect(() => {
 
@@ -83,25 +81,36 @@ export default function OrganizerDashboard() {
       `${import.meta.env.VITE_API_URL}/api/events/organizer/${user.id}/stats`
     )
 
-      .then((res) => {
-
-        if (!res.ok) {
-          throw new Error(
-            "Không thể lấy dữ liệu thống kê"
-          );
-        }
-
-        return res.json();
-
-      })
+      .then((res) => res.json())
 
       .then((data) => {
 
-        setEvents(
-          Array.isArray(data)
-            ? data
-            : []
+        console.log(
+          "ORGANIZER DASHBOARD:",
+          data
         );
+
+        setStats({
+
+          totalEvents:
+            data.totalEvents || 0,
+
+          totalTickets:
+            data.totalTickets || 0,
+
+          revenue:
+            data.revenue || 0,
+
+          checkedIn:
+            data.checkedIn || 0,
+
+          eventRevenue:
+            data.eventRevenue || [],
+
+          eventTickets:
+            data.eventTickets || [],
+
+        });
 
       })
 
@@ -120,185 +129,13 @@ export default function OrganizerDashboard() {
   }, []);
 
 
-  // ============================
-  // CALCULATE TOTAL STATISTICS
-  // ============================
-
-  const stats = useMemo(() => {
-
-    const totalEvents =
-      events.length;
-
-    const totalTickets =
-      events.reduce(
-        (sum, event) =>
-          sum +
-          Number(
-            event.sold_tickets || 0
-          ),
-        0
-      );
-
-    const revenue =
-      events.reduce(
-        (sum, event) =>
-          sum +
-          Number(
-            event.revenue || 0
-          ),
-        0
-      );
-
-    const checkedIn =
-      events.reduce(
-        (sum, event) =>
-          sum +
-          Number(
-            event.checked_in || 0
-          ),
-        0
-      );
-
-    return {
-
-      totalEvents,
-
-      totalTickets,
-
-      revenue,
-
-      checkedIn,
-
-    };
-
-  }, [events]);
-
-
-  // ============================
-  // CHECK-IN RATE
-  // ============================
-
-  const checkInRate = useMemo(() => {
-
-    if (
-      stats.totalTickets === 0
-    ) {
-
-      return 0;
-
-    }
-
-    return Math.round(
-      (
-        stats.checkedIn /
-        stats.totalTickets
-      ) * 100
-    );
-
-  }, [
-    stats.totalTickets,
-    stats.checkedIn,
-  ]);
-
-
-  // ============================
-  // SORT EVENTS BY REVENUE
-  // ============================
-
-  const topRevenueEvents =
-    useMemo(() => {
-
-      return [...events]
-
-        .sort(
-          (a, b) =>
-            Number(b.revenue || 0) -
-            Number(a.revenue || 0)
-        )
-
-        .slice(0, 5);
-
-    }, [events]);
-
-
-  // ============================
-  // MAX REVENUE
-  // ============================
-
-  const maxRevenue = useMemo(() => {
-
-    if (
-      topRevenueEvents.length === 0
-    ) {
-
-      return 1;
-
-    }
-
-    return Math.max(
-      ...topRevenueEvents.map(
-        (event) =>
-          Number(
-            event.revenue || 0
-          )
-      ),
-      1
-    );
-
-  }, [topRevenueEvents]);
-
-
-  // ============================
-  // MAX TICKETS
-  // ============================
-
-  const maxTickets = useMemo(() => {
-
-    if (
-      events.length === 0
-    ) {
-
-      return 1;
-
-    }
-
-    return Math.max(
-      ...events.map(
-        (event) =>
-          Number(
-            event.sold_tickets || 0
-          )
-      ),
-      1
-    );
-
-  }, [events]);
-
-
-  // ============================
-  // FORMAT PRICE
-  // ============================
-
-  const formatPrice = (value) => {
-
-    return Number(
-      value || 0
-    ).toLocaleString(
-      "vi-VN"
-    ) + "đ";
-
-  };
-
-
-  // ============================
+  // =========================
   // LOGOUT
-  // ============================
+  // =========================
 
   const handleLogout = () => {
 
-    localStorage.removeItem(
-      "user"
-    );
+    localStorage.removeItem("user");
 
     navigate("/");
 
@@ -307,9 +144,64 @@ export default function OrganizerDashboard() {
   };
 
 
-  // ============================
+  // =========================
+  // FORMAT
+  // =========================
+
+  const formatPrice = (value) => {
+
+    return Number(value || 0)
+      .toLocaleString("vi-VN") + "đ";
+
+  };
+
+
+  // =========================
+  // CHECK-IN %
+  // =========================
+
+  const checkInPercent =
+    stats.totalTickets > 0
+      ? Math.round(
+          (
+            stats.checkedIn /
+            stats.totalTickets
+          ) * 100
+        )
+      : 0;
+
+
+  // =========================
+  // MAX REVENUE
+  // =========================
+
+  const maxRevenue =
+    Math.max(
+      ...stats.eventRevenue.map(
+        (item) =>
+          Number(item.revenue || 0)
+      ),
+      1
+    );
+
+
+  // =========================
+  // MAX TICKETS
+  // =========================
+
+  const maxTickets =
+    Math.max(
+      ...stats.eventTickets.map(
+        (item) =>
+          Number(item.tickets || 0)
+      ),
+      1
+    );
+
+
+  // =========================
   // LOADING
-  // ============================
+  // =========================
 
   if (loading) {
 
@@ -341,12 +233,7 @@ export default function OrganizerDashboard() {
             "
           />
 
-          <p
-            className="
-              mt-4
-              text-gray-400
-            "
-          >
+          <p className="mt-4 text-gray-400">
             Đang tải dashboard...
           </p>
 
@@ -359,10 +246,6 @@ export default function OrganizerDashboard() {
   }
 
 
-  // ============================
-  // DASHBOARD
-  // ============================
-
   return (
 
     <div
@@ -371,16 +254,15 @@ export default function OrganizerDashboard() {
         bg-[#050816]
         text-white
         flex
-        overflow-x-hidden
       "
     >
 
       <OrganizerSidebar />
 
 
-      {/* ============================
+      {/* =========================
           MAIN
-      ============================ */}
+      ========================= */}
 
       <main
         className="
@@ -392,9 +274,9 @@ export default function OrganizerDashboard() {
       >
 
 
-        {/* ============================
+        {/* =========================
             TOPBAR
-        ============================ */}
+        ========================= */}
 
         <div
           className="
@@ -408,6 +290,7 @@ export default function OrganizerDashboard() {
             sm:px-6
             lg:px-10
             py-5
+            lg:py-6
             border-b
             border-white/10
             bg-[#081120]
@@ -441,17 +324,12 @@ export default function OrganizerDashboard() {
           </div>
 
 
-          {/* HOME */}
-
           <button
             type="button"
-            onClick={() =>
-              navigate("/")
-            }
+            onClick={() => navigate("/")}
             className="
               flex
               items-center
-              justify-center
               gap-2
               px-5
               py-3
@@ -466,18 +344,16 @@ export default function OrganizerDashboard() {
 
             Trang chủ
 
-            <ChevronRight
-              size={18}
-            />
+            <ChevronRight size={18} />
 
           </button>
 
         </div>
 
 
-        {/* ============================
+        {/* =========================
             CONTENT
-        ============================ */}
+        ========================= */}
 
         <div
           className="
@@ -488,9 +364,9 @@ export default function OrganizerDashboard() {
         >
 
 
-          {/* ============================
-              STAT CARDS
-          ============================ */}
+          {/* =========================
+              STATS CARDS
+          ========================= */}
 
           <div
             className="
@@ -498,7 +374,7 @@ export default function OrganizerDashboard() {
               grid-cols-1
               sm:grid-cols-2
               xl:grid-cols-4
-              gap-6
+              gap-5
             "
           >
 
@@ -514,8 +390,6 @@ export default function OrganizerDashboard() {
                 border-sky-500/20
                 rounded-3xl
                 p-6
-                hover:scale-[1.02]
-                transition
               "
             >
 
@@ -527,19 +401,13 @@ export default function OrganizerDashboard() {
                 "
               >
 
-                <p
-                  className="
-                    text-gray-400
-                  "
-                >
+                <p className="text-gray-400">
                   Tổng sự kiện
                 </p>
 
                 <CalendarDays
+                  className="text-sky-400"
                   size={24}
-                  className="
-                    text-sky-400
-                  "
                 />
 
               </div>
@@ -547,10 +415,9 @@ export default function OrganizerDashboard() {
               <h2
                 className="
                   text-4xl
-                  md:text-5xl
                   font-black
                   text-sky-400
-                  mt-4
+                  mt-5
                 "
               >
                 {stats.totalEvents}
@@ -570,8 +437,6 @@ export default function OrganizerDashboard() {
                 border-green-500/20
                 rounded-3xl
                 p-6
-                hover:scale-[1.02]
-                transition
               "
             >
 
@@ -583,19 +448,13 @@ export default function OrganizerDashboard() {
                 "
               >
 
-                <p
-                  className="
-                    text-gray-400
-                  "
-                >
+                <p className="text-gray-400">
                   Vé đã bán
                 </p>
 
                 <Ticket
+                  className="text-green-400"
                   size={24}
-                  className="
-                    text-green-400
-                  "
                 />
 
               </div>
@@ -603,10 +462,9 @@ export default function OrganizerDashboard() {
               <h2
                 className="
                   text-4xl
-                  md:text-5xl
                   font-black
                   text-green-400
-                  mt-4
+                  mt-5
                 "
               >
                 {stats.totalTickets}
@@ -626,8 +484,6 @@ export default function OrganizerDashboard() {
                 border-pink-500/20
                 rounded-3xl
                 p-6
-                hover:scale-[1.02]
-                transition
               "
             >
 
@@ -639,31 +495,23 @@ export default function OrganizerDashboard() {
                 "
               >
 
-                <p
-                  className="
-                    text-gray-400
-                  "
-                >
+                <p className="text-gray-400">
                   Doanh thu
                 </p>
 
                 <Wallet
+                  className="text-pink-400"
                   size={24}
-                  className="
-                    text-pink-400
-                  "
                 />
 
               </div>
 
               <h2
                 className="
-                  text-2xl
-                  md:text-3xl
-                  xl:text-4xl
+                  text-3xl
                   font-black
                   text-pink-400
-                  mt-4
+                  mt-5
                   break-all
                 "
               >
@@ -686,8 +534,6 @@ export default function OrganizerDashboard() {
                 border-orange-500/20
                 rounded-3xl
                 p-6
-                hover:scale-[1.02]
-                transition
               "
             >
 
@@ -699,19 +545,13 @@ export default function OrganizerDashboard() {
                 "
               >
 
-                <p
-                  className="
-                    text-gray-400
-                  "
-                >
+                <p className="text-gray-400">
                   Đã check-in
                 </p>
 
                 <CheckCircle
+                  className="text-orange-400"
                   size={24}
-                  className="
-                    text-orange-400
-                  "
                 />
 
               </div>
@@ -719,23 +559,16 @@ export default function OrganizerDashboard() {
               <h2
                 className="
                   text-4xl
-                  md:text-5xl
                   font-black
                   text-orange-400
-                  mt-4
+                  mt-5
                 "
               >
                 {stats.checkedIn}
               </h2>
 
-              <p
-                className="
-                  text-sm
-                  text-gray-500
-                  mt-2
-                "
-              >
-                {checkInRate}% tổng vé
+              <p className="text-gray-500 mt-2">
+                {checkInPercent}% tổng vé
               </p>
 
             </div>
@@ -743,9 +576,9 @@ export default function OrganizerDashboard() {
           </div>
 
 
-          {/* ============================
+          {/* =========================
               CHARTS
-          ============================ */}
+          ========================= */}
 
           <div
             className="
@@ -758,7 +591,9 @@ export default function OrganizerDashboard() {
           >
 
 
-            {/* REVENUE CHART */}
+            {/* =====================
+                REVENUE CHART
+            ===================== */}
 
             <div
               className="
@@ -775,7 +610,7 @@ export default function OrganizerDashboard() {
                   flex
                   items-center
                   justify-between
-                  mb-6
+                  mb-8
                 "
               >
 
@@ -797,27 +632,24 @@ export default function OrganizerDashboard() {
                       mt-1
                     "
                   >
-                    Top 5 sự kiện có
-                    doanh thu cao nhất
+                    Top 5 sự kiện có doanh thu cao nhất
                   </p>
 
                 </div>
 
                 <TrendingUp
-                  size={26}
-                  className="
-                    text-pink-400
-                  "
+                  className="text-pink-400"
+                  size={25}
                 />
 
               </div>
 
 
-              {topRevenueEvents.length === 0 ? (
+              {stats.eventRevenue.length === 0 ? (
 
                 <div
                   className="
-                    h-64
+                    h-72
                     flex
                     items-center
                     justify-center
@@ -829,30 +661,26 @@ export default function OrganizerDashboard() {
 
               ) : (
 
-                <div
-                  className="
-                    space-y-6
-                  "
-                >
+                <div className="space-y-6">
 
-                  {topRevenueEvents.map(
-                    (event) => {
+                  {stats.eventRevenue.map(
+                    (item) => {
 
-                      const value =
-                        Number(
-                          event.revenue || 0
+                      const width =
+                        Math.max(
+                          (
+                            Number(
+                              item.revenue
+                            ) /
+                            maxRevenue
+                          ) * 100,
+                          3
                         );
-
-                      const percent =
-                        (
-                          value /
-                          maxRevenue
-                        ) * 100;
 
                       return (
 
                         <div
-                          key={event.id}
+                          key={item.id}
                         >
 
                           <div
@@ -867,14 +695,11 @@ export default function OrganizerDashboard() {
                             <span
                               className="
                                 text-sm
-                                text-gray-300
+                                font-medium
                                 truncate
                               "
-                              title={
-                                event.title
-                              }
                             >
-                              {event.title}
+                              {item.title}
                             </span>
 
                             <span
@@ -886,7 +711,7 @@ export default function OrganizerDashboard() {
                               "
                             >
                               {formatPrice(
-                                value
+                                item.revenue
                               )}
                             </span>
 
@@ -894,6 +719,7 @@ export default function OrganizerDashboard() {
 
                           <div
                             className="
+                              w-full
                               h-3
                               bg-white/5
                               rounded-full
@@ -904,16 +730,15 @@ export default function OrganizerDashboard() {
                             <div
                               className="
                                 h-full
-                                rounded-full
                                 bg-gradient-to-r
                                 from-pink-500
-                                to-purple-400
+                                to-fuchsia-400
+                                rounded-full
                                 transition-all
-                                duration-700
                               "
                               style={{
                                 width:
-                                  `${percent}%`,
+                                  `${width}%`,
                               }}
                             />
 
@@ -933,7 +758,9 @@ export default function OrganizerDashboard() {
             </div>
 
 
-            {/* TICKET CHART */}
+            {/* =====================
+                TICKETS CHART
+            ===================== */}
 
             <div
               className="
@@ -950,7 +777,7 @@ export default function OrganizerDashboard() {
                   flex
                   items-center
                   justify-between
-                  mb-6
+                  mb-8
                 "
               >
 
@@ -972,27 +799,24 @@ export default function OrganizerDashboard() {
                       mt-1
                     "
                   >
-                    So sánh số lượng vé
-                    đã bán
+                    So sánh số lượng vé đã bán
                   </p>
 
                 </div>
 
                 <Ticket
-                  size={26}
-                  className="
-                    text-green-400
-                  "
+                  className="text-green-400"
+                  size={25}
                 />
 
               </div>
 
 
-              {events.length === 0 ? (
+              {stats.eventTickets.length === 0 ? (
 
                 <div
                   className="
-                    h-64
+                    h-72
                     flex
                     items-center
                     justify-center
@@ -1004,43 +828,26 @@ export default function OrganizerDashboard() {
 
               ) : (
 
-                <div
-                  className="
-                    space-y-6
-                  "
-                >
+                <div className="space-y-6">
 
-                  {[...events]
+                  {stats.eventTickets.map(
+                    (item) => {
 
-                    .sort(
-                      (a, b) =>
-                        Number(
-                          b.sold_tickets || 0
-                        ) -
-                        Number(
-                          a.sold_tickets || 0
-                        )
-                    )
-
-                    .slice(0, 5)
-
-                    .map((event) => {
-
-                      const value =
-                        Number(
-                          event.sold_tickets || 0
+                      const width =
+                        Math.max(
+                          (
+                            Number(
+                              item.tickets
+                            ) /
+                            maxTickets
+                          ) * 100,
+                          3
                         );
-
-                      const percent =
-                        (
-                          value /
-                          maxTickets
-                        ) * 100;
 
                       return (
 
                         <div
-                          key={event.id}
+                          key={item.id}
                         >
 
                           <div
@@ -1055,14 +862,11 @@ export default function OrganizerDashboard() {
                             <span
                               className="
                                 text-sm
-                                text-gray-300
+                                font-medium
                                 truncate
                               "
-                              title={
-                                event.title
-                              }
                             >
-                              {event.title}
+                              {item.title}
                             </span>
 
                             <span
@@ -1070,16 +874,16 @@ export default function OrganizerDashboard() {
                                 text-sm
                                 font-bold
                                 text-green-400
-                                whitespace-nowrap
                               "
                             >
-                              {value} vé
+                              {item.tickets} vé
                             </span>
 
                           </div>
 
                           <div
                             className="
+                              w-full
                               h-3
                               bg-white/5
                               rounded-full
@@ -1090,16 +894,15 @@ export default function OrganizerDashboard() {
                             <div
                               className="
                                 h-full
-                                rounded-full
                                 bg-gradient-to-r
                                 from-green-500
-                                to-emerald-300
+                                to-emerald-400
+                                rounded-full
                                 transition-all
-                                duration-700
                               "
                               style={{
                                 width:
-                                  `${percent}%`,
+                                  `${width}%`,
                               }}
                             />
 
@@ -1109,420 +912,8 @@ export default function OrganizerDashboard() {
 
                       );
 
-                    })}
-
-                </div>
-
-              )}
-
-            </div>
-
-          </div>
-
-
-          {/* ============================
-              CHECK-IN OVERVIEW
-          ============================ */}
-
-          <div
-            className="
-              grid
-              grid-cols-1
-              lg:grid-cols-3
-              gap-6
-              mt-6
-            "
-          >
-
-
-            {/* CHECK-IN CARD */}
-
-            <div
-              className="
-                lg:col-span-1
-                bg-[#0B1120]
-                border
-                border-white/10
-                rounded-3xl
-                p-6
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  items-center
-                  gap-3
-                "
-              >
-
-                <div
-                  className="
-                    w-11
-                    h-11
-                    rounded-2xl
-                    bg-orange-500/10
-                    flex
-                    items-center
-                    justify-center
-                  "
-                >
-
-                  <CheckCircle
-                    size={24}
-                    className="
-                      text-orange-400
-                    "
-                  />
-
-                </div>
-
-                <div>
-
-                  <h2
-                    className="
-                      font-bold
-                    "
-                  >
-                    Tỷ lệ check-in
-                  </h2>
-
-                  <p
-                    className="
-                      text-xs
-                      text-gray-500
-                    "
-                  >
-                    Tình trạng sử dụng vé
-                  </p>
-
-                </div>
-
-              </div>
-
-
-              <div
-                className="
-                  mt-8
-                  flex
-                  items-center
-                  justify-center
-                "
-              >
-
-                <div
-                  className="
-                    relative
-                    w-40
-                    h-40
-                    rounded-full
-                    flex
-                    items-center
-                    justify-center
-                  "
-                  style={{
-                    background:
-                      `conic-gradient(
-                        rgb(249 115 22)
-                        ${checkInRate}%,
-                        rgba(255,255,255,0.06)
-                        ${checkInRate}%
-                      )`,
-                  }}
-                >
-
-                  <div
-                    className="
-                      w-32
-                      h-32
-                      rounded-full
-                      bg-[#0B1120]
-                      flex
-                      flex-col
-                      items-center
-                      justify-center
-                    "
-                  >
-
-                    <span
-                      className="
-                        text-3xl
-                        font-black
-                        text-orange-400
-                      "
-                    >
-                      {checkInRate}%
-                    </span>
-
-                    <span
-                      className="
-                        text-xs
-                        text-gray-500
-                      "
-                    >
-                      đã check-in
-                    </span>
-
-                  </div>
-
-                </div>
-
-              </div>
-
-
-              <div
-                className="
-                  flex
-                  justify-between
-                  mt-6
-                  text-sm
-                "
-              >
-
-                <span
-                  className="
-                    text-gray-400
-                  "
-                >
-                  Đã check-in
-                </span>
-
-                <span
-                  className="
-                    font-bold
-                    text-orange-400
-                  "
-                >
-                  {stats.checkedIn}
-                </span>
-
-              </div>
-
-              <div
-                className="
-                  flex
-                  justify-between
-                  mt-2
-                  text-sm
-                "
-              >
-
-                <span
-                  className="
-                    text-gray-400
-                  "
-                >
-                  Chưa check-in
-                </span>
-
-                <span
-                  className="
-                    font-bold
-                    text-gray-300
-                  "
-                >
-                  {Math.max(
-                    stats.totalTickets -
-                    stats.checkedIn,
-                    0
+                    }
                   )}
-                </span>
-
-              </div>
-
-            </div>
-
-
-            {/* TOP EVENTS */}
-
-            <div
-              className="
-                lg:col-span-2
-                bg-[#0B1120]
-                border
-                border-white/10
-                rounded-3xl
-                p-6
-              "
-            >
-
-              <div
-                className="
-                  flex
-                  items-center
-                  justify-between
-                  mb-6
-                "
-              >
-
-                <div>
-
-                  <h2
-                    className="
-                      text-xl
-                      font-bold
-                    "
-                  >
-                    Hiệu quả sự kiện
-                  </h2>
-
-                  <p
-                    className="
-                      text-sm
-                      text-gray-500
-                      mt-1
-                    "
-                  >
-                    Tổng quan các sự kiện
-                    đang quản lý
-                  </p>
-
-                </div>
-
-                <Users
-                  size={26}
-                  className="
-                    text-sky-400
-                  "
-                />
-
-              </div>
-
-
-              {events.length === 0 ? (
-
-                <div
-                  className="
-                    py-16
-                    text-center
-                    text-gray-500
-                  "
-                >
-                  Bạn chưa có sự kiện nào.
-                </div>
-
-              ) : (
-
-                <div
-                  className="
-                    space-y-3
-                  "
-                >
-
-                  {[...events]
-
-                    .sort(
-                      (a, b) =>
-                        Number(
-                          b.revenue || 0
-                        ) -
-                        Number(
-                          a.revenue || 0
-                        )
-                    )
-
-                    .slice(0, 5)
-
-                    .map((event, index) => {
-
-                      return (
-
-                        <div
-                          key={event.id}
-                          className="
-                            flex
-                            items-center
-                            gap-4
-                            p-4
-                            rounded-2xl
-                            bg-white/[0.03]
-                            border
-                            border-white/5
-                            hover:bg-white/[0.06]
-                            transition
-                          "
-                        >
-
-                          <div
-                            className="
-                              w-9
-                              h-9
-                              rounded-xl
-                              bg-sky-500/10
-                              text-sky-400
-                              flex
-                              items-center
-                              justify-center
-                              font-black
-                            "
-                          >
-                            {index + 1}
-                          </div>
-
-
-                          <div
-                            className="
-                              flex-1
-                              min-w-0
-                            "
-                          >
-
-                            <p
-                              className="
-                                font-semibold
-                                truncate
-                              "
-                              title={
-                                event.title
-                              }
-                            >
-                              {event.title}
-                            </p>
-
-                            <p
-                              className="
-                                text-xs
-                                text-gray-500
-                                mt-1
-                              "
-                            >
-                              {Number(
-                                event.sold_tickets || 0
-                              )} vé đã bán
-                              {" • "}
-                              {Number(
-                                event.checked_in || 0
-                              )} check-in
-                            </p>
-
-                          </div>
-
-
-                          <div
-                            className="
-                              text-right
-                              shrink-0
-                            "
-                          >
-
-                            <p
-                              className="
-                                font-bold
-                                text-pink-400
-                              "
-                            >
-                              {formatPrice(
-                                event.revenue
-                              )}
-                            </p>
-
-                          </div>
-
-                        </div>
-
-                      );
-
-                    })}
 
                 </div>
 
@@ -1533,53 +924,118 @@ export default function OrganizerDashboard() {
           </div>
 
 
-          {/* ============================
-              CREATE EVENT
-          ============================ */}
+          {/* =========================
+              CHECK-IN OVERVIEW
+          ========================= */}
 
           <div
             className="
-              mt-8
-              flex
-              flex-col
-              sm:flex-row
-              sm:items-center
-              sm:justify-between
-              gap-4
-              bg-gradient-to-r
-              from-sky-500/10
-              to-cyan-500/5
+              mt-6
+              bg-[#0B1120]
               border
-              border-sky-500/20
+              border-white/10
               rounded-3xl
               p-6
             "
           >
 
-            <div>
+            <div
+              className="
+                flex
+                flex-col
+                sm:flex-row
+                sm:items-center
+                sm:justify-between
+                gap-4
+                mb-5
+              "
+            >
 
-              <h2
+              <div>
+
+                <h2 className="text-xl font-bold">
+                  Tình trạng check-in
+                </h2>
+
+                <p className="text-sm text-gray-500 mt-1">
+                  Tỷ lệ khách đã sử dụng vé
+                </p>
+
+              </div>
+
+              <div
                 className="
-                  text-xl
-                  font-bold
+                  text-3xl
+                  font-black
+                  text-orange-400
                 "
               >
-                Tạo sự kiện mới
-              </h2>
-
-              <p
-                className="
-                  text-gray-400
-                  text-sm
-                  mt-1
-                "
-              >
-                Bắt đầu tạo và quản lý
-                sự kiện của bạn.
-              </p>
+                {checkInPercent}%
+              </div>
 
             </div>
 
+
+            <div
+              className="
+                w-full
+                h-5
+                bg-white/5
+                rounded-full
+                overflow-hidden
+              "
+            >
+
+              <div
+                className="
+                  h-full
+                  bg-gradient-to-r
+                  from-orange-500
+                  to-yellow-400
+                  rounded-full
+                  transition-all
+                "
+                style={{
+                  width:
+                    `${checkInPercent}%`,
+                }}
+              />
+
+            </div>
+
+
+            <div
+              className="
+                flex
+                justify-between
+                mt-3
+                text-sm
+                text-gray-500
+              "
+            >
+
+              <span>
+                {stats.checkedIn} đã check-in
+              </span>
+
+              <span>
+                {Math.max(
+                  stats.totalTickets -
+                  stats.checkedIn,
+                  0
+                )} chưa check-in
+              </span>
+
+            </div>
+
+          </div>
+
+
+          {/* =========================
+              CREATE EVENT
+          ========================= */}
+
+          <div className="mt-8">
 
             <button
               type="button"
@@ -1591,7 +1047,6 @@ export default function OrganizerDashboard() {
               className="
                 flex
                 items-center
-                justify-center
                 gap-2
                 px-7
                 py-4
@@ -1600,21 +1055,18 @@ export default function OrganizerDashboard() {
                 hover:bg-sky-400
                 text-black
                 font-bold
+                text-lg
                 transition
-                whitespace-nowrap
               "
             >
 
-              <Plus
-                size={22}
-              />
+              <Plus size={22} />
 
               Tạo sự kiện mới
 
             </button>
 
           </div>
-
 
         </div>
 
