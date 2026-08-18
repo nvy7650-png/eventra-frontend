@@ -323,16 +323,16 @@ return (
           </div>
 
           <div>
+  <div className="text-gray-400">
+    Số lượng vé
+  </div>
 
-            <div className="text-gray-400">
-              Số lượng vé
-            </div>
-
-            <div className="text-xl font-bold">
-              {order.seats?.length || 0}
-            </div>
-
-          </div>
+  <div className="text-xl font-bold">
+    {order.seats && order.seats.length > 0
+      ? `${order.seats.length} vé`
+      : `${order.quantity || 0} vé`}
+  </div>
+</div>
 
           <div>
 
