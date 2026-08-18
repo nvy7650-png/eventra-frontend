@@ -280,19 +280,7 @@ export default function MyOrders() {
 
                 <div className="p-6">
 
-                  <h3
-                    className="
-                      text-xl
-                      font-bold
-                      mb-4
-                      line-clamp-2
-                    "
-                  >
-                    {
-                      order.event_title
-                    }
-                  </h3>
-
+                  
                   <div
                     className="
                       space-y-3
