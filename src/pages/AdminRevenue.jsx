@@ -20,6 +20,12 @@ export default function AdminRevenue() {
   const [search, setSearch] =
     useState("");
 
+  const [
+    selectedOrganizer,
+    setSelectedOrganizer,
+  ] = useState(null);
+
+
   // =============================
   // FETCH REVENUE
   // =============================
@@ -43,11 +49,13 @@ export default function AdminRevenue() {
 
       ]);
 
+
       const statsData =
         await statsRes.json();
 
       const paymentData =
         await paymentRes.json();
+
 
       setStats(statsData);
 
@@ -57,10 +65,11 @@ export default function AdminRevenue() {
           : []
       );
 
+
     } catch (err) {
 
       console.log(
-        "REVENUE ERROR:",
+        "FETCH REVENUE ERROR:",
         err
       );
 
@@ -72,15 +81,13 @@ export default function AdminRevenue() {
 
   };
 
-  // =============================
-  // LOAD DATA
-  // =============================
 
   useEffect(() => {
 
     fetchRevenue();
 
   }, []);
+
 
   // =============================
   // FORMAT PRICE
@@ -90,11 +97,12 @@ export default function AdminRevenue() {
 
     return (
       Number(value || 0)
-        .toLocaleString("vi-VN") +
-      "đ"
+        .toLocaleString("vi-VN")
+      + "đ"
     );
 
   };
+
 
   // =============================
   // FORMAT DATE
@@ -113,183 +121,244 @@ export default function AdminRevenue() {
 
   };
 
+
   // =============================
-  // FILTER PAYMENTS
+  // GROUP BY ORGANIZER
   // =============================
 
-  const filteredPayments =
+  const organizers = useMemo(() => {
+
+    const map = {};
+
+
+    payments.forEach((item) => {
+
+      const organizerId =
+        item.organizer_id;
+
+
+      if (!organizerId) {
+        return;
+      }
+
+
+      if (!map[organizerId]) {
+
+        map[organizerId] = {
+
+          id: organizerId,
+
+          name:
+            item.organizer_name
+            || "Chưa xác định",
+
+          email:
+            item.organizer_email
+            || "--",
+
+          revenue: 0,
+
+          transactions: 0,
+
+          events: {},
+
+          payments: [],
+
+        };
+
+      }
+
+
+      const organizer =
+        map[organizerId];
+
+
+      // Tổng doanh thu
+
+      organizer.revenue +=
+        Number(
+          item.amount || 0
+        );
+
+
+      // Số giao dịch
+
+      organizer.transactions += 1;
+
+
+      // Lưu payment
+
+      organizer.payments.push(
+        item
+      );
+
+
+      // =============================
+      // GROUP EVENTS
+      // =============================
+
+      const eventId =
+        item.event_id
+        || `unknown-${item.id}`;
+
+
+      if (
+        !organizer.events[eventId]
+      ) {
+
+        organizer.events[eventId] = {
+
+          id: eventId,
+
+          title:
+            item.event_title
+            || "Chưa xác định",
+
+          revenue: 0,
+
+          transactions: 0,
+
+        };
+
+      }
+
+
+      organizer.events[eventId]
+        .revenue +=
+        Number(
+          item.amount || 0
+        );
+
+
+      organizer.events[eventId]
+        .transactions += 1;
+
+    });
+
+
+    return Object.values(map)
+      .map((organizer) => ({
+
+        ...organizer,
+
+        events:
+          Object.values(
+            organizer.events
+          ),
+
+      }))
+      .sort(
+        (a, b) =>
+          b.revenue - a.revenue
+      );
+
+  }, [payments]);
+
+
+  // =============================
+  // SEARCH ORGANIZER
+  // =============================
+
+  const filteredOrganizers =
     useMemo(() => {
 
       const keyword =
         search
-          .toLowerCase()
-          .trim();
+          .trim()
+          .toLowerCase();
+
 
       if (!keyword) {
 
-        return payments;
+        return organizers;
 
       }
 
-      return payments.filter(
-        (item) => {
 
-          const orderId =
-            String(
-              item.order_id || ""
-            ).toLowerCase();
+      return organizers.filter(
+        (organizer) => {
 
-          const eventTitle =
-            String(
-              item.event_title || ""
-            ).toLowerCase();
+          const organizerMatch =
 
-          const organizerName =
-            String(
-              item.organizer_name || ""
-            ).toLowerCase();
+            organizer.name
+              .toLowerCase()
+              .includes(keyword)
 
-          const organizerEmail =
-            String(
-              item.organizer_email || ""
-            ).toLowerCase();
+            ||
+
+            organizer.email
+              .toLowerCase()
+              .includes(keyword);
+
+
+          const eventMatch =
+            organizer.events.some(
+              (event) =>
+                event.title
+                  .toLowerCase()
+                  .includes(keyword)
+            );
+
+
+          const paymentMatch =
+            organizer.payments.some(
+              (payment) =>
+                String(
+                  payment.order_id
+                )
+                  .includes(keyword)
+            );
+
 
           return (
-
-            orderId.includes(keyword) ||
-
-            eventTitle.includes(keyword) ||
-
-            organizerName.includes(keyword) ||
-
-            organizerEmail.includes(keyword)
-
+            organizerMatch
+            ||
+            eventMatch
+            ||
+            paymentMatch
           );
 
         }
       );
 
     }, [
-      payments,
+      organizers,
       search,
     ]);
 
+
   // =============================
-  // GROUP REVENUE BY ORGANIZER
+  // SELECTED ORGANIZER PAYMENTS
   // =============================
 
-  const organizerRevenue =
+  const selectedPayments =
     useMemo(() => {
 
-      const groups = {};
+      if (!selectedOrganizer) {
 
-      filteredPayments.forEach(
-        (item) => {
+        return [];
 
-          const organizerId =
-            item.organizer_id ||
-            "unknown";
+      }
 
-          if (
-            !groups[organizerId]
-          ) {
 
-            groups[organizerId] = {
-
-              organizer_id:
-                organizerId,
-
-              organizer_name:
-                item.organizer_name ||
-                "Không xác định",
-
-              organizer_email:
-                item.organizer_email ||
-                "--",
-
-              revenue: 0,
-
-              orders: new Set(),
-
-              events: new Set(),
-
-            };
-
-          }
-
-          groups[
-            organizerId
-          ].revenue +=
-            Number(
-              item.amount || 0
-            );
-
-          groups[
-            organizerId
-          ].orders.add(
-            item.order_id
-          );
-
-          if (
-            item.event_id
-          ) {
-
-            groups[
-              organizerId
-            ].events.add(
-              item.event_id
-            );
-
-          }
-
-        }
-      );
-
-      return Object.values(
-        groups
-      )
-        .map(
-          (item) => ({
-
-            ...item,
-
-            total_orders:
-              item.orders.size,
-
-            total_events:
-              item.events.size,
-
-          })
-        )
+      return selectedOrganizer
+        .payments
+        .slice()
         .sort(
           (a, b) =>
-            b.revenue -
-            a.revenue
+            new Date(
+              b.paid_at
+            )
+            -
+            new Date(
+              a.paid_at
+            )
         );
 
     }, [
-      filteredPayments,
+      selectedOrganizer,
     ]);
 
-  // =============================
-  // SUMMARY
-  // =============================
-
-  const totalOrganizer =
-    organizerRevenue.length;
-
-  const totalTransactions =
-    filteredPayments.length;
-
-  const totalRevenue =
-    filteredPayments.reduce(
-      (sum, item) =>
-        sum +
-        Number(
-          item.amount || 0
-        ),
-      0
-    );
 
   // =============================
   // LOADING
@@ -342,6 +411,7 @@ export default function AdminRevenue() {
 
   }
 
+
   // =============================
   // UI
   // =============================
@@ -359,6 +429,7 @@ export default function AdminRevenue() {
 
       <AdminSidebar />
 
+
       <main
         className="
           flex-1
@@ -370,17 +441,21 @@ export default function AdminRevenue() {
         "
       >
 
-        {/* =========================
-            HEADER
-        ========================= */}
 
-        <div className="mb-8">
+        {/* ========================= */}
+        {/* HEADER */}
+        {/* ========================= */}
+
+        <div
+          className="
+            mb-8
+          "
+        >
 
           <h1
             className="
               text-2xl
               sm:text-3xl
-              md:text-4xl
               font-black
             "
           >
@@ -400,72 +475,77 @@ export default function AdminRevenue() {
         </div>
 
 
-        {/* =========================
-            SUMMARY CARDS
-        ========================= */}
+        {/* ========================= */}
+        {/* TOTAL REVENUE */}
+        {/* ========================= */}
+
+        <div
+          className="
+            w-full
+            bg-gradient-to-r
+            from-green-500/10
+            to-emerald-500/10
+            border
+            border-green-500/20
+            rounded-3xl
+            p-5
+            sm:p-6
+            mb-8
+            shadow-lg
+          "
+        >
+
+          <p
+            className="
+              text-gray-400
+            "
+          >
+            Tổng doanh thu hệ thống
+          </p>
+
+
+          <h2
+            className="
+              text-4xl
+              font-black
+              text-green-400
+              mt-2
+            "
+          >
+
+            {formatPrice(
+              stats?.revenue || 0
+            )}
+
+          </h2>
+
+        </div>
+
+
+        {/* ========================= */}
+        {/* SUMMARY */}
+        {/* ========================= */}
 
         <div
           className="
             grid
             grid-cols-1
-            sm:grid-cols-2
-            xl:grid-cols-3
-            gap-5
+            sm:grid-cols-3
+            gap-4
             mb-8
           "
         >
-
-          {/* TOTAL REVENUE */}
-
-          <div
-            className="
-              bg-gradient-to-br
-              from-green-500/10
-              to-emerald-500/10
-              border
-              border-green-500/20
-              rounded-3xl
-              p-6
-            "
-          >
-
-            <p
-              className="
-                text-gray-400
-                text-sm
-              "
-            >
-              Tổng doanh thu
-            </p>
-
-            <h2
-              className="
-                text-3xl
-                sm:text-4xl
-                font-black
-                text-green-400
-                mt-2
-              "
-            >
-              {formatPrice(
-                totalRevenue
-              )}
-            </h2>
-
-          </div>
 
 
           {/* ORGANIZERS */}
 
           <div
             className="
-              bg-gradient-to-br
-              from-sky-500/10
-              to-cyan-500/10
+              bg-[#0B1120]
               border
-              border-sky-500/20
+              border-white/10
               rounded-3xl
-              p-6
+              p-5
             "
           >
 
@@ -475,18 +555,18 @@ export default function AdminRevenue() {
                 text-sm
               "
             >
-              Organizer có doanh thu
+              Tổng Organizer
             </p>
 
             <h2
               className="
-                text-4xl
+                text-3xl
                 font-black
                 text-sky-400
                 mt-2
               "
             >
-              {totalOrganizer}
+              {organizers.length}
             </h2>
 
           </div>
@@ -496,13 +576,11 @@ export default function AdminRevenue() {
 
           <div
             className="
-              bg-gradient-to-br
-              from-purple-500/10
-              to-pink-500/10
+              bg-[#0B1120]
               border
-              border-purple-500/20
+              border-white/10
               rounded-3xl
-              p-6
+              p-5
             "
           >
 
@@ -512,28 +590,75 @@ export default function AdminRevenue() {
                 text-sm
               "
             >
-              Tổng giao dịch
+              Giao dịch thành công
             </p>
 
             <h2
               className="
-                text-4xl
+                text-3xl
                 font-black
-                text-purple-400
+                text-green-400
                 mt-2
               "
             >
-              {totalTransactions}
+              {payments.length}
             </h2>
 
           </div>
 
+
+          {/* EVENTS */}
+
+          <div
+            className="
+              bg-[#0B1120]
+              border
+              border-white/10
+              rounded-3xl
+              p-5
+            "
+          >
+
+            <p
+              className="
+                text-gray-400
+                text-sm
+              "
+            >
+              Sự kiện có doanh thu
+            </p>
+
+            <h2
+              className="
+                text-3xl
+                font-black
+                text-pink-400
+                mt-2
+              "
+            >
+
+              {
+                new Set(
+                  payments
+                    .map(
+                      item =>
+                        item.event_id
+                    )
+                    .filter(Boolean)
+                ).size
+              }
+
+            </h2>
+
+          </div>
+
+
         </div>
 
 
-        {/* =========================
-            SEARCH
-        ========================= */}
+        {/* ========================= */}
+        {/* SEARCH */}
+        {/* ========================= */}
 
         <div
           className="
@@ -546,17 +671,6 @@ export default function AdminRevenue() {
             mb-8
           "
         >
-
-          <label
-            className="
-              block
-              text-sm
-              text-gray-400
-              mb-2
-            "
-          >
-            Tìm kiếm doanh thu
-          </label>
 
           <input
             type="text"
@@ -589,328 +703,667 @@ export default function AdminRevenue() {
         </div>
 
 
-        {/* =========================
-            ORGANIZER REVENUE
-        ========================= */}
+        {/* ========================= */}
+        {/* ORGANIZER LIST */}
+        {/* ========================= */}
 
-        <div className="mb-10">
+        {!selectedOrganizer && (
 
-          <div
-            className="
-              flex
-              items-center
-              justify-between
-              mb-4
-            "
-          >
+          <>
 
-            <div>
+            {/* DESKTOP */}
 
-              <h2
+            <div
+              className="
+                hidden
+                lg:block
+                bg-[#0B1120]
+                border
+                border-white/10
+                rounded-3xl
+                overflow-hidden
+              "
+            >
+
+              <div
                 className="
-                  text-xl
-                  sm:text-2xl
-                  font-black
-                "
-              >
-                Doanh thu theo Organizer
-              </h2>
-
-              <p
-                className="
-                  text-gray-500
-                  text-sm
-                  mt-1
-                "
-              >
-                Xếp theo doanh thu cao nhất
-              </p>
-
-            </div>
-
-          </div>
-
-
-          {/* DESKTOP TABLE */}
-
-          <div
-            className="
-              hidden
-              lg:block
-              bg-[#0B1120]
-              border
-              border-white/10
-              rounded-3xl
-              overflow-hidden
-            "
-          >
-
-            <div className="overflow-x-auto">
-
-              <table
-                className="
-                  min-w-[1000px]
-                  w-full
+                  overflow-x-auto
                 "
               >
 
-                <thead>
+                <table
+                  className="
+                    min-w-[900px]
+                    w-full
+                  "
+                >
 
-                  <tr
-                    className="
-                      border-b
-                      border-white/10
-                      text-gray-400
-                      text-sm
-                    "
-                  >
+                  <thead>
 
-                    <th
+                    <tr
                       className="
-                        text-left
-                        p-5
+                        border-b
+                        border-white/10
+                        text-gray-400
                       "
                     >
-                      Organizer
-                    </th>
 
-                    <th
-                      className="
-                        text-center
-                        p-5
-                      "
-                    >
-                      Sự kiện
-                    </th>
-
-                    <th
-                      className="
-                        text-center
-                        p-5
-                      "
-                    >
-                      Đơn hàng
-                    </th>
-
-                    <th
-                      className="
-                        text-right
-                        p-5
-                      "
-                    >
-                      Doanh thu
-                    </th>
-
-                  </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                  {organizerRevenue.length ===
-                  0 ? (
-
-                    <tr>
-
-                      <td
-                        colSpan={4}
+                      <th
                         className="
-                          p-10
-                          text-center
-                          text-gray-400
+                          text-left
+                          p-4
                         "
                       >
-                        Chưa có dữ liệu
-                        doanh thu.
-                      </td>
+                        Organizer
+                      </th>
+
+                      <th
+                        className="
+                          text-left
+                          p-4
+                        "
+                      >
+                        Email
+                      </th>
+
+                      <th
+                        className="
+                          text-center
+                          p-4
+                        "
+                      >
+                        Sự kiện
+                      </th>
+
+                      <th
+                        className="
+                          text-center
+                          p-4
+                        "
+                      >
+                        Giao dịch
+                      </th>
+
+                      <th
+                        className="
+                          text-right
+                          p-4
+                        "
+                      >
+                        Doanh thu
+                      </th>
+
+                      <th
+                        className="
+                          text-center
+                          p-4
+                        "
+                      >
+                        Chi tiết
+                      </th>
 
                     </tr>
 
-                  ) : (
+                  </thead>
 
-                    organizerRevenue.map(
-                      (organizer) => (
 
-                        <tr
-                          key={
-                            organizer.organizer_id
-                          }
+                  <tbody>
+
+                    {filteredOrganizers.length === 0 ? (
+
+                      <tr>
+
+                        <td
+                          colSpan={6}
                           className="
-                            border-b
-                            border-white/5
-                            hover:bg-white/5
-                            transition
+                            p-10
+                            text-center
+                            text-gray-400
                           "
                         >
+                          Không tìm thấy
+                          Organizer.
+                        </td>
 
-                          {/* ORGANIZER */}
+                      </tr>
 
-                          <td className="p-5">
+                    ) : (
 
-                            <div
+                      filteredOrganizers.map(
+                        (organizer) => (
+
+                          <tr
+                            key={
+                              organizer.id
+                            }
+                            className="
+                              border-b
+                              border-white/5
+                              hover:bg-white/5
+                              transition
+                            "
+                          >
+
+                            <td
                               className="
-                                flex
-                                items-center
-                                gap-3
+                                p-4
                               "
                             >
 
                               <div
                                 className="
-                                  w-11
-                                  h-11
-                                  rounded-2xl
+                                  font-bold
+                                "
+                              >
+                                {
+                                  organizer.name
+                                }
+                              </div>
+
+                              <div
+                                className="
+                                  text-xs
+                                  text-gray-500
+                                  mt-1
+                                "
+                              >
+                                ID: {
+                                  organizer.id
+                                }
+                              </div>
+
+                            </td>
+
+
+                            <td
+                              className="
+                                p-4
+                                text-gray-300
+                              "
+                            >
+                              {
+                                organizer.email
+                              }
+                            </td>
+
+
+                            <td
+                              className="
+                                p-4
+                                text-center
+                                font-semibold
+                              "
+                            >
+                              {
+                                organizer.events
+                                  .length
+                              }
+                            </td>
+
+
+                            <td
+                              className="
+                                p-4
+                                text-center
+                                font-semibold
+                              "
+                            >
+                              {
+                                organizer.transactions
+                              }
+                            </td>
+
+
+                            <td
+                              className="
+                                p-4
+                                text-right
+                                font-bold
+                                text-green-400
+                              "
+                            >
+                              {
+                                formatPrice(
+                                  organizer.revenue
+                                )
+                              }
+                            </td>
+
+
+                            <td
+                              className="
+                                p-4
+                                text-center
+                              "
+                            >
+
+                              <button
+                                onClick={() =>
+                                  setSelectedOrganizer(
+                                    organizer
+                                  )
+                                }
+                                className="
+                                  px-4
+                                  py-2
+                                  rounded-xl
                                   bg-sky-500/10
                                   border
                                   border-sky-500/20
-                                  flex
-                                  items-center
-                                  justify-center
                                   text-sky-400
-                                  font-black
+                                  hover:bg-sky-500
+                                  hover:text-black
+                                  transition
+                                  font-semibold
                                 "
                               >
-                                {(
-                                  organizer.organizer_name ||
-                                  "O"
-                                )
-                                  .charAt(0)
-                                  .toUpperCase()}
-                              </div>
+                                Xem
+                              </button>
 
-                              <div>
+                            </td>
 
-                                <p
-                                  className="
-                                    font-bold
-                                  "
-                                >
-                                  {
-                                    organizer.organizer_name
-                                  }
-                                </p>
+                          </tr>
 
-                                <p
-                                  className="
-                                    text-sm
-                                    text-gray-500
-                                  "
-                                >
-                                  {
-                                    organizer.organizer_email
-                                  }
-                                </p>
-
-                              </div>
-
-                            </div>
-
-                          </td>
-
-
-                          {/* EVENTS */}
-
-                          <td
-                            className="
-                              p-5
-                              text-center
-                            "
-                          >
-
-                            <span
-                              className="
-                                inline-flex
-                                px-3
-                                py-1
-                                rounded-full
-                                bg-purple-500/10
-                                text-purple-400
-                                text-sm
-                                font-semibold
-                              "
-                            >
-                              {
-                                organizer.total_events
-                              }
-                            </span>
-
-                          </td>
-
-
-                          {/* ORDERS */}
-
-                          <td
-                            className="
-                              p-5
-                              text-center
-                            "
-                          >
-
-                            <span
-                              className="
-                                inline-flex
-                                px-3
-                                py-1
-                                rounded-full
-                                bg-sky-500/10
-                                text-sky-400
-                                text-sm
-                                font-semibold
-                              "
-                            >
-                              {
-                                organizer.total_orders
-                              }
-                            </span>
-
-                          </td>
-
-
-                          {/* REVENUE */}
-
-                          <td
-                            className="
-                              p-5
-                              text-right
-                              font-black
-                              text-green-400
-                              text-lg
-                            "
-                          >
-                            {formatPrice(
-                              organizer.revenue
-                            )}
-                          </td>
-
-                        </tr>
-
+                        )
                       )
 
-                    )
+                    )}
 
-                  )}
+                  </tbody>
 
-                </tbody>
+                </table>
 
-              </table>
+              </div>
 
             </div>
 
-          </div>
+
+            {/* MOBILE */}
+
+            <div
+              className="
+                lg:hidden
+                space-y-4
+              "
+            >
+
+              {filteredOrganizers.length === 0 ? (
+
+                <div
+                  className="
+                    bg-[#0B1120]
+                    border
+                    border-white/10
+                    rounded-3xl
+                    p-6
+                    text-center
+                    text-gray-400
+                  "
+                >
+                  Không tìm thấy
+                  Organizer.
+                </div>
+
+              ) : (
+
+                filteredOrganizers.map(
+                  (organizer) => (
+
+                    <div
+                      key={
+                        organizer.id
+                      }
+                      className="
+                        bg-[#0B1120]
+                        border
+                        border-white/10
+                        rounded-3xl
+                        p-5
+                      "
+                    >
+
+                      <div
+                        className="
+                          flex
+                          items-start
+                          justify-between
+                          gap-4
+                        "
+                      >
+
+                        <div>
+
+                          <h3
+                            className="
+                              font-bold
+                              text-lg
+                            "
+                          >
+                            {
+                              organizer.name
+                            }
+                          </h3>
+
+                          <p
+                            className="
+                              text-sm
+                              text-gray-500
+                              mt-1
+                            "
+                          >
+                            {
+                              organizer.email
+                            }
+                          </p>
+
+                        </div>
 
 
-          {/* MOBILE */}
+                        <span
+                          className="
+                            px-3
+                            py-1
+                            rounded-full
+                            text-xs
+                            bg-green-500/20
+                            text-green-400
+                          "
+                        >
+                          SUCCESS
+                        </span>
 
-          <div
-            className="
-              lg:hidden
-              space-y-4
-            "
-          >
+                      </div>
 
-            {organizerRevenue.length ===
-            0 ? (
+
+                      <div
+                        className="
+                          grid
+                          grid-cols-2
+                          gap-3
+                          mt-5
+                        "
+                      >
+
+                        <div
+                          className="
+                            bg-white/5
+                            rounded-2xl
+                            p-3
+                          "
+                        >
+
+                          <p
+                            className="
+                              text-xs
+                              text-gray-500
+                            "
+                          >
+                            Sự kiện
+                          </p>
+
+                          <p
+                            className="
+                              text-xl
+                              font-bold
+                              mt-1
+                            "
+                          >
+                            {
+                              organizer.events
+                                .length
+                            }
+                          </p>
+
+                        </div>
+
+
+                        <div
+                          className="
+                            bg-white/5
+                            rounded-2xl
+                            p-3
+                          "
+                        >
+
+                          <p
+                            className="
+                              text-xs
+                              text-gray-500
+                            "
+                          >
+                            Giao dịch
+                          </p>
+
+                          <p
+                            className="
+                              text-xl
+                              font-bold
+                              mt-1
+                            "
+                          >
+                            {
+                              organizer.transactions
+                            }
+                          </p>
+
+                        </div>
+
+                      </div>
+
+
+                      <div
+                        className="
+                          mt-5
+                        "
+                      >
+
+                        <p
+                          className="
+                            text-sm
+                            text-gray-400
+                          "
+                        >
+                          Tổng doanh thu
+                        </p>
+
+                        <p
+                          className="
+                            text-2xl
+                            font-black
+                            text-green-400
+                            mt-1
+                          "
+                        >
+                          {
+                            formatPrice(
+                              organizer.revenue
+                            )
+                          }
+                        </p>
+
+                      </div>
+
+
+                      <button
+                        onClick={() =>
+                          setSelectedOrganizer(
+                            organizer
+                          )
+                        }
+                        className="
+                          w-full
+                          mt-5
+                          py-3
+                          rounded-xl
+                          bg-sky-500
+                          text-black
+                          font-bold
+                          hover:bg-sky-400
+                          transition
+                        "
+                      >
+                        Xem chi tiết
+                      </button>
+
+                    </div>
+
+                  )
+                )
+
+              )}
+
+            </div>
+
+          </>
+
+        )}
+
+
+        {/* ========================= */}
+        {/* ORGANIZER DETAIL */}
+        {/* ========================= */}
+
+        {selectedOrganizer && (
+
+          <div>
+
+            {/* BACK */}
+
+            <button
+              onClick={() =>
+                setSelectedOrganizer(
+                  null
+                )
+              }
+              className="
+                mb-6
+                px-5
+                py-3
+                rounded-xl
+                bg-white/5
+                border
+                border-white/10
+                hover:bg-white/10
+                transition
+              "
+            >
+              ← Quay lại danh sách Organizer
+            </button>
+
+
+            {/* ORGANIZER HEADER */}
+
+            <div
+              className="
+                bg-gradient-to-r
+                from-sky-500/10
+                to-green-500/10
+                border
+                border-white/10
+                rounded-3xl
+                p-6
+                mb-6
+              "
+            >
+
+              <div
+                className="
+                  flex
+                  flex-col
+                  md:flex-row
+                  md:items-center
+                  md:justify-between
+                  gap-5
+                "
+              >
+
+                <div>
+
+                  <p
+                    className="
+                      text-gray-400
+                      text-sm
+                    "
+                  >
+                    Organizer
+                  </p>
+
+                  <h2
+                    className="
+                      text-2xl
+                      sm:text-3xl
+                      font-black
+                      mt-1
+                    "
+                  >
+                    {
+                      selectedOrganizer.name
+                    }
+                  </h2>
+
+                  <p
+                    className="
+                      text-gray-400
+                      mt-1
+                    "
+                  >
+                    {
+                      selectedOrganizer.email
+                    }
+                  </p>
+
+                </div>
+
+
+                <div
+                  className="
+                    text-left
+                    md:text-right
+                  "
+                >
+
+                  <p
+                    className="
+                      text-gray-400
+                    "
+                  >
+                    Tổng doanh thu
+                  </p>
+
+                  <p
+                    className="
+                      text-3xl
+                      sm:text-4xl
+                      font-black
+                      text-green-400
+                      mt-1
+                    "
+                  >
+                    {
+                      formatPrice(
+                        selectedOrganizer.revenue
+                      )
+                    }
+                  </p>
+
+                </div>
+
+              </div>
+
+            </div>
+
+
+            {/* EVENT SUMMARY */}
+
+            <div
+              className="
+                grid
+                grid-cols-1
+                sm:grid-cols-3
+                gap-4
+                mb-6
+              "
+            >
 
               <div
                 className="
@@ -918,349 +1371,333 @@ export default function AdminRevenue() {
                   border
                   border-white/10
                   rounded-3xl
-                  p-6
-                  text-center
-                  text-gray-400
+                  p-5
                 "
               >
-                Chưa có dữ liệu
-                doanh thu.
+
+                <p
+                  className="
+                    text-gray-400
+                    text-sm
+                  "
+                >
+                  Số sự kiện
+                </p>
+
+                <p
+                  className="
+                    text-3xl
+                    font-black
+                    text-sky-400
+                    mt-2
+                  "
+                >
+                  {
+                    selectedOrganizer
+                      .events
+                      .length
+                  }
+                </p>
+
               </div>
 
-            ) : (
 
-              organizerRevenue.map(
-                (organizer) => (
+              <div
+                className="
+                  bg-[#0B1120]
+                  border
+                  border-white/10
+                  rounded-3xl
+                  p-5
+                "
+              >
 
-                  <div
-                    key={
-                      organizer.organizer_id
-                    }
-                    className="
-                      bg-[#0B1120]
-                      border
-                      border-white/10
-                      rounded-3xl
-                      p-5
-                    "
-                  >
+                <p
+                  className="
+                    text-gray-400
+                    text-sm
+                  "
+                >
+                  Giao dịch
+                </p>
+
+                <p
+                  className="
+                    text-3xl
+                    font-black
+                    text-green-400
+                    mt-2
+                  "
+                >
+                  {
+                    selectedOrganizer
+                      .transactions
+                  }
+                </p>
+
+              </div>
+
+
+              <div
+                className="
+                  bg-[#0B1120]
+                  border
+                  border-white/10
+                  rounded-3xl
+                  p-5
+                "
+              >
+
+                <p
+                  className="
+                    text-gray-400
+                    text-sm
+                  "
+                >
+                  Trung bình / giao dịch
+                </p>
+
+                <p
+                  className="
+                    text-2xl
+                    font-black
+                    text-orange-400
+                    mt-2
+                  "
+                >
+
+                  {
+                    formatPrice(
+                      selectedOrganizer
+                        .transactions
+                        ? selectedOrganizer
+                            .revenue
+                          /
+                          selectedOrganizer
+                            .transactions
+                        : 0
+                    )
+                  }
+
+                </p>
+
+              </div>
+
+            </div>
+
+
+            {/* EVENTS */}
+
+            <div
+              className="
+                bg-[#0B1120]
+                border
+                border-white/10
+                rounded-3xl
+                p-5
+                sm:p-6
+                mb-6
+              "
+            >
+
+              <h3
+                className="
+                  text-xl
+                  font-bold
+                  mb-5
+                "
+              >
+                Doanh thu theo sự kiện
+              </h3>
+
+
+              <div
+                className="
+                  space-y-3
+                "
+              >
+
+                {selectedOrganizer
+                  .events
+                  .map((event) => (
 
                     <div
+                      key={event.id}
                       className="
                         flex
-                        items-center
+                        flex-col
+                        sm:flex-row
+                        sm:items-center
+                        sm:justify-between
                         gap-3
+                        p-4
+                        rounded-2xl
+                        bg-white/5
                       "
                     >
 
-                      <div
-                        className="
-                          w-12
-                          h-12
-                          rounded-2xl
-                          bg-sky-500/10
-                          border
-                          border-sky-500/20
-                          flex
-                          items-center
-                          justify-center
-                          text-sky-400
-                          font-black
-                        "
-                      >
-                        {(
-                          organizer.organizer_name ||
-                          "O"
-                        )
-                          .charAt(0)
-                          .toUpperCase()}
-                      </div>
-
                       <div>
 
-                        <h3
+                        <p
                           className="
-                            font-bold
+                            font-semibold
                           "
                         >
                           {
-                            organizer.organizer_name
+                            event.title
                           }
-                        </h3>
+                        </p>
 
                         <p
                           className="
                             text-sm
                             text-gray-500
-                          "
-                        >
-                          {
-                            organizer.organizer_email
-                          }
-                        </p>
-
-                      </div>
-
-                    </div>
-
-
-                    <div
-                      className="
-                        grid
-                        grid-cols-2
-                        gap-3
-                        mt-5
-                      "
-                    >
-
-                      <div
-                        className="
-                          bg-white/5
-                          rounded-2xl
-                          p-4
-                        "
-                      >
-
-                        <p
-                          className="
-                            text-xs
-                            text-gray-500
-                          "
-                        >
-                          Sự kiện
-                        </p>
-
-                        <p
-                          className="
-                            text-xl
-                            font-black
-                            text-purple-400
                             mt-1
                           "
                         >
                           {
-                            organizer.total_events
-                          }
+                            event.transactions
+                          } giao dịch
                         </p>
 
                       </div>
 
 
-                      <div
-                        className="
-                          bg-white/5
-                          rounded-2xl
-                          p-4
-                        "
-                      >
-
-                        <p
-                          className="
-                            text-xs
-                            text-gray-500
-                          "
-                        >
-                          Đơn hàng
-                        </p>
-
-                        <p
-                          className="
-                            text-xl
-                            font-black
-                            text-sky-400
-                            mt-1
-                          "
-                        >
-                          {
-                            organizer.total_orders
-                          }
-                        </p>
-
-                      </div>
-
-                    </div>
-
-
-                    <div
-                      className="
-                        mt-4
-                        pt-4
-                        border-t
-                        border-white/10
-                      "
-                    >
-
                       <p
                         className="
-                          text-sm
-                          text-gray-500
-                        "
-                      >
-                        Tổng doanh thu
-                      </p>
-
-                      <p
-                        className="
-                          text-2xl
-                          font-black
+                          font-bold
                           text-green-400
-                          mt-1
                         "
                       >
-                        {formatPrice(
-                          organizer.revenue
-                        )}
+                        {
+                          formatPrice(
+                            event.revenue
+                          )
+                        }
                       </p>
 
                     </div>
 
-                  </div>
+                  ))}
 
-                )
+              </div>
 
-              )
-
-            )}
-
-          </div>
-
-        </div>
+            </div>
 
 
-        {/* =========================
-            TRANSACTION DETAIL
-        ========================= */}
+            {/* PAYMENT DETAILS */}
 
-        <div>
+            <div
+              className="
+                bg-[#0B1120]
+                border
+                border-white/10
+                rounded-3xl
+                overflow-hidden
+              "
+            >
 
-          <h2
-            className="
-              text-xl
-              sm:text-2xl
-              font-black
-              mb-4
-            "
-          >
-            Chi tiết giao dịch
-          </h2>
-
-
-          {/* DESKTOP */}
-
-          <div
-            className="
-              hidden
-              lg:block
-              bg-[#0B1120]
-              border
-              border-white/10
-              rounded-3xl
-              overflow-hidden
-            "
-          >
-
-            <div className="overflow-x-auto">
-
-              <table
+              <div
                 className="
-                  min-w-[1200px]
-                  w-full
+                  p-5
+                  sm:p-6
+                  border-b
+                  border-white/10
                 "
               >
 
-                <thead>
+                <h3
+                  className="
+                    text-xl
+                    font-bold
+                  "
+                >
+                  Chi tiết giao dịch
+                </h3>
 
-                  <tr
-                    className="
-                      border-b
-                      border-white/10
-                      text-gray-400
-                      text-sm
-                    "
-                  >
+              </div>
 
-                    <th
+
+              {/* DESKTOP */}
+
+              <div
+                className="
+                  hidden
+                  lg:block
+                  overflow-x-auto
+                "
+              >
+
+                <table
+                  className="
+                    min-w-[900px]
+                    w-full
+                  "
+                >
+
+                  <thead>
+
+                    <tr
                       className="
-                        text-left
-                        p-4
+                        border-b
+                        border-white/10
+                        text-gray-400
                       "
                     >
-                      Đơn hàng
-                    </th>
 
-                    <th
-                      className="
-                        text-left
-                        p-4
-                      "
-                    >
-                      Organizer
-                    </th>
-
-                    <th
-                      className="
-                        text-left
-                        p-4
-                      "
-                    >
-                      Sự kiện
-                    </th>
-
-                    <th
-                      className="
-                        text-left
-                        p-4
-                      "
-                    >
-                      Phương thức
-                    </th>
-
-                    <th
-                      className="
-                        text-right
-                        p-4
-                      "
-                    >
-                      Doanh thu
-                    </th>
-
-                    <th
-                      className="
-                        text-left
-                        p-4
-                      "
-                    >
-                      Ngày thanh toán
-                    </th>
-
-                  </tr>
-
-                </thead>
-
-
-                <tbody>
-
-                  {filteredPayments.length ===
-                  0 ? (
-
-                    <tr>
-
-                      <td
-                        colSpan={6}
+                      <th
                         className="
-                          p-10
-                          text-center
-                          text-gray-400
+                          text-left
+                          p-4
                         "
                       >
-                        Chưa có giao dịch.
-                      </td>
+                        Đơn hàng
+                      </th>
+
+                      <th
+                        className="
+                          text-left
+                          p-4
+                        "
+                      >
+                        Sự kiện
+                      </th>
+
+                      <th
+                        className="
+                          text-left
+                          p-4
+                        "
+                      >
+                        Phương thức
+                      </th>
+
+                      <th
+                        className="
+                          text-right
+                          p-4
+                        "
+                      >
+                        Doanh thu
+                      </th>
+
+                      <th
+                        className="
+                          text-left
+                          p-4
+                        "
+                      >
+                        Ngày thanh toán
+                      </th>
 
                     </tr>
 
-                  ) : (
+                  </thead>
 
-                    filteredPayments.map(
+
+                  <tbody>
+
+                    {selectedPayments.map(
                       (item) => (
 
                         <tr
@@ -1273,79 +1710,35 @@ export default function AdminRevenue() {
                           "
                         >
 
-                          <td className="p-4">
-
-                            <span
-                              className="
-                                font-semibold
-                              "
-                            >
-                              #{item.order_id}
-                            </span>
-
+                          <td
+                            className="
+                              p-4
+                              font-semibold
+                            "
+                          >
+                            #{item.order_id}
                           </td>
 
 
-                          <td className="p-4">
-
-                            <div>
-
-                              <p
-                                className="
-                                  font-semibold
-                                "
-                              >
-                                {
-                                  item.organizer_name ||
-                                  "Không xác định"
-                                }
-                              </p>
-
-                              <p
-                                className="
-                                  text-xs
-                                  text-gray-500
-                                "
-                              >
-                                {
-                                  item.organizer_email ||
-                                  "--"
-                                }
-                              </p>
-
-                            </div>
-
-                          </td>
-
-
-                          <td className="p-4">
-
+                          <td
+                            className="
+                              p-4
+                            "
+                          >
                             {
-                              item.event_title ||
-                              "--"
+                              item.event_title
                             }
-
                           </td>
 
 
-                          <td className="p-4">
-
-                            <span
-                              className="
-                                px-3
-                                py-1
-                                rounded-full
-                                text-xs
-                                bg-sky-500/10
-                                text-sky-400
-                              "
-                            >
-                              {
-                                item.payment_method ||
-                                "--"
-                              }
-                            </span>
-
+                          <td
+                            className="
+                              p-4
+                            "
+                          >
+                            {
+                              item.payment_method
+                            }
                           </td>
 
 
@@ -1357,249 +1750,187 @@ export default function AdminRevenue() {
                               text-green-400
                             "
                           >
-                            {formatPrice(
-                              item.amount
-                            )}
+                            {
+                              formatPrice(
+                                item.amount
+                              )
+                            }
                           </td>
 
 
-                          <td className="p-4">
-
-                            {formatDate(
-                              item.paid_at
-                            )}
-
+                          <td
+                            className="
+                              p-4
+                            "
+                          >
+                            {
+                              formatDate(
+                                item.paid_at
+                              )
+                            }
                           </td>
 
                         </tr>
 
                       )
+                    )}
 
-                    )
+                  </tbody>
 
-                  )}
+                </table>
 
-                </tbody>
-
-              </table>
-
-            </div>
-
-          </div>
+              </div>
 
 
-          {/* MOBILE */}
-
-          <div
-            className="
-              lg:hidden
-              space-y-4
-            "
-          >
-
-            {filteredPayments.length ===
-            0 ? (
+              {/* MOBILE */}
 
               <div
                 className="
-                  bg-[#0B1120]
-                  border
-                  border-white/10
-                  rounded-3xl
-                  p-6
-                  text-center
-                  text-gray-400
+                  lg:hidden
+                  p-4
+                  space-y-4
                 "
               >
-                Chưa có giao dịch.
-              </div>
 
-            ) : (
-
-              filteredPayments.map(
-                (item) => (
-
-                  <div
-                    key={item.id}
-                    className="
-                      bg-[#0B1120]
-                      border
-                      border-white/10
-                      rounded-3xl
-                      p-5
-                    "
-                  >
+                {selectedPayments.map(
+                  (item) => (
 
                     <div
+                      key={item.id}
                       className="
-                        flex
-                        items-start
-                        justify-between
-                        gap-3
+                        bg-white/5
+                        rounded-2xl
+                        p-4
                       "
                     >
 
-                      <div>
+                      <div
+                        className="
+                          flex
+                          justify-between
+                          gap-3
+                        "
+                      >
 
-                        <h3
+                        <p
                           className="
                             font-bold
                           "
                         >
                           Đơn #{item.order_id}
-                        </h3>
+                        </p>
 
-                        <p
+                        <span
                           className="
-                            mt-2
-                            text-gray-300
+                            px-2
+                            py-1
+                            rounded-full
+                            text-xs
+                            bg-green-500/20
+                            text-green-400
                           "
                         >
+                          SUCCESS
+                        </span>
+
+                      </div>
+
+
+                      <p
+                        className="
+                          mt-3
+                          text-gray-300
+                        "
+                      >
+                        {
+                          item.event_title
+                        }
+                      </p>
+
+
+                      <div
+                        className="
+                          mt-4
+                          space-y-2
+                          text-sm
+                        "
+                      >
+
+                        <p>
+
+                          <span
+                            className="
+                              text-gray-400
+                            "
+                          >
+                            Phương thức:
+                          </span>{" "}
+
                           {
-                            item.event_title ||
-                            "--"
+                            item.payment_method
                           }
+
+                        </p>
+
+
+                        <p>
+
+                          <span
+                            className="
+                              text-gray-400
+                            "
+                          >
+                            Doanh thu:
+                          </span>{" "}
+
+                          <span
+                            className="
+                              text-green-400
+                              font-semibold
+                            "
+                          >
+                            {
+                              formatPrice(
+                                item.amount
+                              )
+                            }
+                          </span>
+
+                        </p>
+
+
+                        <p>
+
+                          <span
+                            className="
+                              text-gray-400
+                            "
+                          >
+                            Thanh toán:
+                          </span>{" "}
+
+                          {
+                            formatDate(
+                              item.paid_at
+                            )
+                          }
+
                         </p>
 
                       </div>
 
-                      <span
-                        className="
-                          px-3
-                          py-1
-                          rounded-full
-                          text-xs
-                          bg-green-500/20
-                          text-green-400
-                        "
-                      >
-                        SUCCESS
-                      </span>
-
                     </div>
 
+                  )
+                )}
 
-                    <div
-                      className="
-                        mt-4
-                        space-y-3
-                        text-sm
-                      "
-                    >
+              </div>
 
-                      <p>
-
-                        <span
-                          className="
-                            text-gray-500
-                          "
-                        >
-                          Organizer:
-                        </span>{" "}
-
-                        <span
-                          className="
-                            font-semibold
-                          "
-                        >
-                          {
-                            item.organizer_name ||
-                            "Không xác định"
-                          }
-                        </span>
-
-                      </p>
-
-
-                      <p>
-
-                        <span
-                          className="
-                            text-gray-500
-                          "
-                        >
-                          Email:
-                        </span>{" "}
-
-                        {
-                          item.organizer_email ||
-                          "--"
-                        }
-
-                      </p>
-
-
-                      <p>
-
-                        <span
-                          className="
-                            text-gray-500
-                          "
-                        >
-                          Phương thức:
-                        </span>{" "}
-
-                        {
-                          item.payment_method ||
-                          "--"
-                        }
-
-                      </p>
-
-
-                      <p>
-
-                        <span
-                          className="
-                            text-gray-500
-                          "
-                        >
-                          Doanh thu:
-                        </span>{" "}
-
-                        <span
-                          className="
-                            text-green-400
-                            font-bold
-                          "
-                        >
-                          {formatPrice(
-                            item.amount
-                          )}
-                        </span>
-
-                      </p>
-
-
-                      <p>
-
-                        <span
-                          className="
-                            text-gray-500
-                          "
-                        >
-                          Thanh toán:
-                        </span>{" "}
-
-                        {formatDate(
-                          item.paid_at
-                        )}
-
-                      </p>
-
-                    </div>
-
-                  </div>
-
-                )
-
-              )
-
-            )}
+            </div>
 
           </div>
 
-        </div>
+        )}
 
       </main>
 
