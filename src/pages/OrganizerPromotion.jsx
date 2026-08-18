@@ -218,19 +218,14 @@ export default function OrganizerPromotion() {
 
     // GIỮ NGUYÊN GIỜ VIỆT NAM TỪ DATABASE
     start_date:
-      promotion.start_date
-        ? String(promotion.start_date)
-            .replace(" ", "T")
-            .slice(0, 16)
-        : "",
+  formatDateTimeLocal(
+    promotion.start_date
+  ),
 
-    end_date:
-      promotion.end_date
-        ? String(promotion.end_date)
-            .replace(" ", "T")
-            .slice(0, 16)
-        : "",
-
+end_date:
+  formatDateTimeLocal(
+    promotion.end_date
+  ),
   });
 
   setShowModal(true);
@@ -590,20 +585,42 @@ export default function OrganizerPromotion() {
   // HELPERS
   // =========================
 
-  const formatDate = (
-    value
-  ) => {
+  const formatDateTimeLocal = (value) => {
+  if (!value) return "";
 
-    if (!value)
-      return "--";
+  const date = new Date(value);
 
-    return new Date(
-      value
-    ).toLocaleString(
-      "vi-VN"
-    );
+  const year = date.getFullYear();
+  const month = String(
+    date.getMonth() + 1
+  ).padStart(2, "0");
 
-  };
+  const day = String(
+    date.getDate()
+  ).padStart(2, "0");
+
+  const hours = String(
+    date.getHours()
+  ).padStart(2, "0");
+
+  const minutes = String(
+    date.getMinutes()
+  ).padStart(2, "0");
+
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
+  const formatDate = (value) => {
+  if (!value) return "--";
+
+  return new Date(value).toLocaleString(
+    "vi-VN",
+    {
+      timeZone: "Asia/Ho_Chi_Minh",
+      hour12: false,
+    }
+  );
+};
 
   const getStatusColor = (
     status
