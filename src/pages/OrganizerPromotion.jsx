@@ -183,57 +183,58 @@ export default function OrganizerPromotion() {
 
   };
 
-  const openEditModal = (
-    promotion
-  ) => {
+  const openEditModal = (promotion) => {
 
-    setEditingPromotion(
-      promotion
-    );
+  setEditingPromotion(promotion);
 
-    setForm({
+  setForm({
 
-      code:
-        promotion.code,
+    code:
+      promotion.code,
 
-      event_id:
-        promotion.event_id || "",
+    event_id:
+      promotion.event_id || "",
 
-      name:
-        promotion.name || "",
+    name:
+      promotion.name || "",
 
-      description:
-        promotion.description || "",
+    description:
+      promotion.description || "",
 
-      discount_type:
-        promotion.discount_type,
+    discount_type:
+      promotion.discount_type,
 
-      discount_value:
-        promotion.discount_value,
+    discount_value:
+      promotion.discount_value,
 
-      min_order_value:
-        promotion.min_order_value,
+    min_order_value:
+      promotion.min_order_value,
 
-      max_discount:
-        promotion.max_discount || "",
+    max_discount:
+      promotion.max_discount || "",
 
-      quantity:
-        promotion.quantity,
+    quantity:
+      promotion.quantity,
 
-     start_date:
-  new Date(promotion.start_date)
-    .toISOString()
-    .slice(0,16),
+    // GIỮ NGUYÊN GIỜ VIỆT NAM TỪ DATABASE
+    start_date:
+      promotion.start_date
+        ? String(promotion.start_date)
+            .replace(" ", "T")
+            .slice(0, 16)
+        : "",
 
-end_date:
-  new Date(promotion.end_date)
-    .toISOString()
-    .slice(0,16),
-    });
+    end_date:
+      promotion.end_date
+        ? String(promotion.end_date)
+            .replace(" ", "T")
+            .slice(0, 16)
+        : "",
 
-    setShowModal(true);
+  });
 
-  };
+  setShowModal(true);
+};
 
   // =========================
   // VALIDATE
