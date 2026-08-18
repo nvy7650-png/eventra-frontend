@@ -54,6 +54,18 @@ export default function Register() {
       e.preventDefault();
 
       setError("");
+      // VALIDATE PHONE
+const phoneRegex = /^0\d{9}$/;
+
+if (!phoneRegex.test(formData.phone)) {
+
+  setError(
+    "Số điện thoại phải gồm 10 chữ số và bắt đầu bằng 0"
+  );
+
+  return;
+
+}
 
       setLoading(true);
 
@@ -325,29 +337,30 @@ export default function Register() {
               </label>
 
               <input
-                type="text"
-                name="phone"
-                placeholder="Nhập số điện thoại"
-                value={
-                  formData.phone
-                }
-                onChange={handleChange}
-                className="
-                  w-full
-                  px-4
-                  py-3
-                  rounded-2xl
-                  bg-[#111827]
-                  border
-                  border-gray-700
-                  text-white
-                  placeholder-gray-500
-                  focus:outline-none
-                  focus:border-sky-400
-                  transition
-                "
-                required
-              />
+  type="tel"
+  name="phone"
+  placeholder="Nhập số điện thoại"
+  value={formData.phone}
+  onChange={handleChange}
+  maxLength={10}
+  inputMode="numeric"
+  pattern="0[0-9]{9}"
+  className="
+    w-full
+    px-4
+    py-3
+    rounded-2xl
+    bg-[#111827]
+    border
+    border-gray-700
+    text-white
+    placeholder-gray-500
+    focus:outline-none
+    focus:border-sky-400
+    transition
+  "
+  required
+/>
 
             </div>
 
