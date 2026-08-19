@@ -568,14 +568,12 @@ export default function OrganizerEvents() {
                         "
                       >
 
-                        <img
-                          src={
-                            event.image_url?.startsWith(
-                              "http"
-                            )
-                              ? event.image_url
-                              : `${import.meta.env.VITE_API_URL}${event.image_url || ""}`
-                          }
+                         <img
+  src={
+    event.image_url?.startsWith("http")
+      ? event.image_url
+      : `${import.meta.env.VITE_API_URL}${event.image_url}`
+  }
                           alt={event.title}
                           className="
                             w-full
