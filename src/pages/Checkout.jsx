@@ -13,6 +13,27 @@ export default function Checkout() {
   const [discount, setDiscount] = useState(0);
   const [promotion, setPromotion] = useState(null);
 
+  // State quản lý Modal Thông Báo giữa màn hình
+  const [alertModal, setAlertModal] = useState({
+    isOpen: false,
+    message: "",
+    onClose: null,
+  });
+
+  const showAlert = (message, onClose = null) => {
+    setAlertModal({
+      isOpen: true,
+      message,
+      onClose,
+    });
+  };
+
+  const closeAlert = () => {
+    const callback = alertModal.onClose;
+    setAlertModal({ isOpen: false, message: "", onClose: null });
+    if (callback) callback();
+  };
+
   const {
     event,
     showtime,
@@ -63,8 +84,7 @@ export default function Checkout() {
         setTimeLeft(0);
         (async () => {
           await releaseHold();
-          alert("Hết thời gian giữ ghế! Vui lòng chọn lại.");
-          navigate(-1);
+          showAlert("Hết thời gian giữ ghế! Vui lòng chọn lại.", () => navigate(-1));
         })();
         return;
       }
@@ -78,7 +98,7 @@ export default function Checkout() {
   // Áp dụng khuyến mãi
   const applyPromotion = async () => {
     if (!coupon.trim()) {
-      alert("Vui lòng nhập mã khuyến mãi");
+      showAlert("Vui lòng nhập mã khuyến mãi");
       return;
     }
 
@@ -99,17 +119,17 @@ export default function Checkout() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || "Mã không hợp lệ");
+        showAlert(data.message || "Mã không hợp lệ");
         return;
       }
 
       setDiscount(data.discount);
       setFinalPrice(data.final_price);
       setPromotion(data.promotion);
-      alert("Áp dụng mã thành công!");
+      showAlert("Áp dụng mã thành công!");
     } catch (err) {
       console.error(err);
-      alert("Lỗi khi áp dụng mã");
+      showAlert("Lỗi khi áp dụng mã");
     }
   };
 
@@ -118,7 +138,7 @@ export default function Checkout() {
     if (loading) return;
 
     if (!user) {
-      alert("Vui lòng đăng nhập để hoàn tất đặt vé");
+      showAlert("Vui lòng đăng nhập để hoàn tất đặt vé");
       return;
     }
 
@@ -153,7 +173,7 @@ export default function Checkout() {
       const data = await res.json();
 
       if (!res.ok) {
-        alert(data.message || "Tạo đơn hàng thất bại");
+        showAlert(data.message || "Tạo đơn hàng thất bại");
         return;
       }
 
@@ -171,7 +191,7 @@ export default function Checkout() {
       });
     } catch (err) {
       console.error(err);
-      alert("Lỗi kết nối máy chủ");
+      showAlert("Lỗi kết nối máy chủ");
     } finally {
       setLoading(false);
     }
@@ -199,7 +219,7 @@ export default function Checkout() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050816] text-white flex flex-col justify-between">
+    <div className="min-h-screen bg-[#050816] text-white flex flex-col justify-between relative">
       <Navbar />
 
       <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 md:py-12 w-full flex-grow">
@@ -258,9 +278,9 @@ export default function Checkout() {
                       <p className="text-xs text-gray-400 font-medium">
                         Khu vực chọn
                       </p>
-                     <p className="text-sm font-bold text-sky-400 mt-0.5">
-  {zone?.name || seats[0]?.zone_name || "Khu vực tự do"}
-</p>
+                      <p className="text-sm font-bold text-sky-400 mt-0.5">
+                        {zone?.name || seats[0]?.zone_name || "Khu vực tự do"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -404,6 +424,23 @@ export default function Checkout() {
       </div>
 
       <Footer />
+
+      {/* MODAL THÔNG BÁO TÙY CHỈNH (NẰM GIỮA MÀN HÌNH) */}
+      {alertModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+          <div className="bg-[#0B1220] border border-white/10 rounded-3xl p-6 md:p-8 max-w-sm w-full text-center space-y-5 shadow-2xl border-sky-500/30">
+            <p className="text-white text-base font-medium leading-relaxed">
+              {alertModal.message}
+            </p>
+            <button
+              onClick={closeAlert}
+              className="w-full py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-black font-bold text-sm transition shadow-lg shadow-sky-500/20"
+            >
+              Đồng ý
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
