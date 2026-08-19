@@ -159,9 +159,8 @@ export default function AutoBooking() {
                       <h3 className="text-lg sm:text-xl font-bold text-white">
                         {zone.name}
                       </h3>
-                      <p className="text-sky-400 text-lg sm:text-xl font-extrabold mt-1">
-                        {zone.price.toLocaleString("vi-VN")}
-                        <span className="text-xs ml-1 uppercase">đ</span>
+                     <p className="text-sky-400 text-lg sm:text-xl font-extrabold mt-1">
+                        {zone.price.toLocaleString("vi-VN")}đ
                       </p>
                     </div>
 
