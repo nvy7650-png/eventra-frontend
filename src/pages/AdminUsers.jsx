@@ -13,7 +13,8 @@ export default function AdminUsers() {
 
   const updateStatus = async (id, action) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/auth/users/${id}/${action}`, {
+      // ĐÃ SỬA: Thay /api/auth/ thành /api/admin/
+      const res = await fetch(`${API_BASE_URL}/api/admin/users/${id}/${action}`, {
         method: "PUT",
       });
 
@@ -34,8 +35,12 @@ export default function AdminUsers() {
   };
 
   useEffect(() => {
-    fetch(`${API_BASE_URL}/api/auth/users`)
-      .then((res) => res.json())
+    // ĐÃ SỬA: Thay /api/auth/ thành /api/admin/
+    fetch(`${API_BASE_URL}/api/admin/users`)
+      .then((res) => {
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+        return res.json();
+      })
       .then((data) => {
         console.log("USERS FETCHED:", data);
         setUsers(Array.isArray(data) ? data : []);
@@ -63,7 +68,6 @@ export default function AdminUsers() {
           <h1 className="text-3xl font-black">Quản lý tài khoản</h1>
           <p className="text-gray-400 mt-2">Danh sách tài khoản hệ thống</p>
 
-          {/* Bộ lọc Tìm kiếm & Role */}
           <div className="mt-6 flex flex-col md:flex-row gap-4">
             <input
               type="text"
@@ -85,7 +89,6 @@ export default function AdminUsers() {
             </select>
           </div>
 
-          {/* Thống kê nhanh */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mt-6">
             <div className="bg-sky-500/10 border border-sky-500/20 rounded-2xl p-4">
               <p className="text-gray-400 text-sm">Tổng tài khoản</p>
@@ -110,7 +113,6 @@ export default function AdminUsers() {
           </div>
         </div>
 
-        {/* Bảng danh sách */}
         <div className="bg-[#0B1120] border border-white/10 rounded-3xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
@@ -191,18 +193,14 @@ export default function AdminUsers() {
                             </span>
                           ) : user.status === "ACTIVE" ? (
                             <button
-                              onClick={() =>
-                                updateStatus(user.id, "block")
-                              }
+                              onClick={() => updateStatus(user.id, "block")}
                               className="px-4 py-2 rounded-xl bg-red-500 text-white text-sm font-bold"
                             >
                               Khóa
                             </button>
                           ) : (
                             <button
-                              onClick={() =>
-                                updateStatus(user.id, "unblock")
-                              }
+                              onClick={() => updateStatus(user.id, "unblock")}
                               className="px-4 py-2 rounded-xl bg-green-500 text-white text-sm font-bold"
                             >
                               Mở khóa
