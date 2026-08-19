@@ -14,6 +14,26 @@ import {
 } from "lucide-react";
 import SidebarAdmin from "../components/SidebarAdmin";
 
+// ===============================
+// HÀM AN TOÀN ĐỂ DỪNG CAMERA SCANNER
+// ===============================
+const safeStopScanner = async (html5QrCode) => {
+  if (!html5QrCode) return;
+  try {
+    const state = html5QrCode.getState();
+    if (
+      state === Html5QrcodeScannerState.SCANNING ||
+      state === Html5QrcodeScannerState.PAUSED
+    ) {
+      await html5QrCode.stop();
+    }
+  } catch (err) {
+    if (!err?.toString().includes("is not running")) {
+      console.warn("Lỗi khi dừng camera:", err);
+    }
+  }
+};
+
 export default function ScanTicket() {
   const qrRef = useRef(null);
 
@@ -28,48 +48,9 @@ export default function ScanTicket() {
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [loadingShowtimes, setLoadingShowtimes] = useState(false);
 
-  const API_URL = (import.meta.env.VITE_API_URL || "https://homieticket-backend.onrender.com").replace(/\/$/, "");
-
-  import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
-
-// Hàm dừng Camera an toàn
-const safeStopScanner = async (html5QrCode) => {
-  if (!html5QrCode) return;
-
-  try {
-    const state = html5QrCode.getState();
-    // Chỉ gọi stop() khi camera ĐANG QUÉT (SCANNING) hoặc ĐANG TẠM DỪNG (PAUSED)
-    if (
-      state === Html5QrcodeScannerState.SCANNING ||
-      state === Html5QrcodeScannerState.PAUSED
-    ) {
-      await html5QrCode.stop();
-    }
-  } catch (err) {
-    // Bỏ qua lỗi "not running" nếu xảy ra race condition
-    if (!err?.toString().includes("is not running")) {
-      console.warn("Lỗi khi dừng camera:", err);
-    }
-  }
-};
-
-  // ===============================
-  // HÀM AN TOÀN ĐỂ DỪNG CAMERA SCANNER
-  // ===============================
-  const safeStopScanner = async () => {
-    if (!qrRef.current) return;
-    try {
-      const state = qrRef.current.getState();
-      if (
-        state === Html5QrcodeScannerState.SCANNING ||
-        state === Html5QrcodeScannerState.PAUSED
-      ) {
-        await qrRef.current.stop();
-      }
-    } catch (err) {
-      console.warn("Lỗi khi dừng camera:", err);
-    }
-  };
+  const API_URL = (
+    import.meta.env.VITE_API_URL || "https://homieticket-backend.onrender.com"
+  ).replace(/\/$/, "");
 
   // ===============================
   // LẤY DANH SÁCH EVENT
@@ -108,75 +89,82 @@ const safeStopScanner = async (html5QrCode) => {
   // ===============================
   useEffect(() => {
     let isMounted = true;
+    let scannerInstance = null;
 
     if (!started || !selectedEvent || !selectedShowtime) return;
 
-    const timer = setTimeout(() => {
+    const timer = setTimeout(async () => {
       const qr = new Html5Qrcode("reader");
       qrRef.current = qr;
+      scannerInstance = qr;
 
-      qr.start(
-        { facingMode: "environment" },
-        { fps: 10, qrbox: { width: 250, height: 250 } },
-        async (decodedText) => {
-          // Ngăn ngừa quét nhiều lần liên tiếp khi đang xử lý API
-          await safeStopScanner();
+      try {
+        await qr.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: { width: 250, height: 250 } },
+          async (decodedText) => {
+            // Ngăn ngừa quét nhiều lần liên tiếp
+            await safeStopScanner(qr);
 
-          try {
-            // Ép kiểu ID về Number để tránh lỗi validation 400 phía Backend
-            const payload = {
-              ticket_code: String(decodedText).trim(),
-              event_id: Number(selectedEvent),
-              showtime_id: Number(selectedShowtime),
-            };
+            try {
+              const payload = {
+                ticket_code: String(decodedText).trim(),
+                event_id: Number(selectedEvent),
+                showtime_id: Number(selectedShowtime),
+              };
 
-            const res = await fetch(`${API_URL}/api/tickets/checkin`, {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify(payload),
-            });
+              const res = await fetch(`${API_URL}/api/tickets/checkin`, {
+                method: "POST",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify(payload),
+              });
 
-            const data = await res.json();
+              const data = await res.json();
 
-            if (isMounted) {
-              if (!res.ok) {
-                // Xử lý các lỗi HTTP 400, 404, 500 từ Server
+              if (isMounted) {
+                if (!res.ok) {
+                  setResult({
+                    success: false,
+                    message:
+                      data.message || `Lỗi từ máy chủ (Mã: ${res.status})`,
+                  });
+                } else {
+                  setResult(data);
+                }
+              }
+            } catch (err) {
+              console.error("Lỗi check-in:", err);
+              if (isMounted) {
                 setResult({
                   success: false,
-                  message: data.message || `Lỗi từ máy chủ (Mã: ${res.status})`,
+                  message: "Không thể kết nối máy chủ để xác thực vé!",
                 });
-              } else {
-                setResult(data);
               }
             }
-          } catch (err) {
-            console.error("Lỗi check-in:", err);
-            if (isMounted) {
-              setResult({
-                success: false,
-                message: "Không thể kết nối máy chủ để xác thực vé!",
-              });
-            }
-          }
-        },
-        () => {}
-      ).catch((err) => {
+          },
+          () => {}
+        );
+      } catch (err) {
         console.error("Không thể khởi động Camera:", err);
-      });
+      }
     }, 150);
 
     return () => {
       isMounted = false;
       clearTimeout(timer);
-      safeStopScanner();
+      if (scannerInstance) {
+        safeStopScanner(scannerInstance);
+      } else if (qrRef.current) {
+        safeStopScanner(qrRef.current);
+      }
     };
   }, [started, selectedEvent, selectedShowtime, API_URL]);
 
   // Restarts scanner session
   const handleRestart = async () => {
-    await safeStopScanner();
+    await safeStopScanner(qrRef.current);
     setResult(null);
     setStarted(false);
 
@@ -185,8 +173,12 @@ const safeStopScanner = async (html5QrCode) => {
     }, 200);
   };
 
-  const currentEvent = events.find((e) => String(e.id) === String(selectedEvent));
-  const currentShowtime = showtimes.find((s) => String(s.id) === String(selectedShowtime));
+  const currentEvent = events.find(
+    (e) => String(e.id) === String(selectedEvent)
+  );
+  const currentShowtime = showtimes.find(
+    (s) => String(s.id) === String(selectedShowtime)
+  );
 
   return (
     <div className="min-h-screen flex bg-[#050816]">
@@ -202,7 +194,9 @@ const safeStopScanner = async (html5QrCode) => {
                   <QrCode size={28} />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-black tracking-tight">Soát vé Check-in</h1>
+                  <h1 className="text-3xl font-black tracking-tight">
+                    Soát vé Check-in
+                  </h1>
                   <p className="text-gray-400 text-sm mt-0.5">
                     Quét mã QR vé để kiểm tra & xác nhận vào cổng
                   </p>
@@ -213,7 +207,7 @@ const safeStopScanner = async (html5QrCode) => {
             {started && (
               <button
                 onClick={async () => {
-                  await safeStopScanner();
+                  await safeStopScanner(qrRef.current);
                   setStarted(false);
                   setResult(null);
                 }}
@@ -247,7 +241,9 @@ const safeStopScanner = async (html5QrCode) => {
                   className="w-full bg-[#111827] border border-white/15 focus:border-sky-500 rounded-2xl px-4 py-3.5 text-white outline-none transition-all cursor-pointer disabled:opacity-50"
                 >
                   <option value="">
-                    {loadingEvents ? "Đang tải sự kiện..." : "-- Chọn sự kiện --"}
+                    {loadingEvents
+                      ? "Đang tải sự kiện..."
+                      : "-- Chọn sự kiện --"}
                   </option>
                   {events.map((event) => (
                     <option key={event.id} value={event.id}>
@@ -303,18 +299,26 @@ const safeStopScanner = async (html5QrCode) => {
                 <div className="flex items-center gap-3">
                   <Calendar className="text-sky-400 shrink-0" size={20} />
                   <div className="overflow-hidden">
-                    <p className="text-xs text-gray-400 uppercase font-semibold">Sự kiện</p>
-                    <p className="font-bold text-sm truncate">{currentEvent?.title || "--"}</p>
+                    <p className="text-xs text-gray-400 uppercase font-semibold">
+                      Sự kiện
+                    </p>
+                    <p className="font-bold text-sm truncate">
+                      {currentEvent?.title || "--"}
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-center gap-3">
                   <Clock className="text-sky-400 shrink-0" size={20} />
                   <div className="overflow-hidden">
-                    <p className="text-xs text-gray-400 uppercase font-semibold">Suất diễn</p>
+                    <p className="text-xs text-gray-400 uppercase font-semibold">
+                      Suất diễn
+                    </p>
                     <p className="font-bold text-sm truncate">
                       {currentShowtime?.start_time
-                        ? new Date(currentShowtime.start_time).toLocaleString("vi-VN", {
+                        ? new Date(
+                            currentShowtime.start_time
+                          ).toLocaleString("vi-VN", {
                             dateStyle: "short",
                             timeStyle: "short",
                           })
@@ -336,7 +340,8 @@ const safeStopScanner = async (html5QrCode) => {
                   Đang bật Camera... Hãy đưa mã QR vào trung tâm khung hình.
                 </p>
                 <p className="text-xs text-gray-500">
-                  Hệ thống sẽ tự động gửi xác nhận ngay khi phát hiện mã hợp lệ.
+                  Hệ thống sẽ tự động gửi xác nhận ngay khi phát hiện mã hợp
+                  lệ.
                 </p>
               </div>
             </div>
@@ -353,7 +358,10 @@ const safeStopScanner = async (html5QrCode) => {
             >
               <div className="flex justify-center mb-4">
                 {result.success ? (
-                  <CheckCircle2 className="text-green-400 animate-bounce" size={72} />
+                  <CheckCircle2
+                    className="text-green-400 animate-bounce"
+                    size={72}
+                  />
                 ) : (
                   <XCircle className="text-red-400 animate-pulse" size={72} />
                 )}
