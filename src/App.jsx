@@ -6,38 +6,24 @@ import {
 } from "react-router-dom";
 
 import Home from "./pages/Home";
-
 import Login from "./pages/Login";
-
 import Register from "./pages/Register";
-
 import OrganizerRegister from "./pages/OrganizerRegister";
-
 import OrganizerDashboard from "./pages/OrganizerDashboard";
-
 import OrganizerEvents from "./pages/OrganizerEvents";
-
 import OrganizerEventDetail from "./pages/OrganizerEventDetail";
-
 import EventDetail from "./pages/EventDetail";
-
 import EditEvent from "./pages/EditEvent";
-
 import AdminDashboard from "./pages/AdminDashboard";
-
 import CreateEvent from "./pages/CreateEvent";
-
 import SetupTickets from "./pages/SetupTickets";
-
 import ConfirmEvent from "./pages/ConfirmEvent";
-
 import OrganizerTickets from "./pages/OrganizerTickets";
 import OrganizerTicketDetail from "./pages/OrganizerTicketDetail";
 import AdminEventDetail from "./pages/AdminEventDetail";
 import SeatMap from "./pages/SeatMap";
 import Checkout from "./pages/Checkout";
 import Payment from "./pages/Payment";
-
 import MyTickets from "./pages/MyTickets";
 import TicketDetail from "./pages/TicketDetail";
 import ScanTicket from "./pages/ScanTicket";
@@ -58,60 +44,181 @@ import AdminOrders from "./pages/AdminOrders";
 import AdminRevenue from "./pages/AdminRevenue";
 
 function App() {
-
-  const user = JSON.parse(
-    localStorage.getItem("user")
-  );
-
-  const ProtectedRoute = ({
-    children,
-    role,
-  }) => {
+  // Bọc Route để kiểm tra đăng nhập và phân quyền
+  const ProtectedRoute = ({ children, role }) => {
+    // Đọc trực tiếp trong component để luôn lấy dữ liệu mới nhất
+    const user = JSON.parse(localStorage.getItem("user"));
 
     if (!user) {
-
-      return (
-        <Navigate
-          to="/login"
-          replace
-        />
-      );
-
+      return <Navigate to="/login" replace />;
     }
 
-    if (
-      role &&
-      user.role !== role
-    ) {
-
-      return (
-        <Navigate
-          to="/"
-          replace
-        />
-      );
-
+    if (role && user.role !== role) {
+      return <Navigate to="/" replace />;
     }
 
     return children;
-
   };
 
   return (
-
     <BrowserRouter>
-
       <Routes>
+        {/* PUBLIC ROUTES - Ai cũng vào được */}
+        <Route path="/" element={<Home />} />
+        <Route path="/event/:id" element={<EventDetail />} />
+        <Route path="/events" element={<Events />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/organizerregister" element={<OrganizerRegister />} />
 
+        {/* USER PROTECTED ROUTES - Bắt buộc ĐĂNG NHẬP */}
         <Route
-  path="/organizer/tickets"
-  element={
-    <ProtectedRoute role="ORGANIZER">
-      <OrganizerTickets />
-    </ProtectedRoute>
-  }
-/>
+          path="/event/:id/booking"
+          element={
+            <ProtectedRoute>
+              <AutoBooking />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/event/:eventId/seatmap"
+          element={
+            <ProtectedRoute>
+              <SeatMap />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/profile"
+          element={
+            <ProtectedRoute>
+              <Profile />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-orders"
+          element={
+            <ProtectedRoute>
+              <MyOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/my-tickets"
+          element={
+            <ProtectedRoute>
+              <MyTickets />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/ticket/:id"
+          element={
+            <ProtectedRoute>
+              <TicketDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <ProtectedRoute>
+              <Checkout />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/checkout-auto"
+          element={
+            <ProtectedRoute>
+              <AutoCheckout />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment/:orderId"
+          element={
+            <ProtectedRoute>
+              <Payment />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/payment-success"
+          element={
+            <ProtectedRoute>
+              <PaymentSuccess />
+            </ProtectedRoute>
+          }
+        />
 
+        {/* ORGANIZER ROUTES - Yêu cầu role ORGANIZER */}
+        <Route
+          path="/organizer/dashboard"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+              <OrganizerDashboard />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizer/events"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+              <OrganizerEvents />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizer/event/:id"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+              <OrganizerEventDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizer/event/edit/:id"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+              <EditEvent />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizer/create-event"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+              <CreateEvent />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizer/event/setup-tickets"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+              <SetupTickets />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizer/confirm-event"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+              <ConfirmEvent />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/organizer/tickets"
+          element={
+            <ProtectedRoute role="ORGANIZER">
+              <OrganizerTickets />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/organizer/tickets/:eventId"
           element={
@@ -120,301 +227,102 @@ function App() {
             </ProtectedRoute>
           }
         />
-
-        {/* HOME */}
         <Route
-          path="/"
-          element={<Home />}
-        />
-
-        <Route
-          path="/event/:id"
-          element={<EventDetail />}
-        />
-
-        {/* LOGIN */}
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
-        <Route
-  path="/forgot-password"
-  element={<ForgotPassword />}
-/>
-
-        {/* REGISTER */}
-        <Route
-          path="/register"
-          element={<Register />}
-        />
-
-        <Route
-  path="/events"
-  element={<Events />}
-/>
-
-        {/* ORGANIZER REGISTER */}
-        <Route
-          path="/organizerregister"
+          path="/organizer/scan"
           element={
-            <OrganizerRegister />
-          }
-        />
-
-        {/* ORGANIZER DASHBOARD */}
-        <Route
-          path="/organizer/dashboard"
-          element={
-
             <ProtectedRoute role="ORGANIZER">
-
-              <OrganizerDashboard />
-
+              <ScanTicket />
             </ProtectedRoute>
-
           }
         />
-
-        {/* ORGANIZER EVENTS */}
         <Route
-          path="/organizer/events"
+          path="/organizer/revenue"
           element={
-
             <ProtectedRoute role="ORGANIZER">
-
-              <OrganizerEvents />
-
+              <OrganizerRevenue />
             </ProtectedRoute>
-
           }
         />
-
-        {/* ORGANIZER EVENT DETAIL */}
         <Route
-          path="/organizer/event/:id"
+          path="/organizer/promotions"
           element={
-
             <ProtectedRoute role="ORGANIZER">
-
-              <OrganizerEventDetail />
-
+              <OrganizerPromotion />
             </ProtectedRoute>
-
           }
         />
 
-        {/* EDIT EVENT */}
-        <Route
-          path="/organizer/event/edit/:id"
-          element={
-
-            <ProtectedRoute role="ORGANIZER">
-
-              <EditEvent />
-
-            </ProtectedRoute>
-
-          }
-        />
-
-        {/* STEP 1 */}
-        <Route
-          path="/organizer/create-event"
-          element={
-
-            <ProtectedRoute role="ORGANIZER">
-
-              <CreateEvent />
-
-            </ProtectedRoute>
-
-          }
-        />
-
-        {/* STEP 2 */}
-        <Route
-          path="/organizer/event/setup-tickets"
-          element={
-
-            <ProtectedRoute role="ORGANIZER">
-
-              <SetupTickets />
-
-            </ProtectedRoute>
-
-          }
-        />
-
-        {/* STEP 3 */}
-        <Route
-          path="/organizer/confirm-event"
-          element={
-
-            <ProtectedRoute role="ORGANIZER">
-
-              <ConfirmEvent />
-
-            </ProtectedRoute>
-
-          }
-        />
-
-        {/* ADMIN */}
+        {/* ADMIN ROUTES - Yêu cầu role ADMIN */}
         <Route
           path="/admin/dashboard"
           element={
-
             <ProtectedRoute role="ADMIN">
-
               <AdminDashboard />
-
             </ProtectedRoute>
-
           }
         />
-
         <Route
-  path="/admin/users"
-  element={
-    <ProtectedRoute role="ADMIN">
-      <AdminUsers />
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/admin/users/:id"
-  element={
-    <AdminUserDetail />
-  }
-/>
-
-<Route
-  path="/my-orders"
-  element={<MyOrders />}
-/>
-
-<Route
-  path="/admin/categories"
-  element={<AdminCategories />}
-/>
-
-        {/* 404 */}
-        <Route
-          path="*"
+          path="/admin/users"
           element={
-            <Navigate
-              to="/"
-              replace
-            />
+            <ProtectedRoute role="ADMIN">
+              <AdminUsers />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/users/:id"
+          element={
+            <ProtectedRoute role="ADMIN">
+              <AdminUserDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/categories"
+          element={
+            <ProtectedRoute role="ADMIN">
+              <AdminCategories />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/events"
+          element={
+            <ProtectedRoute role="ADMIN">
+              <AdminEvents />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/events/:id"
+          element={
+            <ProtectedRoute role="ADMIN">
+              <AdminEventDetail />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/orders"
+          element={
+            <ProtectedRoute role="ADMIN">
+              <AdminOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/admin/revenue"
+          element={
+            <ProtectedRoute role="ADMIN">
+              <AdminRevenue />
+            </ProtectedRoute>
           }
         />
 
-<Route
-  path="/admin/events"
-  element={
-    <ProtectedRoute role="ADMIN">
-      <AdminEvents />
-    </ProtectedRoute>
-  }
-/>
-
-{/* ADMIN EVENT DETAIL */}
-<Route
-path="/admin/events/:id"
-element={ <ProtectedRoute role="ADMIN"> <AdminEventDetail /> </ProtectedRoute>
-}
-/>
-
-<Route
-  path="/organizer/scan"
-  element={
-    <ProtectedRoute role="ORGANIZER">
-      <ScanTicket />
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/event/:eventId/seatmap"
-  element={<SeatMap />}
-/>
-
-<Route
-  path="/checkout"
-  element={<Checkout />}
-/>
-
-<Route
-  path="/payment/:orderId"
-  element={<Payment />}
-/>
-
-<Route
-  path="/my-tickets"
-  element={<MyTickets />}
-/>
-
-<Route
-  path="/ticket/:id"
-  element={<TicketDetail />}
-/>
-
-<Route
-  path="/profile"
-  element={<Profile />}
-/>
-
-<Route
-  path="/payment-success"
-  element={
-    <PaymentSuccess />
-  }
-/>
-
-<Route
-  path="/organizer/revenue"
-  element={<OrganizerRevenue />}
-/>
-
-<Route
-  path="/organizer/promotions"
-  element={<OrganizerPromotion />}
-/>
-
-<Route
-  path="/event/:id/booking"
-  element={
-    <ProtectedRoute>
-      <AutoBooking />
-    </ProtectedRoute>
-  }
-/>
-
-<Route
-  path="/checkout-auto"
-  element={
-    <AutoCheckout />
-  }
-/>
-
-<Route
-  path="/admin/orders"
-  element={<AdminOrders />}
-/>
-
-<Route
-  path="/admin/revenue"
-  element={<AdminRevenue />}
-/>
+        {/* 404 CATCH ALL */}
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
-
-
     </BrowserRouter>
-
   );
-
 }
 
 export default App;
