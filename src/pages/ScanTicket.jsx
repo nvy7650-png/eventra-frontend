@@ -12,7 +12,7 @@ import {
   Ticket,
   UserCheck,
 } from "lucide-react";
-import SidebarAdmin from "../components/SidebarAdmin";
+import SidebarAdmin from "../components/AdminSidebar";
 
 // ===============================
 // HÀM AN TOÀN ĐỂ DỪNG CAMERA SCANNER
