@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Html5Qrcode } from "html5-qrcode";
+import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
 import {
   QrCode,
   Calendar,
@@ -12,7 +12,7 @@ import {
   Ticket,
   UserCheck,
 } from "lucide-react";
-import SidebarAdmin from "../components/SidebarAdmin"; // Tích hợp Sidebar Admin
+import SidebarAdmin from "../components/SidebarAdmin";
 
 export default function ScanTicket() {
   const qrRef = useRef(null);
@@ -28,8 +28,25 @@ export default function ScanTicket() {
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [loadingShowtimes, setLoadingShowtimes] = useState(false);
 
-  // API_URL có fallback an toàn
   const API_URL = (import.meta.env.VITE_API_URL || "https://homieticket-backend.onrender.com").replace(/\/$/, "");
+
+  // ===============================
+  // HÀM AN TOÀN ĐỂ DỪNG CAMERA SCANNER
+  // ===============================
+  const safeStopScanner = async () => {
+    if (!qrRef.current) return;
+    try {
+      const state = qrRef.current.getState();
+      if (
+        state === Html5QrcodeScannerState.SCANNING ||
+        state === Html5QrcodeScannerState.PAUSED
+      ) {
+        await qrRef.current.stop();
+      }
+    } catch (err) {
+      console.warn("Lỗi khi dừng camera:", err);
+    }
+  };
 
   // ===============================
   // LẤY DANH SÁCH EVENT
@@ -79,24 +96,37 @@ export default function ScanTicket() {
         { facingMode: "environment" },
         { fps: 10, qrbox: { width: 250, height: 250 } },
         async (decodedText) => {
+          // Ngăn ngừa quét nhiều lần liên tiếp khi đang xử lý API
+          await safeStopScanner();
+
           try {
+            // Ép kiểu ID về Number để tránh lỗi validation 400 phía Backend
+            const payload = {
+              ticket_code: String(decodedText).trim(),
+              event_id: Number(selectedEvent),
+              showtime_id: Number(selectedShowtime),
+            };
+
             const res = await fetch(`${API_URL}/api/tickets/checkin`, {
               method: "POST",
               headers: {
                 "Content-Type": "application/json",
               },
-              body: JSON.stringify({
-                ticket_code: decodedText,
-                event_id: selectedEvent,
-                showtime_id: selectedShowtime,
-              }),
+              body: JSON.stringify(payload),
             });
 
             const data = await res.json();
 
             if (isMounted) {
-              setResult(data);
-              await qr.stop().catch(() => {});
+              if (!res.ok) {
+                // Xử lý các lỗi HTTP 400, 404, 500 từ Server
+                setResult({
+                  success: false,
+                  message: data.message || `Lỗi từ máy chủ (Mã: ${res.status})`,
+                });
+              } else {
+                setResult(data);
+              }
             }
           } catch (err) {
             console.error("Lỗi check-in:", err);
@@ -105,7 +135,6 @@ export default function ScanTicket() {
                 success: false,
                 message: "Không thể kết nối máy chủ để xác thực vé!",
               });
-              await qr.stop().catch(() => {});
             }
           }
         },
@@ -113,19 +142,18 @@ export default function ScanTicket() {
       ).catch((err) => {
         console.error("Không thể khởi động Camera:", err);
       });
-    }, 100);
+    }, 150);
 
     return () => {
       isMounted = false;
       clearTimeout(timer);
-      if (qrRef.current) {
-        qrRef.current.stop().catch(() => {});
-      }
+      safeStopScanner();
     };
   }, [started, selectedEvent, selectedShowtime, API_URL]);
 
   // Restarts scanner session
-  const handleRestart = () => {
+  const handleRestart = async () => {
+    await safeStopScanner();
     setResult(null);
     setStarted(false);
 
@@ -134,16 +162,13 @@ export default function ScanTicket() {
     }, 200);
   };
 
-  // Lấy thông tin Event & Showtime đã chọn để hiển thị
   const currentEvent = events.find((e) => String(e.id) === String(selectedEvent));
   const currentShowtime = showtimes.find((s) => String(s.id) === String(selectedShowtime));
 
   return (
     <div className="min-h-screen flex bg-[#050816]">
-      {/* SIDEBAR ADMIN */}
       <SidebarAdmin />
 
-      {/* CONTENT REGION */}
       <div className="ml-80 flex-1 min-h-screen p-8 text-white">
         <div className="max-w-2xl mx-auto">
           {/* HEADER */}
@@ -164,7 +189,8 @@ export default function ScanTicket() {
 
             {started && (
               <button
-                onClick={() => {
+                onClick={async () => {
+                  await safeStopScanner();
                   setStarted(false);
                   setResult(null);
                 }}
@@ -176,7 +202,7 @@ export default function ScanTicket() {
             )}
           </div>
 
-          {/* BƯỚC 1: CHỌN PHIÊN CHECK-IN */}
+          {/* CHỌN PHIÊN CHECK-IN */}
           {!started && (
             <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-8 shadow-2xl backdrop-blur-xl">
               <div className="flex items-center gap-3 mb-6">
@@ -184,65 +210,58 @@ export default function ScanTicket() {
                 <h2 className="text-xl font-bold">Cấu hình phiên Check-in</h2>
               </div>
 
-              {/* CHỌN SỰ KIỆN */}
               <div className="mb-6">
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   1. Chọn sự kiện <span className="text-red-400">*</span>
                 </label>
-                <div className="relative">
-                  <select
-                    value={selectedEvent}
-                    onChange={(e) => {
-                      setSelectedEvent(e.target.value);
-                      setSelectedShowtime("");
-                    }}
-                    disabled={loadingEvents}
-                    className="w-full bg-[#111827] border border-white/15 focus:border-sky-500 rounded-2xl px-4 py-3.5 text-white outline-none transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    <option value="">
-                      {loadingEvents ? "Đang tải sự kiện..." : "-- Chọn sự kiện --"}
+                <select
+                  value={selectedEvent}
+                  onChange={(e) => {
+                    setSelectedEvent(e.target.value);
+                    setSelectedShowtime("");
+                  }}
+                  disabled={loadingEvents}
+                  className="w-full bg-[#111827] border border-white/15 focus:border-sky-500 rounded-2xl px-4 py-3.5 text-white outline-none transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <option value="">
+                    {loadingEvents ? "Đang tải sự kiện..." : "-- Chọn sự kiện --"}
+                  </option>
+                  {events.map((event) => (
+                    <option key={event.id} value={event.id}>
+                      {event.title}
                     </option>
-                    {events.map((event) => (
-                      <option key={event.id} value={event.id}>
-                        {event.title}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  ))}
+                </select>
               </div>
 
-              {/* CHỌN SUẤT DIỄN */}
               <div className="mb-8">
                 <label className="block text-sm font-medium text-gray-300 mb-2">
                   2. Chọn suất diễn <span className="text-red-400">*</span>
                 </label>
-                <div className="relative">
-                  <select
-                    value={selectedShowtime}
-                    onChange={(e) => setSelectedShowtime(e.target.value)}
-                    disabled={!selectedEvent || loadingShowtimes}
-                    className="w-full bg-[#111827] border border-white/15 focus:border-sky-500 rounded-2xl px-4 py-3.5 text-white outline-none transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    <option value="">
-                      {!selectedEvent
-                        ? "-- Vui lòng chọn sự kiện trước --"
-                        : loadingShowtimes
-                        ? "Đang tải suất diễn..."
-                        : "-- Chọn suất diễn --"}
+                <select
+                  value={selectedShowtime}
+                  onChange={(e) => setSelectedShowtime(e.target.value)}
+                  disabled={!selectedEvent || loadingShowtimes}
+                  className="w-full bg-[#111827] border border-white/15 focus:border-sky-500 rounded-2xl px-4 py-3.5 text-white outline-none transition-all cursor-pointer disabled:opacity-50"
+                >
+                  <option value="">
+                    {!selectedEvent
+                      ? "-- Vui lòng chọn sự kiện trước --"
+                      : loadingShowtimes
+                      ? "Đang tải suất diễn..."
+                      : "-- Chọn suất diễn --"}
+                  </option>
+                  {showtimes.map((st) => (
+                    <option key={st.id} value={st.id}>
+                      {new Date(st.start_time).toLocaleString("vi-VN", {
+                        dateStyle: "medium",
+                        timeStyle: "short",
+                      })}
                     </option>
-                    {showtimes.map((st) => (
-                      <option key={st.id} value={st.id}>
-                        {new Date(st.start_time).toLocaleString("vi-VN", {
-                          dateStyle: "medium",
-                          timeStyle: "short",
-                        })}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                  ))}
+                </select>
               </div>
 
-              {/* BUTTON BẮT ĐẦU */}
               <button
                 disabled={!selectedEvent || !selectedShowtime}
                 onClick={() => setStarted(true)}
@@ -254,10 +273,9 @@ export default function ScanTicket() {
             </div>
           )}
 
-          {/* BƯỚC 2: KHUNG CAMERA QUÉT QR */}
+          {/* KHUNG CAMERA QUÉT QR */}
           {started && !result && (
             <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-6 shadow-2xl space-y-6">
-              {/* THÔNG TIN PHIÊN ĐANG QUÉT */}
               <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-white/5 border border-white/5">
                 <div className="flex items-center gap-3">
                   <Calendar className="text-sky-400 shrink-0" size={20} />
@@ -283,11 +301,10 @@ export default function ScanTicket() {
                 </div>
               </div>
 
-              {/* FRAME CAMERA */}
               <div className="relative">
                 <div
                   id="reader"
-                  className="rounded-2xl overflow-hidden border-2 border-sky-500/30 shadow-inner bg-black"
+                  className="rounded-2xl overflow-hidden border-2 border-sky-500/30 shadow-inner bg-black min-h-[260px]"
                 />
               </div>
 
@@ -302,7 +319,7 @@ export default function ScanTicket() {
             </div>
           )}
 
-          {/* BƯỚC 3: KẾT QUẢ XÁC THỰC CHECK-IN */}
+          {/* KẾT QUẢ XÁC THỰC CHECK-IN */}
           {result && (
             <div
               className={`rounded-3xl p-8 text-center border shadow-2xl backdrop-blur-xl transition-all ${
@@ -327,7 +344,6 @@ export default function ScanTicket() {
                 {result.message}
               </h3>
 
-              {/* THÔNG TIN VÉ NẾU HỢP LỆ */}
               {result.ticket && (
                 <div className="mt-6 p-5 rounded-2xl bg-white/5 border border-white/10 text-left space-y-3">
                   <div className="flex items-center justify-between pb-3 border-b border-white/10">
@@ -359,7 +375,6 @@ export default function ScanTicket() {
                 </div>
               )}
 
-              {/* BUTTON QUÉT TIẾP */}
               <button
                 onClick={handleRestart}
                 className="w-full mt-8 py-4 rounded-2xl bg-sky-500 hover:bg-sky-400 text-black font-black text-lg transition-all shadow-lg shadow-sky-500/20 flex items-center justify-center gap-2"
