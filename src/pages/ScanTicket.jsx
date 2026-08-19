@@ -30,6 +30,29 @@ export default function ScanTicket() {
 
   const API_URL = (import.meta.env.VITE_API_URL || "https://homieticket-backend.onrender.com").replace(/\/$/, "");
 
+  import { Html5Qrcode, Html5QrcodeScannerState } from "html5-qrcode";
+
+// Hàm dừng Camera an toàn
+const safeStopScanner = async (html5QrCode) => {
+  if (!html5QrCode) return;
+
+  try {
+    const state = html5QrCode.getState();
+    // Chỉ gọi stop() khi camera ĐANG QUÉT (SCANNING) hoặc ĐANG TẠM DỪNG (PAUSED)
+    if (
+      state === Html5QrcodeScannerState.SCANNING ||
+      state === Html5QrcodeScannerState.PAUSED
+    ) {
+      await html5QrCode.stop();
+    }
+  } catch (err) {
+    // Bỏ qua lỗi "not running" nếu xảy ra race condition
+    if (!err?.toString().includes("is not running")) {
+      console.warn("Lỗi khi dừng camera:", err);
+    }
+  }
+};
+
   // ===============================
   // HÀM AN TOÀN ĐỂ DỪNG CAMERA SCANNER
   // ===============================
