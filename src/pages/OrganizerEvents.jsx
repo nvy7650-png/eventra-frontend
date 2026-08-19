@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, LayoutDashboard } from "lucide-react";
+import { Plus } from "lucide-react";
 import OrganizerSidebar from "../components/OrganizerSidebar";
 
-// Placeholder bằng SVG Data URI nội bộ - không phụ thuộc mạng bên ngoài, chống lỗi ERR_CONNECTION_CLOSED
+// Placeholder SVG nội bộ - hiển thị khi ảnh lỗi hoặc không có ảnh
 const DEFAULT_PLACEHOLDER =
   "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'><rect width='100%' height='100%' fill='%231E293B'/><text x='50%' y='50%' fill='%2394A3B8' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20'>Chưa có hình ảnh</text></svg>";
 
@@ -16,15 +16,23 @@ export default function OrganizerEvents() {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Xử lý chuẩn hóa API URL để không bị thiếu dấu gạch chéo '/' hoặc bị undefined
   const API_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
-  // Hàm xử lý URL hình ảnh an toàn
+  // Xử lý URL ảnh từ Cloudinary hoặc Local Upload
   const getImageUrl = (url) => {
     if (!url) return DEFAULT_PLACEHOLDER;
+    
+    // Nếu là link Cloudinary hoặc link tuyệt đối (http/https/data)
     if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
       return url;
     }
+    
+    // Trường hợp URL Cloudinary bị thiếu https://
+    if (url.includes("cloudinary.com")) {
+      return `https://${url.replace(/^\/\//, '')}`;
+    }
+
+    // Trường hợp ảnh lưu ở thư mục uploads local backend
     const formattedPath = url.startsWith("/") ? url : `/${url}`;
     return `${API_URL}${formattedPath}`;
   };
@@ -51,29 +59,35 @@ export default function OrganizerEvents() {
       });
   }, [user?.id, API_URL]);
 
+  // Màu sắc trạng thái (không phân biệt chữ hoa/thường)
   const getStatusColor = (status) => {
-    switch (status) {
+    const s = status?.toUpperCase();
+    switch (s) {
       case "APPROVED":
-        return "bg-green-500/20 text-green-400";
+        return "bg-green-500/20 text-green-400 border border-green-500/30";
       case "PENDING":
-        return "bg-yellow-500/20 text-yellow-400";
+        return "bg-yellow-500/20 text-yellow-400 border border-yellow-500/30";
       case "CANCELLED":
-        return "bg-red-500/20 text-red-400";
+      case "REJECTED":
+        return "bg-red-500/20 text-red-400 border border-red-500/30";
       default:
-        return "bg-gray-500/20 text-gray-300";
+        return "bg-gray-500/20 text-gray-300 border border-gray-500/30";
     }
   };
 
+  // Nhãn hiển thị trạng thái tiếng Việt
   const getStatusText = (status) => {
-    switch (status) {
+    const s = status?.toUpperCase();
+    switch (s) {
       case "APPROVED":
         return "Đã duyệt";
       case "PENDING":
         return "Chờ duyệt";
       case "CANCELLED":
+      case "REJECTED":
         return "Đã hủy";
       default:
-        return status;
+        return status || "Chưa xác định";
     }
   };
 
