@@ -96,7 +96,7 @@ export default function AutoBooking() {
         {/* HEADER SECTION */}
         <header className="mb-8 md:mb-10 border-b border-white/10 pb-8">
           <span className="inline-block px-3 py-1 bg-sky-500/10 border border-sky-500/30 text-sky-400 text-xs font-semibold rounded-full uppercase tracking-wider mb-3">
-            Bước 1/3 Đặt vé
+            Bước 1 / 3 - ĐẶT VÉ
           </span>
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
             {event.title}
