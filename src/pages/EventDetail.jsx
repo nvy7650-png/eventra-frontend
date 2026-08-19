@@ -214,9 +214,6 @@ export default function EventDetail() {
                             </div>
                           </div>
 
-                          <span className="text-xs text-sky-400 underline">
-                            {isOpen ? "Thu gọn" : "Xem giá vé"}
-                          </span>
                         </div>
 
                         {/* Nút MUA VÉ trực tiếp tại Suất diễn */}
