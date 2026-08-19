@@ -46,7 +46,7 @@ export default function AutoCheckout() {
           </p>
           <button
             onClick={() => navigate("/")}
-            className="px-6 py-2.5 rounded-xl bg-sky-500 text-black font-bold text-sm hover:bg-sky-400 transition"
+            className="px-6 py-2.5 rounded-xl bg-sky-500 text-black font-bold text-sm hover:bg-sky-400 transition cursor-pointer"
           >
             Quay lại trang chủ
           </button>
@@ -222,7 +222,9 @@ export default function AutoCheckout() {
 
                     <div className="text-right">
                       <p className="text-sky-400 font-bold text-lg">
-                        {(item.quantity * item.price).toLocaleString("vi-VN")}đ
+                        {Math.round(
+                          Number(item.quantity * item.price)
+                        ).toLocaleString("vi-VN")}đ
                       </p>
                     </div>
                   </div>
@@ -244,23 +246,37 @@ export default function AutoCheckout() {
               </label>
 
               <div className="flex gap-2">
-                <select
-                  value={promoCode}
-                  onChange={(e) => setPromoCode(e.target.value)}
-                  className="flex-1 px-4 py-3 rounded-xl bg-black/40 border border-white/10 outline-none text-sm text-white focus:border-sky-400 transition"
-                >
-                  <option value="">-- Chọn mã ưu đãi --</option>
-                  {promotions.map((promo) => (
-                    <option key={promo.id} value={promo.code}>
-                      {promo.code} ({promo.discount_percent ? `-${promo.discount_percent}%` : `-${Number(promo.discount_amount).toLocaleString("vi-VN")}đ`})
+                <div className="relative flex-1">
+                  <select
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    className="w-full px-4 py-3 rounded-xl bg-[#070b14] border border-white/10 outline-none text-sm text-white focus:border-sky-400 focus:ring-1 focus:ring-sky-400/50 transition appearance-none cursor-pointer"
+                  >
+                    <option value="" className="bg-[#070b14] text-gray-400">
+                      -- Chọn mã ưu đãi --
                     </option>
-                  ))}
-                </select>
+                    {promotions.map((promo) => (
+                      <option
+                        key={promo.id}
+                        value={promo.code}
+                        className="bg-[#070b14] text-white py-1"
+                      >
+                        {promo.code}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="absolute right-3.5 top-1/2 -translate-y-1/2 pointer-events-none text-gray-400">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                </div>
 
                 <button
+                  type="button"
                   onClick={handleApplyPromotion}
                   disabled={!promoCode || applying}
-                  className="px-5 rounded-xl bg-sky-500 hover:bg-sky-400 text-black font-bold text-sm transition disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                  className="px-5 py-3 rounded-xl bg-sky-500 hover:bg-sky-400 text-gray-950 font-bold text-sm tracking-wide transition-all active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap shadow-md shadow-sky-500/10 cursor-pointer"
                 >
                   {applying ? "..." : "Áp dụng"}
                 </button>
@@ -279,14 +295,14 @@ export default function AutoCheckout() {
               <div className="flex justify-between text-sm text-gray-400">
                 <span>Tạm tính</span>
                 <span className="text-white font-medium">
-                  {Number(totalPrice).toLocaleString("vi-VN")}đ
+                  {Math.round(Number(totalPrice || 0)).toLocaleString("vi-VN")}đ
                 </span>
               </div>
 
               <div className="flex justify-between text-sm text-gray-400">
                 <span>Giảm giá</span>
                 <span className="text-green-400 font-bold">
-                  -{Number(discount).toLocaleString("vi-VN")}đ
+                  -{Math.round(Number(discount || 0)).toLocaleString("vi-VN")}đ
                 </span>
               </div>
 
@@ -294,7 +310,7 @@ export default function AutoCheckout() {
                 <div>
                   <p className="text-xs text-gray-400">Tổng thanh toán</p>
                   <p className="text-2xl font-black text-sky-400 mt-0.5">
-                    {Number(finalPrice).toLocaleString("vi-VN")}đ
+                    {Math.round(Number(finalPrice || 0)).toLocaleString("vi-VN")}đ
                   </p>
                 </div>
               </div>
@@ -302,9 +318,10 @@ export default function AutoCheckout() {
 
             {/* Nút hành động */}
             <button
+              type="button"
               onClick={handleCheckout}
               disabled={loading}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-sky-500 to-cyan-400 text-black font-extrabold hover:opacity-90 transition disabled:opacity-50 text-base shadow-lg shadow-sky-500/20"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-sky-500 to-cyan-400 text-black font-extrabold hover:opacity-90 active:scale-[0.99] transition disabled:opacity-50 text-base shadow-lg shadow-sky-500/20 cursor-pointer"
             >
               {loading ? "Đang khởi tạo..." : "Thanh toán ngay ➔"}
             </button>
