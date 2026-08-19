@@ -258,9 +258,9 @@ export default function Checkout() {
                       <p className="text-xs text-gray-400 font-medium">
                         Khu vực chọn
                       </p>
-                      <p className="text-sm font-bold text-sky-400 mt-0.5">
-                        {zone?.name || "Khu vực tự do"}
-                      </p>
+                     <p className="text-sm font-bold text-sky-400 mt-0.5">
+  {zone?.name || seats[0]?.zone_name || "Khu vực tự do"}
+</p>
                     </div>
                   </div>
                 </div>
