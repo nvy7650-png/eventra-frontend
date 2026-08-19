@@ -3,6 +3,10 @@ import { useNavigate } from "react-router-dom";
 import { Plus, LayoutDashboard } from "lucide-react";
 import OrganizerSidebar from "../components/OrganizerSidebar";
 
+// Placeholder bằng SVG Data URI nội bộ - không phụ thuộc mạng bên ngoài, chống lỗi ERR_CONNECTION_CLOSED
+const DEFAULT_PLACEHOLDER =
+  "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='400' viewBox='0 0 600 400'><rect width='100%' height='100%' fill='%231E293B'/><text x='50%' y='50%' fill='%2394A3B8' dominant-baseline='middle' text-anchor='middle' font-family='sans-serif' font-size='20'>Chưa có hình ảnh</text></svg>";
+
 export default function OrganizerEvents() {
   const navigate = useNavigate();
 
@@ -15,10 +19,12 @@ export default function OrganizerEvents() {
   // Xử lý chuẩn hóa API URL để không bị thiếu dấu gạch chéo '/' hoặc bị undefined
   const API_URL = (import.meta.env.VITE_API_URL || "").replace(/\/$/, "");
 
-  // Hàm xử lý URL hình ảnh an toàn, tránh gọi URL rác gây lỗi net::ERR_NAME_NOT_RESOLVED
+  // Hàm xử lý URL hình ảnh an toàn
   const getImageUrl = (url) => {
-    if (!url) return "https://via.placeholder.com/600x400?text=No+Image";
-    if (url.startsWith("http://") || url.startsWith("https://")) return url;
+    if (!url) return DEFAULT_PLACEHOLDER;
+    if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("data:")) {
+      return url;
+    }
     const formattedPath = url.startsWith("/") ? url : `/${url}`;
     return `${API_URL}${formattedPath}`;
   };
@@ -155,6 +161,10 @@ export default function OrganizerEvents() {
                   <img
                     src={getImageUrl(event.image_url)}
                     alt={event.title}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = DEFAULT_PLACEHOLDER;
+                    }}
                     className="w-full h-56 object-cover"
                   />
 
