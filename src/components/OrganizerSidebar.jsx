@@ -1,4 +1,4 @@
-import { LayoutDashboard, Calendar, Ticket, BadgePercent, Wallet, Settings, LogOut, Menu, X, } from "lucide-react";
+import { LayoutDashboard, Calendar, Ticket, BadgePercent, Wallet, LogOut, Menu, X, } from "lucide-react";
 
 import { useState } from "react";
 
@@ -37,7 +37,6 @@ const [open, setOpen] =
     { label: "Check-in vé", icon: Ticket, path: "/organizer/scan", }, 
     { label: "Khuyến mãi", icon: BadgePercent, path: "/organizer/promotions", }, 
     { label: "Doanh thu", icon: Wallet, path: "/organizer/revenue", }, 
-    { label: "Cài đặt", icon: Settings, path: "/organizer/settings", }, 
   ];
 
  
