@@ -224,9 +224,6 @@ export default function AutoCheckout() {
                       <p className="text-sky-400 font-bold text-lg">
                         {(item.quantity * item.price).toLocaleString("vi-VN")}đ
                       </p>
-                      <p className="text-gray-500 text-xs">
-                        {Number(item.price).toLocaleString("vi-VN")}đ / vé
-                      </p>
                     </div>
                   </div>
                 ))}
