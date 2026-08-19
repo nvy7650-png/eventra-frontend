@@ -160,7 +160,7 @@ export default function AutoBooking() {
                         {zone.name}
                       </h3>
                      <p className="text-sky-400 text-lg sm:text-xl font-extrabold mt-1">
-                        {zone.price.toLocaleString("vi-VN")}đ
+                        {Math.round(Number(zone.price)).toLocaleString("vi-VN")}đ
                       </p>
                     </div>
 
