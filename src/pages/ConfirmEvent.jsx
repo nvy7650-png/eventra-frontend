@@ -141,14 +141,6 @@ export default function ConfirmEvent() {
               <span>{eventData.location}</span>
             </div>
 
-            <div className="border-t border-white/10 pt-4 mt-2">
-              <div className="flex items-center gap-2 text-gray-400 text-xs sm:text-sm font-semibold uppercase tracking-wider mb-2">
-                <FileText size={16} /> Mô tả sự kiện
-              </div>
-              <p className="text-gray-300 text-sm sm:text-base leading-relaxed whitespace-pre-line">
-                {eventData.description}
-              </p>
-            </div>
           </div>
 
           {/* Stats Grid - Responsive 1 col (Mobile) -> 3 cols (Tablet & Desktop) */}
