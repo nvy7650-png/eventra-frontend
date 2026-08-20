@@ -131,9 +131,6 @@ export default function OrganizerRevenue() {
                 <div className="flex justify-between items-center mb-6">
                   <h2 className="text-2xl font-bold group-hover:text-sky-400 transition-colors flex items-center gap-2">
                     {item.title}
-                    <span className="text-xs bg-sky-500/20 text-sky-400 px-3 py-1 rounded-full border border-sky-500/30 font-normal">
-                      Xem đơn hàng ➔
-                    </span>
                   </h2>
                   <div className="text-green-400 font-bold text-2xl">
                     {Number(item.revenue || 0).toLocaleString("vi-VN")} đ
