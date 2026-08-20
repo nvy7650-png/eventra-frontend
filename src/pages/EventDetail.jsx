@@ -76,7 +76,7 @@ export default function EventDetail() {
     }
 
     if (latestEnd && now > latestEnd) {
-      return { disabled: true, text: "Không bán vé" };
+      return { disabled: true, text: "Ngừng bán vé" };
     }
 
     return { disabled: false, text: "Mua vé" };
