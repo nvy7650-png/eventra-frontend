@@ -42,16 +42,25 @@ export default function OrganizerTicketDetail() {
     }
   };
 
+  const getStatusLabel = (status) => {
+    switch (status) {
+      case "VALID":
+        return "Chưa sử dụng";
+      case "USED":
+        return "Đã sử dụng";
+      case "CANCELLED":
+        return "Đã hủy";
+      default:
+        return status || "Khác";
+    }
+  };
+
   if (loading) {
-   return (
-  <div className="min-h-screen bg-[#050816] text-white">
+    return (
+      <div className="min-h-screen bg-[#050816] text-white">
         <OrganizerSidebar />
 
-        <div   className="
-    ml-80
-    flex-1
-    min-h-screen
-   px-6 py-10">
+        <div className="ml-80 flex-1 min-h-screen px-6 py-10">
           <div className="max-w-7xl mx-auto flex items-center justify-center">
             Đang tải danh sách vé...
           </div>
@@ -62,27 +71,11 @@ export default function OrganizerTicketDetail() {
 
   return (
     <div className="min-h-screen bg-[#050816] text-white">
-  <OrganizerSidebar />
+      <OrganizerSidebar />
 
-  <div
-  className="
-    ml-80
-    min-h-screen
-    px-8
-    py-10
-  "
->
-  <div className="max-w-7xl mx-auto">
-          <div
-  className="
-    flex
-    flex-wrap
-    items-center
-    justify-between
-    gap-4
-    mb-8
-  "
->
+      <div className="ml-80 min-h-screen px-8 py-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
             <div>
               <h1 className="text-4xl font-black">Danh sách vé</h1>
               <p className="text-gray-400 mt-2">Xem chi tiết các vé theo sự kiện</p>
@@ -130,7 +123,7 @@ export default function OrganizerTicketDetail() {
                               t.status
                             )}`}
                           >
-                            {t.status}
+                            {getStatusLabel(t.status)}
                           </span>
                         </td>
                       </tr>
