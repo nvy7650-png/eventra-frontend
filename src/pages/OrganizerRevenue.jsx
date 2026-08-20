@@ -2,9 +2,7 @@ import { useEffect, useState } from "react";
 import OrganizerSidebar from "../components/OrganizerSidebar";
 
 export default function OrganizerRevenue() {
-  // Lấy userId trực tiếp để không bị re-render vô tận
-  const userData = JSON.parse(localStorage.getItem("user") || "{}");
-  const userId = userData?.id;
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
 
   const [revenues, setRevenues] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,12 +13,12 @@ export default function OrganizerRevenue() {
   const [loadingOrders, setLoadingOrders] = useState(false);
 
   useEffect(() => {
-    if (!userId) {
+    if (!user?.id) {
       setLoading(false);
       return;
     }
 
-    fetch(`${import.meta.env.VITE_API_URL}/api/revenue/organizer/${userId}`)
+    fetch(`${import.meta.env.VITE_API_URL}/api/revenue/organizer/${user.id}`)
       .then((res) => res.json())
       .then((data) => {
         setRevenues(Array.isArray(data) ? data : []);
@@ -32,7 +30,7 @@ export default function OrganizerRevenue() {
       .finally(() => {
         setLoading(false);
       });
-  }, [userId]);
+  }, [user?.id]);
 
   // Hàm gọi API lấy chi tiết các đơn hàng khi click vào sự kiện
   const handleOpenEventOrders = (eventItem) => {
@@ -151,6 +149,7 @@ export default function OrganizerRevenue() {
                     </p>
                   </div>
 
+
                   <div>
                     <p className="text-gray-400 text-sm">Doanh thu thực tế</p>
                     <p className="text-3xl font-bold text-green-400">
@@ -238,10 +237,7 @@ export default function OrganizerRevenue() {
                             <div className="font-semibold">{ord.user_name}</div>
                             <div className="text-xs text-gray-400">{ord.user_email}</div>
                           </td>
-                          <td className="py-4 px-4 font-bold">
-                            {/* Ép kiểu Number để chắc chắn không bị ẩn số */}
-                            {Number(ord.ticket_quantity || 0)} vé
-                          </td>
+                          <td className="py-4 px-4 font-bold">{ord.ticket_quantity} vé</td>
                           <td className="py-4 px-4 font-bold text-green-400">
                             {Number(ord.final_amount).toLocaleString("vi-VN")} đ
                           </td>
