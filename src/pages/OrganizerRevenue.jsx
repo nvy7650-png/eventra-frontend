@@ -152,12 +152,6 @@ export default function OrganizerRevenue() {
                     </p>
                   </div>
 
-                  <div>
-                    <p className="text-gray-400 text-sm">Tỷ lệ bán</p>
-                    <p className="text-3xl font-bold text-pink-400">
-                      {percent}%
-                    </p>
-                  </div>
 
                   <div>
                     <p className="text-gray-400 text-sm">Doanh thu thực tế</p>
