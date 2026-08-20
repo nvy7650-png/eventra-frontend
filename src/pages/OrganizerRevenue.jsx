@@ -7,6 +7,11 @@ export default function OrganizerRevenue() {
   const [revenues, setRevenues] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // State quản lý Modal xem chi tiết đơn hàng
+  const [selectedEvent, setSelectedEvent] = useState(null);
+  const [orders, setOrders] = useState([]);
+  const [loadingOrders, setLoadingOrders] = useState(false);
+
   useEffect(() => {
     if (!user?.id) {
       setLoading(false);
@@ -27,7 +32,25 @@ export default function OrganizerRevenue() {
       });
   }, [user?.id]);
 
-  // Tính tổng doanh thu thực tế (Số tiền từ bảng payments)
+  // Hàm gọi API lấy chi tiết các đơn hàng khi click vào sự kiện
+  const handleOpenEventOrders = (eventItem) => {
+    setSelectedEvent(eventItem);
+    setLoadingOrders(true);
+
+    fetch(`${import.meta.env.VITE_API_URL}/api/revenue/event/${eventItem.id}/orders`)
+      .then((res) => res.json())
+      .then((data) => {
+        setOrders(Array.isArray(data) ? data : []);
+      })
+      .catch((err) => {
+        console.log(err);
+        setOrders([]);
+      })
+      .finally(() => {
+        setLoadingOrders(false);
+      });
+  };
+
   const totalRevenue = revenues.reduce(
     (sum, item) => sum + Number(item.revenue || 0),
     0
@@ -63,7 +86,7 @@ export default function OrganizerRevenue() {
         <div className="mb-10">
           <h1 className="text-4xl font-black">Doanh thu</h1>
           <p className="text-gray-400 mt-2">
-            Thống kê doanh thu thực tế (đã tính mã giảm giá) theo các sự kiện
+            Thống kê doanh thu thực tế (nhấp vào sự kiện để xem các đơn hàng đã bán)
           </p>
         </div>
 
@@ -102,10 +125,16 @@ export default function OrganizerRevenue() {
             return (
               <div
                 key={item.id}
-                className="bg-[#0B1120] border border-white/10 rounded-3xl p-7"
+                onClick={() => handleOpenEventOrders(item)}
+                className="bg-[#0B1120] border border-white/10 hover:border-sky-500/50 transition-all cursor-pointer rounded-3xl p-7 group"
               >
                 <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-2xl font-bold">{item.title}</h2>
+                  <h2 className="text-2xl font-bold group-hover:text-sky-400 transition-colors flex items-center gap-2">
+                    {item.title}
+                    <span className="text-xs bg-sky-500/20 text-sky-400 px-3 py-1 rounded-full border border-sky-500/30 font-normal">
+                      Xem đơn hàng ➔
+                    </span>
+                  </h2>
                   <div className="text-green-400 font-bold text-2xl">
                     {Number(item.revenue || 0).toLocaleString("vi-VN")} đ
                   </div>
@@ -163,6 +192,95 @@ export default function OrganizerRevenue() {
           )}
         </div>
       </div>
+
+      {/* MODAL CHI TIẾT ĐƠN HÀNG THÀNH CÔNG */}
+      {selectedEvent && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-fadeIn">
+          <div className="bg-[#0B1120] border border-white/10 rounded-3xl p-8 max-w-4xl w-full max-h-[85vh] flex flex-col shadow-2xl">
+            {/* Modal Header */}
+            <div className="flex justify-between items-center mb-6 pb-4 border-b border-white/10">
+              <div>
+                <h2 className="text-2xl font-bold text-white">
+                  Đơn hàng đã mua - {selectedEvent.title}
+                </h2>
+                <p className="text-gray-400 text-sm mt-1">
+                  Tổng đơn: {orders.length} đơn thành công
+                </p>
+              </div>
+
+              <button
+                onClick={() => setSelectedEvent(null)}
+                className="w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-gray-300 hover:text-white transition-all"
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Modal Content */}
+            <div className="flex-1 overflow-y-auto pr-2 space-y-4">
+              {loadingOrders ? (
+                <div className="text-center py-12 text-gray-400">
+                  Đang tải đơn hàng...
+                </div>
+              ) : orders.length === 0 ? (
+                <div className="text-center py-12 text-gray-400">
+                  Chưa có đơn hàng nào thanh toán thành công.
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left border-collapse">
+                    <thead>
+                      <tr className="text-gray-400 text-xs uppercase tracking-wider border-b border-white/10">
+                        <th className="py-3 px-4">Mã đơn</th>
+                        <th className="py-3 px-4">Khách hàng</th>
+                        <th className="py-3 px-4">Số lượng</th>
+                        <th className="py-3 px-4">Thực thu (Sau giảm giá)</th>
+                        <th className="py-3 px-4">Phương thức</th>
+                        <th className="py-3 px-4">Ngày mua</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-white/5 text-sm">
+                      {orders.map((ord) => (
+                        <tr key={ord.order_id} className="hover:bg-white/5 transition-colors">
+                          <td className="py-4 px-4 font-mono text-sky-400 font-semibold">
+                            #{ord.order_id}
+                          </td>
+                          <td className="py-4 px-4">
+                            <div className="font-semibold">{ord.user_name}</div>
+                            <div className="text-xs text-gray-400">{ord.user_email}</div>
+                          </td>
+                          <td className="py-4 px-4 font-bold">{ord.ticket_quantity} vé</td>
+                          <td className="py-4 px-4 font-bold text-green-400">
+                            {Number(ord.final_amount).toLocaleString("vi-VN")} đ
+                          </td>
+                          <td className="py-4 px-4">
+                            <span className="px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 text-gray-300 border border-white/10">
+                              {ord.payment_method || "N/A"}
+                            </span>
+                          </td>
+                          <td className="py-4 px-4 text-gray-400 text-xs">
+                            {new Date(ord.created_at).toLocaleString("vi-VN")}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="mt-6 pt-4 border-t border-white/10 flex justify-end">
+              <button
+                onClick={() => setSelectedEvent(null)}
+                className="px-6 py-2.5 rounded-xl bg-gray-800 hover:bg-gray-700 text-white font-semibold transition-all"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
