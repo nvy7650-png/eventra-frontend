@@ -132,9 +132,6 @@ export default function OrganizerRevenue() {
                   <h2 className="text-2xl font-bold group-hover:text-sky-400 transition-colors flex items-center gap-2">
                     {item.title}
                   </h2>
-                  <div className="text-green-400 font-bold text-2xl">
-                    {Number(item.revenue || 0).toLocaleString("vi-VN")} đ
-                  </div>
                 </div>
 
                 <div className="grid md:grid-cols-4 gap-6">
