@@ -117,12 +117,10 @@ export default function OrganizerRevenue() {
         {/* EVENT LIST */}
         <div className="space-y-6">
           {revenues.map((item) => {
-            // Ép kiểu dữ liệu về dạng Number an toàn
-            const sold = Number(item.sold_tickets || 0);
-            const total = Number(item.total_tickets || 0);
-
-            // Tính % tỷ lệ bán an toàn (tránh chia cho 0 và NaN)
-            const percent = total > 0 ? Math.min(Math.round((sold / total) * 100), 100) : 0;
+            const percent =
+              item.sold_tickets && item.total_tickets
+                ? Math.round((item.sold_tickets / item.total_tickets) * 100)
+                : 0;
 
             return (
               <div
@@ -143,14 +141,14 @@ export default function OrganizerRevenue() {
                   <div>
                     <p className="text-gray-400 text-sm">Vé bán</p>
                     <p className="text-3xl font-bold text-sky-400">
-                      {sold}
+                      {item.sold_tickets}
                     </p>
                   </div>
 
                   <div>
                     <p className="text-gray-400 text-sm">Check-in</p>
                     <p className="text-3xl font-bold text-yellow-400">
-                      {item.checked_in || 0}
+                      {item.checked_in}
                     </p>
                   </div>
 
