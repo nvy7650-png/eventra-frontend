@@ -35,8 +35,6 @@ export default function OrganizerTicketDetail() {
         return "bg-green-500/20 text-green-400";
       case "USED":
         return "bg-yellow-500/20 text-yellow-400";
-      case "CANCELLED":
-        return "bg-red-500/20 text-red-400";
       default:
         return "bg-gray-500/20 text-gray-300";
     }
@@ -47,9 +45,7 @@ export default function OrganizerTicketDetail() {
       case "VALID":
         return "Chưa sử dụng";
       case "USED":
-        return "Đã sử dụng";
-      case "CANCELLED":
-        return "Đã hủy";
+        return "Đã Check-in";
       default:
         return status || "Khác";
     }
